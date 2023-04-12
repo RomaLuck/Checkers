@@ -1,5 +1,10 @@
 <?php
 
+namespace CheckersOOP\db;
+
+use PDO;
+use PDOException;
+
 require_once "config.php";
 
 class Database
@@ -23,13 +28,18 @@ class Database
         }
     }
 
-    public function query(string $sql, string $prepared = Null)
+    public function query(string $sql, string $prepared = null)
     {
+
         $sth = $this->connection->prepare($sql);
-        if ($prepared != Null) {
+        if ($prepared !== Null) {
             $sth->bindParam(1, $prepared);
         }
         $sth->execute();
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        $result = [];
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = $row;
+        }
+        return  $result;
     }
 }
