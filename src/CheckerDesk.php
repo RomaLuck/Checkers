@@ -7,28 +7,54 @@ use CheckersOOP\db\DbObject;
 final class CheckerDesk extends DbObject
 {
     public $tableName = 'CheckerDesk';
+    public $startWhite = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
+    public $startBlack = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
     // private $gorizontalSideDesk = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     // private $verticalSideDesk = [1, 2, 3, 4, 5, 6, 7, 8]; 
 
     public function __construct($db)
     {
         parent::__construct($db);
-        $this->setTableName($this->tableName);
+    }
+
+    public function fillTheTable()
+    {
+        $this->fillTableByPieces();
+        $this->fillByWhite();
+        $this->fillByBlack();
+    }
+
+    public function clearTable()
+    {
+        $this->deleteAll();
     }
 
     public function fillTableByPieces()
     {
 
         for ($i = 1; $i <= 8; $i++) {
-            $this->insertItem('id','a' . $i);
-            $this->insertItem('id','b' . $i);
-            $this->insertItem('id','c' . $i);
-            $this->insertItem('id','d' . $i);
-            $this->insertItem('id','e' . $i);
-            $this->insertItem('id','f' . $i);
-            $this->insertItem('id','g' . $i);
-            $this->insertItem('id','h' . $i);
+            $this->insertItems('a' . $i, '');
+            $this->insertItems('b' . $i, '');
+            $this->insertItems('c' . $i, '');
+            $this->insertItems('d' . $i, '');
+            $this->insertItems('e' . $i, '');
+            $this->insertItems('f' . $i, '');
+            $this->insertItems('g' . $i, '');
+            $this->insertItems('h' . $i, '');
         }
-    } 
-}
+    }
 
+    public function fillByWhite()
+    {
+        foreach ($this->startWhite as $i) {
+            $this->updateItems('team', 'white', 'id', $i);
+        }
+    }
+
+    public function fillByBlack()
+    {
+        foreach ($this->startBlack as $i) {
+            $this->updateItems('team', 'black', 'id', $i);
+        }
+    }
+}

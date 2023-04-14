@@ -4,7 +4,6 @@ namespace CheckersOOP\db;
 
 class DbObject
 {
-    public $tableName;
     protected $db;
 
     public function __construct(Database $db)
@@ -12,57 +11,58 @@ class DbObject
         $this->db = $db;
     }
 
-    public function setTableName($tableName)
+    public function showAllItems(string $where): array
     {
-        $this->tableName = $tableName;
-    }
-
-    public function showAllItems(): array
-    {
-        $sql = 'SELECT * FROM ' . $this->tableName;
-        $result = $this->db->query($sql);
+        $result = [];
+        $sql = 'SELECT * FROM CheckerDesk';
+        $stmt = $this->db->connect()->query($sql);
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $result[] = $row[$where];
+        }
         return $result;
     }
 
-    public function showItem($id)
+    public function showItems(string $column, string $where, string $filter): array
     {
-        $sql = 'SELECT * FROM ' . $this->tableName . ' WHERE id= "' . $id . '"';
-        $result = $this->db->query($sql);
-        return array_shift($result);
-    }
-
-    public function showItems($column): array
-    {
-        $items = [];
-        $sql = 'SELECT ' . $column . ' FROM ' . $this->tableName;
-        $result = $this->db->query($sql);
-        foreach ($result as $key => $value) {
-            $items[] = array_shift($value);
+        $result = [];
+        $sql = 'SELECT * FROM CheckerDesk WHERE ' . $where . '=?';
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute([$filter]);
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $result[] = $row[$column];
         }
-        return $items;
+        return $result;
     }
 
-    public function insertItem(string $column, string $data): void
+    public function showItem(string $column, string $where, string $filter): string
     {
-        $sql = 'INSERT INTO ' . $this->tableName . '(' . $column . ') VALUES (?)';
-        $this->db->query($sql, $data);
+        $result = [];
+        $sql = 'SELECT * FROM CheckerDesk WHERE ' . $where . '=?';
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute([$filter]);
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $result[] = $row[$column];
+        }
+        return implode($result);
     }
 
-    public function deleteItem(string $column, string $data): void
+    public function insertItems(string $id, string $data): void
     {
-        $sql = 'DELETE FROM ' . $this->tableName . ' WHERE ' . $column . ' =?';
-        $this->db->query($sql, $data);
+        $sql = 'INSERT INTO CheckerDesk VALUES (?,?)';
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute([$id, $data]);
     }
 
-    public function updateItem(string $column, ?string $data, string $id): void
+    public function updateItems(string $column, string $data, string $where, string $filter): void
     {
-        $sql = 'UPDATE ' . $this->tableName . ' SET ' . $column . '=?'.' WHERE id="' . $id . '"';
-        $this->db->query($sql, $data);
+        $sql = 'UPDATE CheckerDesk SET ' . $column . '=? WHERE ' . $where . '=?';
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute([$data, $filter]);
     }
 
-    public function deleteItems(): void
+    public function deleteAll()
     {
-        $deleteCache = 'TRUNCATE TABLE ' . $this->tableName;
-        $this->db->query($deleteCache);
+        $sql = 'TRUNCATE TABLE CheckerDesk';
+        $this->db->connect()->query($sql);
     }
 }
