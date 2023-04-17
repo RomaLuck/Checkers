@@ -42,8 +42,8 @@ class CheckerObject
         $this->chooseFigure = $chooseFigure;
         $this->setStep = $setStep;
         if ($this->checkForMove()) {
-            $this->object->updateItems('team', $this->player->color, 'id', $this->setStep);
-            $this->object->updateItems('team', '', 'id', $this->chooseFigure);
+            $this->object->updateItems(['team' => $this->player->color, 'figure' => $this->figure->getValue()], ['id' => $this->setStep]);
+            $this->object->updateItems(['team' => '', 'figure' => ''], ['id' => $this->chooseFigure]);
         } else {
             throw new Exception("the figure can't be moved");
         }
@@ -66,7 +66,7 @@ class CheckerObject
      */
     public function isCheckerInTeam(): bool
     {
-        if (in_array($this->chooseFigure, $this->object->showItems('id', 'team', $this->player->color))) {
+        if (in_array($this->chooseFigure, $this->object->showItems('id', ['team' => $this->player->color]))) {
             return true;
         }
         throw new Exception("the figure isn't in team");
@@ -92,7 +92,7 @@ class CheckerObject
      */
     public function isStepForMove(): bool
     {
-        if ($this->object->showItem('team', 'id', $this->setStep) === '') {
+        if ($this->object->showItem('team', ['id' => $this->setStep]) === '') {
             return true;
         }
         throw new Exception("step for move is false");
@@ -101,9 +101,10 @@ class CheckerObject
     /**
      * @throws Exception
      */
-    public function hasOpportunity() : bool
+    public function hasOpportunity(): bool
     {
-        if ($this->figure->moveOpportunity >= $this->defineMoveStep() * $this->player->moveDirection) {
+        if ($this->figure->moveOpportunity >= $this->defineMoveStep() * $this->player->moveDirection &&
+            $this->defineMoveStep() !== 0) {
             return true;
         }
         throw new Exception("you don't have such opportunity");
@@ -127,13 +128,13 @@ class CheckerObject
 }
 
 
-    // public function isStepForAttack()
-    // {
-    //     if (
-    //         $this->object->showItem($this->setStep)['Team'] !== $this->side
-    //         and $this->object->showItem($this->setStep)['Team'] !== Null
-    //     ) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
+// public function isStepForAttack()
+// {
+//     if (
+//         $this->object->showItem($this->setStep)['Team'] !== $this->side
+//         and $this->object->showItem($this->setStep)['Team'] !== Null
+//     ) {
+//         return true;
+//     }
+//     return false;
+// }
