@@ -2,9 +2,11 @@
 
 namespace CheckersOOP\db;
 
+use PDO;
+
 class DbObject
 {
-    protected $db;
+    protected Database $db;
 
     public function __construct(Database $db)
     {
@@ -16,7 +18,7 @@ class DbObject
         $result = [];
         $sql = 'SELECT * FROM CheckerDesk';
         $stmt = $this->db->connect()->query($sql);
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = $row[$where];
         }
         return $result;
@@ -25,10 +27,10 @@ class DbObject
     public function showItems(string $column, string $where, string $filter): array
     {
         $result = [];
-        $sql = 'SELECT * FROM CheckerDesk WHERE ' . $where . '=?';
+        $sql = sprintf("SELECT * FROM CheckerDesk WHERE %s=?", $where);
         $stmt = $this->db->connect()->prepare($sql);
         $stmt->execute([$filter]);
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = $row[$column];
         }
         return $result;
@@ -37,10 +39,10 @@ class DbObject
     public function showItem(string $column, string $where, string $filter): string
     {
         $result = [];
-        $sql = 'SELECT * FROM CheckerDesk WHERE ' . $where . '=?';
+        $sql = sprintf("SELECT * FROM CheckerDesk WHERE %s=?", $where);
         $stmt = $this->db->connect()->prepare($sql);
         $stmt->execute([$filter]);
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = $row[$column];
         }
         return implode($result);
@@ -55,12 +57,12 @@ class DbObject
 
     public function updateItems(string $column, string $data, string $where, string $filter): void
     {
-        $sql = 'UPDATE CheckerDesk SET ' . $column . '=? WHERE ' . $where . '=?';
+        $sql = sprintf("UPDATE CheckerDesk SET %s=? WHERE %s=?", $column, $where);
         $stmt = $this->db->connect()->prepare($sql);
         $stmt->execute([$data, $filter]);
     }
 
-    public function deleteAll()
+    public function deleteAll(): void
     {
         $sql = 'TRUNCATE TABLE CheckerDesk';
         $this->db->connect()->query($sql);

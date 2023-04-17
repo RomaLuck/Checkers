@@ -6,9 +6,8 @@ use CheckersOOP\db\DbObject;
 
 final class CheckerDesk extends DbObject
 {
-    public $tableName = 'CheckerDesk';
-    public $startWhite = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
-    public $startBlack = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
+    private array $startWhite = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
+    private array $startBlack = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
     // private $gorizontalSideDesk = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     // private $verticalSideDesk = [1, 2, 3, 4, 5, 6, 7, 8]; 
 
@@ -17,19 +16,19 @@ final class CheckerDesk extends DbObject
         parent::__construct($db);
     }
 
-    public function fillTheTable()
+    public function fillTheTable(): void
     {
         $this->fillTableByPieces();
         $this->fillByWhite();
         $this->fillByBlack();
     }
 
-    public function clearTable()
+    public function clearTable(): void
     {
         $this->deleteAll();
     }
 
-    public function fillTableByPieces()
+    public function fillTableByPieces(): void
     {
 
         for ($i = 1; $i <= 8; $i++) {
@@ -44,14 +43,14 @@ final class CheckerDesk extends DbObject
         }
     }
 
-    public function fillByWhite()
+    public function fillByWhite(): void
     {
         foreach ($this->startWhite as $i) {
             $this->updateItems('team', 'white', 'id', $i);
         }
     }
 
-    public function fillByBlack()
+    public function fillByBlack(): void
     {
         foreach ($this->startBlack as $i) {
             $this->updateItems('team', 'black', 'id', $i);

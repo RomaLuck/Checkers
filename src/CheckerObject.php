@@ -2,41 +2,39 @@
 
 namespace CheckersOOP\src;
 
-use CheckersOOP\src\BlackTeam;
-use CheckersOOP\src\WhiteTeam;
-use CheckersOOP\src\CheckerDesk;
+use Exception;
 
 class CheckerObject
 {
-    public $chooseFigure;
-    public $setStep;
-    public $teamName;
-    public $checkerDesk;
-    public $moveOpportunity;
-    public $moveDirection;
-    public $side;
+    public string $chooseFigure;
+    public string $setStep;
+    public string $teamName;
+    public CheckerDesk $checkerDesk;
+    public int $moveOpportunity;
+    public int $moveDirection;
+    public string $side;
 
     public function __construct(CheckerDesk $checkerDesk)
     {
         $this->checkerDesk = $checkerDesk;
     }
 
-    public function createTeam($teamName, $side)
+    /**
+     * @throws Exception
+     */
+    public function createFigure($figure): Checker|Queen
     {
-        switch ($side) {
-            case 'white':
-                return new WhiteTeam($this->checkerDesk, $teamName);
-                break;
-            case 'black':
-                return new BlackTeam($this->checkerDesk, $teamName);
-                break;
-            default:
-                throw new \InvalidArgumentException("Invalid side name: $side");
-                break;
-        }
+        return match ($figure) {
+            'checker' => new Checker($this->checkerDesk),
+            'queen' => new Queen($this->checkerDesk),
+            default => throw new Exception("Invalid figure name: $figure"),
+        };
     }
 
-    public function move($chooseFigure, $setStep)
+    /**
+     * @throws Exception
+     */
+    public function move($chooseFigure, $setStep): void
     {
         $this->chooseFigure = $chooseFigure;
         $this->setStep = $setStep;
@@ -44,10 +42,13 @@ class CheckerObject
             $this->checkerDesk->updateItems('team', $this->side, 'id', $this->setStep);
             $this->checkerDesk->updateItems('team', '', 'id', $this->chooseFigure);
         } else {
-            echo 'you can not move this item';
+            throw new Exception("the figure can't be moved");
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function checkForMove(): bool
     {
         return $this->isCheckerInTeam()
@@ -57,15 +58,21 @@ class CheckerObject
             && $this->hasTrueDirection();
     }
 
+    /**
+     * @throws Exception
+     */
     public function isCheckerInTeam(): bool
     {
         if (in_array($this->chooseFigure, $this->checkerDesk->showItems('id', 'team', $this->side))) {
             return true;
         }
-        return false;
+        throw new Exception("the figure isn't in team");
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function isCheckerInDesk(): bool
     {
         if (
@@ -74,36 +81,45 @@ class CheckerObject
         ) {
             return true;
         }
-        return false;
+        throw new Exception("the figure isn't in desk");
     }
 
-    public function isStepForMove()
+    /**
+     * @throws Exception
+     */
+    public function isStepForMove(): bool
     {
         if ($this->checkerDesk->showItem('team', 'id', $this->setStep) === '') {
             return true;
         }
-        return false;
+        throw new Exception("step for move is false");
     }
 
-    public function hasOpportunity()
+    /**
+     * @throws Exception
+     */
+    public function hasOpportunity() : bool
     {
-        if ($this->moveOpportunity === $this->defineMoveStep() * (int)$this->moveDirection) {
+        if ($this->moveOpportunity === $this->defineMoveStep() * $this->moveDirection) {
             return true;
         }
-        return false;
+        throw new Exception("you don't have such opportunity");
     }
 
-    public function hasTrueDirection()
+    /**
+     * @throws Exception
+     */
+    public function hasTrueDirection(): bool
     {
         if ($this->defineMoveStep() === $this->moveDirection) {
             return true;
         }
-        return false;
+        throw new Exception("false direction");
     }
 
-    public function defineMoveStep()
+    public function defineMoveStep(): int
     {
-        return (int)((str_split((string)$this->setStep))[1] - str_split((string)$this->chooseFigure)[1]);
+        return (int)((str_split($this->setStep))[1] - str_split($this->chooseFigure)[1]);
     }
 }
 
