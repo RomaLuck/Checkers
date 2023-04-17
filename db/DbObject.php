@@ -24,42 +24,64 @@ class DbObject
         return $result;
     }
 
-    public function showItems(string $column, string $where, string $filter): array
+    public function showItems(string $column, array $condition): array
     {
         $result = [];
-        $sql = sprintf("SELECT * FROM CheckerDesk WHERE %s=?", $where);
+        $dataForExecute = [];
+        $sql = "SELECT * FROM CheckerDesk WHERE ";
+        foreach ($condition as $col => $filter):
+            $sql .= $col . "=? AND ";
+            $dataForExecute[] = $filter;
+        endforeach;
+        $sql = rtrim($sql, ' AND');
         $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute([$filter]);
+        $stmt->execute($dataForExecute);
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = $row[$column];
         }
         return $result;
     }
 
-    public function showItem(string $column, string $where, string $filter): string
+    public function showItem(string $column, array $condition): string
     {
-        $result = [];
-        $sql = sprintf("SELECT * FROM CheckerDesk WHERE %s=?", $where);
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute([$filter]);
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = $row[$column];
-        }
-        return implode($result);
+        return implode($this->showItems($column, $condition));
     }
 
-    public function insertItems(string $id, string $data): void
+    public function insertItems(array $data): void
     {
-        $sql = 'INSERT INTO CheckerDesk VALUES (?,?)';
+        $dataForExecute = [];
+        $sql = "INSERT INTO CheckerDesk(";
+        foreach (array_keys($data) as $key) :
+            $sql .= $key . ",";
+        endforeach;
+        $sql = rtrim($sql, ",");
+        $sql .= ") VALUES (";
+        foreach ($data as $value) :
+            $sql .= "?,";
+            $dataForExecute[] = $value;
+        endforeach;
+        $sql = rtrim($sql, ",");
+        $sql .= ")";
         $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute([$id, $data]);
+        $stmt->execute($dataForExecute);
     }
 
-    public function updateItems(string $column, string $data, string $where, string $filter): void
+    public function updateItems(array $data, array $condition): void
     {
-        $sql = sprintf("UPDATE CheckerDesk SET %s=? WHERE %s=?", $column, $where);
+        $dataForExecute = [];
+        $sql = "UPDATE CheckerDesk SET ";
+        foreach ($data as $key => $value):
+            $sql .= $key . "='" . $value . "',";
+        endforeach;
+        $sql = rtrim($sql, ',');
+        $sql .= " WHERE ";
+        foreach ($condition as $col => $filter):
+            $sql .= $col . "=? AND ";
+            $dataForExecute[] = $filter;
+        endforeach;
+        $sql = rtrim($sql, ' AND');
         $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute([$data, $filter]);
+        $stmt->execute($dataForExecute);
     }
 
     public function deleteAll(): void

@@ -33,28 +33,28 @@ final class CheckerDesk
     {
 
         for ($i = 1; $i <= 8; $i++) {
-            $this->object->insertItems('a' . $i, '');
-            $this->object->insertItems('b' . $i, '');
-            $this->object->insertItems('c' . $i, '');
-            $this->object->insertItems('d' . $i, '');
-            $this->object->insertItems('e' . $i, '');
-            $this->object->insertItems('f' . $i, '');
-            $this->object->insertItems('g' . $i, '');
-            $this->object->insertItems('h' . $i, '');
+            $this->object->insertItems(['id' => 'a' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'b' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'c' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'd' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'e' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'f' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'g' . $i, 'team' => '', 'figure' => '']);
+            $this->object->insertItems(['id' => 'h' . $i, 'team' => '', 'figure' => '']);
         }
     }
 
     public function fillByWhite(): void
     {
         foreach ($this->startWhite as $i) {
-            $this->object->updateItems('team', 'white', 'id', $i);
+            $this->object->updateItems(['team' => 'white', 'figure' => 'checker'], ['id' => $i]);
         }
     }
 
     public function fillByBlack(): void
     {
         foreach ($this->startBlack as $i) {
-            $this->object->updateItems('team', 'black', 'id', $i);
+            $this->object->updateItems(['team' => 'black', 'figure' => 'checker'], ['id' => $i]);
         }
     }
 }

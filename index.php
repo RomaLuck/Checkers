@@ -19,8 +19,8 @@ try {
     $whiteObject = new CheckerObject($dbObj, $white);
     $whiteObject->createFigure('checker');
 //    $whiteObject->createFigure('queen');
-    $whiteObject->move('c1', 'a8');
-
+//    $whiteObject->move('c1', 'a8');
+$checkerDesk->fillTheTable();
 } catch (Exception $e) {
     echo $e->getMessage();
 }
