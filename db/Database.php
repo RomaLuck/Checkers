@@ -2,8 +2,6 @@
 
 namespace CheckersOOP\db;
 
-use CheckersOOP\db\Database as DbDatabase;
-
 require_once "config.php";
 
 class Database

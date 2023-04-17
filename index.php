@@ -1,20 +1,30 @@
 <?php
 
-use CheckersOOP\db\Database;  
+use CheckersOOP\db\Database;
+use CheckersOOP\db\DbObject;
+use CheckersOOP\src\BlackTeam;
 use CheckersOOP\src\CheckerDesk;
 use CheckersOOP\src\CheckerObject;
+use CheckersOOP\src\WhiteTeam;
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-$db = new Database();
-$checkerDesk = new CheckerDesk($db);
-$object = new CheckerObject($checkerDesk);
-$checker = $object->createChecker();
-$queen = $object->createQueen();
-$white = Player::createWhite('Roman','white');
-$white->checker->move('a1','a2');
 
-$white = $checker->createTeam('Roman','white');
-var_dump($white);
+    $db = new Database();
+try {
+    $dbObj = new DbObject($db);
+    $checkerDesk = new CheckerDesk($dbObj);
+    $white = new WhiteTeam('roman');
+    $black = new BlackTeam('olena');
+    $whiteObject = new CheckerObject($dbObj, $white);
+    $whiteObject->createFigure('checker');
+//    $whiteObject->createFigure('queen');
+    $whiteObject->move('c1', 'a8');
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
 
 

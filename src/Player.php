@@ -2,15 +2,10 @@
 
 namespace CheckersOOP\src;
 
-class Player
+abstract class Player
 {
-    public $moveDirection;
-    public $side;
-    public $oppositeSide;
-    public $teamName;
-
-    public function createWhite()
-    {
-        return new WhiteTeam();
-    }
+    public int $moveDirection;
+    public string $color;
+    public string $oppositeSide;
+    public string $teamName;
 }

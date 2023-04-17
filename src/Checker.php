@@ -2,7 +2,7 @@
 
 namespace CheckersOOP\src;
 
-class Checker
+class Checker extends FigureType implements Figure
 {
-
+    public int $moveOpportunity = 1;
 }

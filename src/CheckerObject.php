@@ -2,33 +2,36 @@
 
 namespace CheckersOOP\src;
 
+use CheckersOOP\db\DbObject;
 use Exception;
 
 class CheckerObject
 {
     public string $chooseFigure;
     public string $setStep;
-    public string $teamName;
-    public CheckerDesk $checkerDesk;
-    public int $moveOpportunity;
-    public int $moveDirection;
-    public string $side;
+    public DbObject $object;
+    public Player $player;
+    public array $figures;
+    public Figure $figure;
 
-    public function __construct(CheckerDesk $checkerDesk)
+    public function __construct(DbObject $object, Player $player)
     {
-        $this->checkerDesk = $checkerDesk;
+        $this->object = $object;
+        $this->player = $player;
     }
 
     /**
      * @throws Exception
      */
-    public function createFigure($figure): Checker|Queen
+    public function createFigure($figureType): Figure
     {
-        return match ($figure) {
-            'checker' => new Checker($this->checkerDesk),
-            'queen' => new Queen($this->checkerDesk),
-            default => throw new Exception("Invalid figure name: $figure"),
+        $this->figure = match ($figureType) {
+            FigureType::CHECKER => new Checker(),
+            FigureType::QUEEN => new Queen(),
+            default => throw new Exception("Invalid figure type: " . $figureType),
         };
+        $this->figures[] = $this->figure;
+        return $this->figure;
     }
 
     /**
@@ -39,8 +42,8 @@ class CheckerObject
         $this->chooseFigure = $chooseFigure;
         $this->setStep = $setStep;
         if ($this->checkForMove()) {
-            $this->checkerDesk->updateItems('team', $this->side, 'id', $this->setStep);
-            $this->checkerDesk->updateItems('team', '', 'id', $this->chooseFigure);
+            $this->object->updateItems('team', $this->player->color, 'id', $this->setStep);
+            $this->object->updateItems('team', '', 'id', $this->chooseFigure);
         } else {
             throw new Exception("the figure can't be moved");
         }
@@ -63,7 +66,7 @@ class CheckerObject
      */
     public function isCheckerInTeam(): bool
     {
-        if (in_array($this->chooseFigure, $this->checkerDesk->showItems('id', 'team', $this->side))) {
+        if (in_array($this->chooseFigure, $this->object->showItems('id', 'team', $this->player->color))) {
             return true;
         }
         throw new Exception("the figure isn't in team");
@@ -76,8 +79,8 @@ class CheckerObject
     public function isCheckerInDesk(): bool
     {
         if (
-            in_array($this->chooseFigure, $this->checkerDesk->showAllItems('id')) and
-            in_array($this->setStep, $this->checkerDesk->showAllItems('id'))
+            in_array($this->chooseFigure, $this->object->showAllItems('id')) and
+            in_array($this->setStep, $this->object->showAllItems('id'))
         ) {
             return true;
         }
@@ -89,7 +92,7 @@ class CheckerObject
      */
     public function isStepForMove(): bool
     {
-        if ($this->checkerDesk->showItem('team', 'id', $this->setStep) === '') {
+        if ($this->object->showItem('team', 'id', $this->setStep) === '') {
             return true;
         }
         throw new Exception("step for move is false");
@@ -100,7 +103,7 @@ class CheckerObject
      */
     public function hasOpportunity() : bool
     {
-        if ($this->moveOpportunity === $this->defineMoveStep() * $this->moveDirection) {
+        if ($this->figure->moveOpportunity >= $this->defineMoveStep() * $this->player->moveDirection) {
             return true;
         }
         throw new Exception("you don't have such opportunity");
@@ -111,7 +114,7 @@ class CheckerObject
      */
     public function hasTrueDirection(): bool
     {
-        if ($this->defineMoveStep() === $this->moveDirection) {
+        if ($this->defineMoveStep() === $this->player->moveDirection) {
             return true;
         }
         throw new Exception("false direction");
@@ -127,8 +130,8 @@ class CheckerObject
     // public function isStepForAttack()
     // {
     //     if (
-    //         $this->checkerDesk->showItem($this->setStep)['Team'] !== $this->side
-    //         and $this->checkerDesk->showItem($this->setStep)['Team'] !== Null
+    //         $this->object->showItem($this->setStep)['Team'] !== $this->side
+    //         and $this->object->showItem($this->setStep)['Team'] !== Null
     //     ) {
     //         return true;
     //     }

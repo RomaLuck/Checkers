@@ -2,17 +2,16 @@
 
 namespace CheckersOOP\src;
 
-class WhiteTeam extends CheckerObject
+class WhiteTeam extends Player
 {
-    public int $moveOpportunity = 1;
+
     public int $moveDirection = 1;
-    public string $side = 'white';
+    public string $color = 'white';
     public string $oppositeSide = 'black';
     public string $teamName;
 
-    public function __construct($checkerDesk, $teamName)
+    public function __construct($teamName)
     {
-        parent::__construct($checkerDesk);
         $this->teamName = $teamName;
     }
 }
