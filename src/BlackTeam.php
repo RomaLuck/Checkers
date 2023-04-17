@@ -4,11 +4,11 @@ namespace CheckersOOP\src;
 
 class BlackTeam extends CheckerObject
 {
-    public $moveOpportunity = 1;
-    public $moveDirection = -1;
-    public $side = 'black';
-    public $oppositeSide = 'white';
-    public $teamName;
+    public int $moveOpportunity = 1;
+    public int $moveDirection = -1;
+    public string $side = 'black';
+    public string $oppositeSide = 'white';
+    public string $teamName;
 
     public function __construct($checkerDesk, $teamName)
     {
