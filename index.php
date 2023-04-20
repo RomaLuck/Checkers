@@ -16,10 +16,12 @@ try {
     $checkerDesk = new CheckerDesk($dbObj);
     $white = new WhiteTeam('roman');
     $black = new BlackTeam('olena');
-    $whiteObject = new CheckerObject($dbObj, $white);
+    $whiteObject = new CheckerObject($dbObj, $white,$checkerDesk);
     $whiteObject->createFigure('checker');
 //    $whiteObject->createFigure('queen');
-    $whiteObject->move('a1', 'a2');
+    $whiteObject->move('a3', 'b4');
+//$checkerDesk->fillTheTable();
+
 } catch (Exception $e) {
     echo $e->getMessage();
 }

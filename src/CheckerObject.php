@@ -13,11 +13,13 @@ class CheckerObject
     public Player $player;
     public array $figures;
     public Figure $figure;
+    public CheckerDesk $desk;
 
-    public function __construct(DbObject $object, Player $player)
+    public function __construct(DbObject $object, Player $player, CheckerDesk $desk)
     {
         $this->object = $object;
         $this->player = $player;
+        $this->desk = $desk;
     }
 
     /**
@@ -54,11 +56,12 @@ class CheckerObject
      */
     public function checkForMove(): bool
     {
-        return $this->isCheckerInTeam()
+        return $this->isCheckerInDesk()
+            && $this->isCheckerInTeam()
             && $this->isStepForMove()
-            && $this->isCheckerInDesk()
             && $this->hasOpportunity()
-            && $this->hasTrueDirection();
+            && $this->hasTrueDirection()
+            && $this->isStepOnArea();
     }
 
     /**
@@ -79,8 +82,8 @@ class CheckerObject
     public function isCheckerInDesk(): bool
     {
         if (
-            in_array($this->chooseFigure, $this->object->showAllItems('id')) and
-            in_array($this->setStep, $this->object->showAllItems('id'))
+            in_array($this->chooseFigure, $this->object->showAllItems('id'))
+            && in_array($this->setStep, $this->object->showAllItems('id'))
         ) {
             return true;
         }
@@ -115,26 +118,95 @@ class CheckerObject
      */
     public function hasTrueDirection(): bool
     {
-        if ($this->defineMoveStep() === $this->player->moveDirection) {
+        if ($this->defineMoveStep() == $this->player->moveDirection) {
             return true;
         }
         throw new Exception("false direction");
     }
 
+    /**
+     * @throws Exception
+     */
+    public function isStepOnArea(): bool
+    {
+        if (in_array($this->setStep, $this->getAreaForWalk())) {
+            return true;
+        }
+        throw new Exception("set step is not on area");
+    }
+
     public function defineMoveStep(): int
     {
-        return (int)((str_split($this->setStep))[1] - str_split($this->chooseFigure)[1]);
+        return ((int)$this->getSplitPiece($this->setStep, 1) - (int)$this->getSplitPiece($this->chooseFigure, 1));
     }
+
+    public function getSplitPiece(string $data, int $key): string
+    {
+        return (str_split($data))[$key];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getAreaForWalk(): array
+    {
+        $right = $this->desk->gorizontalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)
+        + $this->figure->moveOpportunity];
+
+        $left = $this->desk->gorizontalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)
+        - $this->figure->moveOpportunity];
+
+        $forward = $this->desk->verticalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->verticalSideDesk)
+        + $this->figure->moveOpportunity];
+
+        $back = $this->desk->verticalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->verticalSideDesk)
+        - $this->figure->moveOpportunity];
+
+        return array_intersect([$right . $forward, $left . $forward, $right . $back, $left . $back],
+            $this->object->showAllItems('id'));
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function isStepForAttack(): bool
+    {
+        if ($this->object->showItem('team', ['id' => $this->setStep]) === $this->player->oppositeSide) {
+            return true;
+        }
+        throw new Exception("this checker isn't for attack");
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getPositionOnDesk($piece, $sideOfDesk): int
+    {
+        $idPiece = match ($sideOfDesk) {
+            $this->desk->verticalSideDesk => 1,
+            $this->desk->gorizontalSideDesk => 0,
+            default => throw new Exception('Wrong number piece\'s position'),
+        };
+        return array_search($this->getSplitPiece($piece, $idPiece), $sideOfDesk);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getFuturePositionAfterBeat($chooseFigure, $setStep): string
+    {
+        $gorizontal = $this->desk->gorizontalSideDesk[($this->getPositionOnDesk($setStep, $this->desk->gorizontalSideDesk)
+            - $this->getPositionOnDesk($chooseFigure, $this->desk->gorizontalSideDesk)) * 2
+        + $this->getPositionOnDesk($chooseFigure, $this->desk->gorizontalSideDesk)];
+
+        $vertical = $this->desk->verticalSideDesk[($this->getPositionOnDesk($setStep, $this->desk->verticalSideDesk)
+            - $this->getPositionOnDesk($chooseFigure, $this->desk->verticalSideDesk)) * 2
+        + $this->getPositionOnDesk($chooseFigure, $this->desk->verticalSideDesk)];
+
+        return $gorizontal . $vertical;
+    }
+
 }
 
 
-// public function isStepForAttack()
-// {
-//     if (
-//         $this->object->showItem($this->setStep)['Team'] !== $this->side
-//         and $this->object->showItem($this->setStep)['Team'] !== Null
-//     ) {
-//         return true;
-//     }
-//     return false;
-// }
