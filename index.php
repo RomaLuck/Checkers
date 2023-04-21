@@ -17,10 +17,12 @@ try {
     $white = new WhiteTeam('roman');
     $black = new BlackTeam('olena');
     $whiteObject = new CheckerObject($dbObj, $white,$checkerDesk);
+    $blackObject = new CheckerObject($dbObj, $black,$checkerDesk);
     $whiteObject->createFigure('checker');
+    $blackObject->createFigure('checker');
 //    $whiteObject->createFigure('queen');
-    $whiteObject->move('a3', 'b4');
-//$checkerDesk->fillTheTable();
+    $whiteObject->move('c3', 'd4');
+
 
 } catch (Exception $e) {
     echo $e->getMessage();

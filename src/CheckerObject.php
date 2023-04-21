@@ -43,7 +43,11 @@ class CheckerObject
     {
         $this->chooseFigure = $chooseFigure;
         $this->setStep = $setStep;
-        if ($this->checkForMove()) {
+        if ($this->checkForAttack()) {
+            $this->object->updateItems(['team' => $this->player->color, 'figure' => $this->figure->getValue()], ['id' => $this->getFuturePositionAfterBeat()]);
+            $this->object->updateItems(['team' => '', 'figure' => ''], ['id' => $this->chooseFigure]);
+            $this->object->updateItems(['team' => '', 'figure' => ''], ['id' => $this->setStep]);
+        } else if ($this->checkForMove()) {
             $this->object->updateItems(['team' => $this->player->color, 'figure' => $this->figure->getValue()], ['id' => $this->setStep]);
             $this->object->updateItems(['team' => '', 'figure' => ''], ['id' => $this->chooseFigure]);
         } else {
@@ -62,6 +66,19 @@ class CheckerObject
             && $this->hasOpportunity()
             && $this->hasTrueDirection()
             && $this->isStepOnArea();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function checkForAttack(): bool
+    {
+        return $this->isCheckerInDesk()
+            && $this->isCheckerInTeam()
+            && $this->hasOpportunity()
+            && $this->isStepOnArea()
+            && $this->isStepForAttack()
+            && $this->object->showItem('team', ['id' => $this->getFuturePositionAfterBeat()]) === '';
     }
 
     /**
@@ -194,17 +211,17 @@ class CheckerObject
     /**
      * @throws Exception
      */
-    public function getFuturePositionAfterBeat($chooseFigure, $setStep): string
+    public function getFuturePositionAfterBeat(): string
     {
-        $gorizontal = $this->desk->gorizontalSideDesk[($this->getPositionOnDesk($setStep, $this->desk->gorizontalSideDesk)
-            - $this->getPositionOnDesk($chooseFigure, $this->desk->gorizontalSideDesk)) * 2
-        + $this->getPositionOnDesk($chooseFigure, $this->desk->gorizontalSideDesk)];
+        $horizontalSide = $this->desk->gorizontalSideDesk[($this->getPositionOnDesk($this->setStep, $this->desk->gorizontalSideDesk)
+            - $this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)) * 2
+        + $this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)];
 
-        $vertical = $this->desk->verticalSideDesk[($this->getPositionOnDesk($setStep, $this->desk->verticalSideDesk)
-            - $this->getPositionOnDesk($chooseFigure, $this->desk->verticalSideDesk)) * 2
-        + $this->getPositionOnDesk($chooseFigure, $this->desk->verticalSideDesk)];
+        $verticalSide = $this->desk->verticalSideDesk[($this->getPositionOnDesk($this->setStep, $this->desk->verticalSideDesk)
+            - $this->getPositionOnDesk($this->chooseFigure, $this->desk->verticalSideDesk)) * 2
+        + $this->getPositionOnDesk($this->chooseFigure, $this->desk->verticalSideDesk)];
 
-        return $gorizontal . $vertical;
+        return $horizontalSide . $verticalSide;
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace CheckersOOP\src;
 
-abstract class FigureType
+abstract class FigureType implements Figure
 {
     public string $figure;
     const CHECKER = 'checker';
