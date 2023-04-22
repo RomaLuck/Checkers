@@ -51,7 +51,7 @@ class CheckerObject
             $this->object->updateItems(['team' => $this->player->color, 'figure' => $this->figure->getValue()], ['id' => $this->setStep]);
             $this->object->updateItems(['team' => '', 'figure' => ''], ['id' => $this->chooseFigure]);
         } else {
-            throw new Exception("the figure can't be moved");
+            throw new Exception("Figure can't be moved");
         }
     }
 
@@ -78,7 +78,8 @@ class CheckerObject
             && $this->hasOpportunity()
             && $this->isStepOnArea()
             && $this->isStepForAttack()
-            && $this->object->showItem('team', ['id' => $this->getFuturePositionAfterBeat()]) === '';
+            && $this->object->showItem('team', ['id' => $this->getFuturePositionAfterBeat()]) === ''
+            && $this->isStepAfterAttckOnDesk();
     }
 
     /**
@@ -89,7 +90,7 @@ class CheckerObject
         if (in_array($this->chooseFigure, $this->object->showItems('id', ['team' => $this->player->color]))) {
             return true;
         }
-        throw new Exception("the figure isn't in team");
+        throw new Exception("Figure isn't in team");
     }
 
 
@@ -104,7 +105,7 @@ class CheckerObject
         ) {
             return true;
         }
-        throw new Exception("the figure isn't in desk");
+        throw new Exception("Figure isn't in desk");
     }
 
     /**
@@ -115,7 +116,7 @@ class CheckerObject
         if ($this->object->showItem('team', ['id' => $this->setStep]) === '') {
             return true;
         }
-        throw new Exception("step for move is false");
+        throw new Exception("Step for move is false");
     }
 
     /**
@@ -127,7 +128,7 @@ class CheckerObject
             $this->defineMoveStep() !== 0) {
             return true;
         }
-        throw new Exception("you don't have such opportunity");
+        throw new Exception("You don't have such opportunity");
     }
 
     /**
@@ -138,7 +139,7 @@ class CheckerObject
         if ($this->defineMoveStep() == $this->player->moveDirection) {
             return true;
         }
-        throw new Exception("false direction");
+        throw new Exception("False direction");
     }
 
     /**
@@ -149,7 +150,7 @@ class CheckerObject
         if (in_array($this->setStep, $this->getAreaForWalk())) {
             return true;
         }
-        throw new Exception("set step is not on area");
+        throw new Exception("Set step is not on area");
     }
 
     public function defineMoveStep(): int
@@ -167,10 +168,10 @@ class CheckerObject
      */
     public function getAreaForWalk(): array
     {
-        $right = $this->desk->gorizontalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)
+        $right = $this->desk->horizontalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->horizontalSideDesk)
         + $this->figure->moveOpportunity];
 
-        $left = $this->desk->gorizontalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)
+        $left = $this->desk->horizontalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->horizontalSideDesk)
         - $this->figure->moveOpportunity];
 
         $forward = $this->desk->verticalSideDesk[$this->getPositionOnDesk($this->chooseFigure, $this->desk->verticalSideDesk)
@@ -184,15 +185,24 @@ class CheckerObject
     }
 
 
-    /**
-     * @throws Exception
-     */
+
     public function isStepForAttack(): bool
     {
         if ($this->object->showItem('team', ['id' => $this->setStep]) === $this->player->oppositeSide) {
             return true;
         }
-        throw new Exception("this checker isn't for attack");
+        return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function isStepAfterAttckOnDesk():bool
+    {
+        if (in_array($this->getFuturePositionAfterBeat(),$this->object->showAllItems('id'))){
+            return true;
+        }
+        throw new Exception("Step after attack is out of the board");
     }
 
     /**
@@ -202,7 +212,7 @@ class CheckerObject
     {
         $idPiece = match ($sideOfDesk) {
             $this->desk->verticalSideDesk => 1,
-            $this->desk->gorizontalSideDesk => 0,
+            $this->desk->horizontalSideDesk => 0,
             default => throw new Exception('Wrong number piece\'s position'),
         };
         return array_search($this->getSplitPiece($piece, $idPiece), $sideOfDesk);
@@ -213,9 +223,9 @@ class CheckerObject
      */
     public function getFuturePositionAfterBeat(): string
     {
-        $horizontalSide = $this->desk->gorizontalSideDesk[($this->getPositionOnDesk($this->setStep, $this->desk->gorizontalSideDesk)
-            - $this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)) * 2
-        + $this->getPositionOnDesk($this->chooseFigure, $this->desk->gorizontalSideDesk)];
+        $horizontalSide = $this->desk->horizontalSideDesk[($this->getPositionOnDesk($this->setStep, $this->desk->horizontalSideDesk)
+            - $this->getPositionOnDesk($this->chooseFigure, $this->desk->horizontalSideDesk)) * 2
+        + $this->getPositionOnDesk($this->chooseFigure, $this->desk->horizontalSideDesk)];
 
         $verticalSide = $this->desk->verticalSideDesk[($this->getPositionOnDesk($this->setStep, $this->desk->verticalSideDesk)
             - $this->getPositionOnDesk($this->chooseFigure, $this->desk->verticalSideDesk)) * 2

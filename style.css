@@ -1,0 +1,59 @@
+.col-5 {
+    margin: auto;
+}
+
+p {
+    margin-top: 10px;
+}
+
+.chess-board {
+    caret-color: transparent;
+    table-layout: auto;
+}
+
+.chess-board th {
+    padding: .2em;
+}
+
+
+.chess-board td {
+    border: 1px solid;
+    width: 4em;
+    height: 4em;
+}
+
+.chess-board .white {
+    background: #f0d9b5;
+}
+
+.chess-board .black {
+    background: #b58863;
+}
+
+.black-piece {
+    width: 3em;
+    height: 3em;
+    background-color: black;
+    border: 1px solid white;
+    border-radius: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.white-piece {
+    width: 3em;
+    height: 3em;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td:hover {
+    opacity: 0.8;
+}
+
+#submit {
+    width: 100px;
+}
