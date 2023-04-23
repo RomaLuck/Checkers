@@ -57,3 +57,7 @@ p {
 #submit {
     width: 100px;
 }
+
+.form{
+    display: none;
+}

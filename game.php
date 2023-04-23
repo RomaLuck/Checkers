@@ -20,10 +20,17 @@ try {
     $whiteObject->createFigure('checker');
     $blackObject->createFigure('checker');
 
-    if (in_array($_POST['choose_figure'], $dbObj->showItems('id', ['team' => 'white']))) {
-        $whiteObject->move($_POST['choose_figure'], $_POST['set_step']);
-    } elseif (in_array($_POST['choose_figure'], $dbObj->showItems('id', ['team' => 'black']))) {
-        $blackObject->move($_POST['choose_figure'], $_POST['set_step']);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
+        $data = json_decode($_POST['formData'], true);
+        $chooseFigure = $data['form1'];
+        $setStep = $data['form2'];
+
+        // Обробка даних форми
+        if (in_array($chooseFigure, $dbObj->showItems('id', ['team' => 'white']))) {
+            $whiteObject->move($chooseFigure, $setStep);
+        } elseif (in_array($chooseFigure, $dbObj->showItems('id', ['team' => 'black']))) {
+            $blackObject->move($chooseFigure, $setStep);
+        }
     }
 } catch (Exception $e) {
     $message = $e->getMessage();
@@ -48,17 +55,16 @@ try {
 <div class="container-md">
     <div class="row">
         <div class="col-md-6 mx-auto">
-            <form method="POST">
+            <form method="POST" class="form form-control" autocomplete="off">
                 <div class="row gx-2">
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="choose_figure" id="form1"
-                               placeholder="choose a checker">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="choose_figure" id="form1" placeholder="choose a checker" autocomplete="off">
                     </div>
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="set_step" id="form2" placeholder="select a cell">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="set_step" id="form2" placeholder="select a cell" autocomplete="off">
                     </div>
                     <div class="col-md-2">
-                        <input type="submit" class="btn btn-primary" name="submit" id="submit" value="enter">
+                        <input type="submit" class="form-control btn btn-primary" name="submit" id="submit" value="enter">
                     </div>
                 </div>
             </form>
@@ -77,7 +83,7 @@ try {
                     $message = "<br>BLACK TEAM WON!<br>";
                     header("refresh:5;url=end_game.php");
                 }
-                if ($message !== null) {
+                if ($message !== '') {
                     echo $message;
                 }
                 ?>
@@ -210,7 +216,7 @@ try {
                         <td></td>
                     </tr>
                 </table>
-                <button class="btn btn-primary mt-2 float-start" id="reverse-button">Перевернути таблицю</button>
+                <button class="btn btn-primary mt-2 float-start" id="reverse-button">Rotate board</button>
                 <a href="end_game.php" class="btn btn-danger mt-2 float-end">Finish game</a>
             </div>
         </div>
@@ -237,9 +243,53 @@ try {
                 form1.value = event.target.id || event.target.parentNode.id;
             } else if (event.target.id !== form1.value || event.target.parentNode.id !== form1.value) {
                 form2.value = event.target.id || event.target.parentNode.id;
+
+                const formData = new FormData();
+                formData.append('formData', JSON.stringify({
+                    form1: form1.value,
+                    form2: form2.value
+                }));
+
+                fetch('game.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        form1.value = "";
+                        form2.value = "";
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
             }
         }
     });
+
+    function sendData() {
+        const xhr = new XMLHttpRequest();
+        const url = "game.php";
+        const formData = new FormData();
+
+        formData.append("form1", form1.value);
+        formData.append("form2", form2.value);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log(xhr.responseText);
+            }
+        };
+
+        xhr.open("POST", url);
+        xhr.send(formData);
+    }
 
     for (var i = 0; i < tablePiece.length; i++) {
         if (white.includes(tablePiece[i].id)) {
@@ -285,7 +335,7 @@ try {
             }
 
             isReversed = true;
-            reverseButton.innerHTML = 'Повернути таблицю';
+            reverseButton.innerHTML = 'Rotate the table';
         } else {
             // Повертаємо таблицю на початковий стан, якщо вона має батьківський елемент
             if (reversedTable.parentNode) {
