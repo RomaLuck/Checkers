@@ -6,27 +6,27 @@ p {
     margin-top: 10px;
 }
 
-.chess-board {
+.table-responsive {
     caret-color: transparent;
     table-layout: auto;
 }
 
-.chess-board th {
+
+.table-responsive th {
     padding: .2em;
 }
 
-
-.chess-board td {
+.table-responsive td {
     border: 1px solid;
     width: 4em;
     height: 4em;
 }
 
-.chess-board .white {
+.table-responsive .white {
     background: #f0d9b5;
 }
 
-.chess-board .black {
+.table-responsive .black {
     background: #b58863;
 }
 
@@ -50,7 +50,7 @@ p {
     margin-right: auto;
 }
 
-td:hover {
+.table-responsive td:hover {
     opacity: 0.8;
 }
 

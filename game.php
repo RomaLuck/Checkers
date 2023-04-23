@@ -87,21 +87,22 @@ try {
 
     <div class="row">
         <div class="d-flex justify-content-center">
-            <div class="table-responsive">
-                <table class="chess-board">
+            <div class="table-responsive text-center" id="table-responsive">
+                <table class="chess-board" id="original-table">
                     <tr>
-                        <th></th>
-                        <th>a</th>
-                        <th>b</th>
-                        <th>c</th>
-                        <th>d</th>
-                        <th>e</th>
-                        <th>f</th>
-                        <th>g</th>
-                        <th>h</th>
+                        <td></td>
+                        <td>a</td>
+                        <td>b</td>
+                        <td>c</td>
+                        <td>d</td>
+                        <td>e</td>
+                        <td>f</td>
+                        <td>g</td>
+                        <td>h</td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <th>8</th>
+                        <td>8</td>
                         <td class="white" id="a8"></td>
                         <td class="black" id="b8"></td>
                         <td class="white" id="c8"></td>
@@ -110,9 +111,10 @@ try {
                         <td class="black" id="f8"></td>
                         <td class="white" id="g8"></td>
                         <td class="black" id="h8"></td>
+                        <td>8</td>
                     </tr>
                     <tr>
-                        <th>7</th>
+                        <td>7</td>
                         <td class="black" id="a7"></td>
                         <td class="white" id="b7"></td>
                         <td class="black" id="c7"></td>
@@ -121,9 +123,10 @@ try {
                         <td class="white" id="f7"></td>
                         <td class="black" id="g7"></td>
                         <td class="white" id="h7"></td>
+                        <td>7</td>
                     </tr>
                     <tr>
-                        <th>6</th>
+                        <td>6</td>
                         <td class="white" id="a6"></td>
                         <td class="black" id="b6"></td>
                         <td class="white" id="c6"></td>
@@ -132,9 +135,10 @@ try {
                         <td class="black" id="f6"></td>
                         <td class="white" id="g6"></td>
                         <td class="black" id="h6"></td>
+                        <td>6</td>
                     </tr>
                     <tr>
-                        <th>5</th>
+                        <td>5</td>
                         <td class="black" id="a5"></td>
                         <td class="white" id="b5"></td>
                         <td class="black" id="c5"></td>
@@ -143,9 +147,10 @@ try {
                         <td class="white" id="f5"></td>
                         <td class="black" id="g5"></td>
                         <td class="white" id="h5"></td>
+                        <td>5</td>
                     </tr>
                     <tr>
-                        <th>4</th>
+                        <td>4</td>
                         <td class="white" id="a4"></td>
                         <td class="black" id="b4"></td>
                         <td class="white" id="c4"></td>
@@ -154,9 +159,10 @@ try {
                         <td class="black" id="f4"></td>
                         <td class="white" id="g4"></td>
                         <td class="black" id="h4"></td>
+                        <td>4</td>
                     </tr>
                     <tr>
-                        <th>3</th>
+                        <td>3</td>
                         <td class="black" id="a3"></td>
                         <td class="white" id="b3"></td>
                         <td class="black" id="c3"></td>
@@ -165,9 +171,10 @@ try {
                         <td class="white" id="f3"></td>
                         <td class="black" id="g3"></td>
                         <td class="white" id="h3"></td>
+                        <td>3</td>
                     </tr>
                     <tr>
-                        <th>2</th>
+                        <td>2</td>
                         <td class="white" id="a2"></td>
                         <td class="black" id="b2"></td>
                         <td class="white" id="c2"></td>
@@ -176,9 +183,10 @@ try {
                         <td class="black" id="f2"></td>
                         <td class="white" id="g2"></td>
                         <td class="black" id="h2"></td>
+                        <td>2</td>
                     </tr>
                     <tr>
-                        <th>1</th>
+                        <td>1</td>
                         <td class="black" id="a1"></td>
                         <td class="white" id="b1"></td>
                         <td class="black" id="c1"></td>
@@ -187,9 +195,23 @@ try {
                         <td class="white" id="f1"></td>
                         <td class="black" id="g1"></td>
                         <td class="white" id="h1"></td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>a</td>
+                        <td>b</td>
+                        <td>c</td>
+                        <td>d</td>
+                        <td>e</td>
+                        <td>f</td>
+                        <td>g</td>
+                        <td>h</td>
+                        <td></td>
                     </tr>
                 </table>
-                <a href="end_game.php" class="btn btn-danger mt-2">Finish game</a>
+                <button class="btn btn-primary mt-2 float-start" id="reverse-button">Перевернути таблицю</button>
+                <a href="end_game.php" class="btn btn-danger mt-2 float-end">Finish game</a>
             </div>
         </div>
     </div>
@@ -197,13 +219,14 @@ try {
 
 <script>
     /**receiving a json array and displaying the movement of checkers on the field */
-    const table = document.getElementsByTagName("td");
+    const tableContainer = document.getElementById('table-responsive');
+    const tablePiece = document.querySelectorAll("table td:not(:first-child)");
     const form1 = document.getElementById("form1");
     const form2 = document.getElementById("form2");
     var white = JSON.parse('<?php echo $jsonWhiteTeam ?>');
     var black = JSON.parse('<?php echo $jsonBlackTeam ?>');
 
-    document.addEventListener("click", function (event) {
+    tableContainer.addEventListener("click", function (event) {
         const target = event.target.classList.contains("white") ||
             event.target.classList.contains("black") ||
             event.target.classList.contains("white-piece") ||
@@ -218,21 +241,61 @@ try {
         }
     });
 
-    for (var i = 0; i < table.length; i++) {
-        if (white.includes(table[i].id)) {
+    for (var i = 0; i < tablePiece.length; i++) {
+        if (white.includes(tablePiece[i].id)) {
             const piece = document.createElement('div');
             piece.className = "white-piece";
-            table[i].appendChild(piece);
+            tablePiece[i].appendChild(piece);
         }
     }
 
-    for (var i = 0; i < table.length; i++) {
-        if (black.includes(table[i].id)) {
+    for (var i = 0; i < tablePiece.length; i++) {
+        if (black.includes(tablePiece[i].id)) {
             const piece = document.createElement('div');
             piece.className = "black-piece";
-            table[i].appendChild(piece);
+            tablePiece[i].appendChild(piece);
         }
     }
+
+    const originalTable = document.getElementById('original-table');
+    const reverseButton = document.getElementById('reverse-button');
+    let isReversed = false;
+    let reversedTable;
+
+    reverseButton.addEventListener('click', () => {
+        if (!isReversed) {
+            reversedTable = document.createElement('table');
+
+            // Перевертаємо рядки таблиці і додаємо їх до нової таблиці
+            for (let i = originalTable.rows.length - 1; i >= 0; i--) {
+                const row = originalTable.rows[i];
+                const newRow = reversedTable.insertRow();
+                for (let j = 0; j < row.cells.length; j++) {
+                    const cell = row.cells[j];
+                    const newCell = newRow.insertCell();
+                    newCell.innerHTML = cell.innerHTML;
+                    newCell.className = cell.className; // додати класи td
+                    newCell.id = cell.id; // зберегти id td
+                }
+            }
+
+            // Замінюємо оригінальну таблицю на перевернуту, якщо вона має батьківський елемент
+            if (originalTable.parentNode) {
+                originalTable.parentNode.replaceChild(reversedTable, originalTable);
+            }
+
+            isReversed = true;
+            reverseButton.innerHTML = 'Повернути таблицю';
+        } else {
+            // Повертаємо таблицю на початковий стан, якщо вона має батьківський елемент
+            if (reversedTable.parentNode) {
+                reversedTable.parentNode.replaceChild(originalTable, reversedTable);
+            }
+
+            isReversed = false;
+            reverseButton.innerHTML = 'Перевернути таблицю';
+        }
+    });
 </script>
 <!-- JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
