@@ -6,11 +6,11 @@ use PDO;
 
 class DbObject
 {
-    protected Database $db;
+    private Database $db;
 
-    public function __construct(Database $db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->db = new Database();
     }
 
     public function showAllItems(string $where): array

@@ -12,5 +12,4 @@ abstract class FigureType implements Figure
     {
         return $this->figure;
     }
-
 }

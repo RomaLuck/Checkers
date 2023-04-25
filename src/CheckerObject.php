@@ -9,11 +9,10 @@ class CheckerObject
 {
     public string $chooseFigure;
     public string $setStep;
-    public DbObject $object;
-    public Player $player;
-    public array $figures;
-    public Figure $figure;
-    public CheckerDesk $desk;
+    private DbObject $object;
+    private Player $player;
+    private Figure $figure;
+    private CheckerDesk $desk;
 
     public function __construct(DbObject $object, Player $player, CheckerDesk $desk)
     {
@@ -32,7 +31,6 @@ class CheckerObject
             FigureType::QUEEN => new Queen(),
             default => throw new Exception("Invalid figure type: " . $figureType),
         };
-        $this->figures[] = $this->figure;
         return $this->figure;
     }
 
@@ -79,7 +77,7 @@ class CheckerObject
             && $this->isStepOnArea()
             && $this->isStepForAttack()
             && $this->object->showItem('team', ['id' => $this->getFuturePositionAfterBeat()]) === ''
-            && $this->isStepAfterAttckOnDesk();
+            && $this->isStepAfterAttackOnDesk();
     }
 
     /**
@@ -197,7 +195,7 @@ class CheckerObject
     /**
      * @throws Exception
      */
-    public function isStepAfterAttckOnDesk():bool
+    public function isStepAfterAttackOnDesk():bool
     {
         if (in_array($this->getFuturePositionAfterBeat(),$this->object->showAllItems('id'))){
             return true;
@@ -233,7 +231,6 @@ class CheckerObject
 
         return $horizontalSide . $verticalSide;
     }
-
 }
 
 

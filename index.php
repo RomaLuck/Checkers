@@ -4,8 +4,6 @@ use CheckersOOP\db\Database;
 use CheckersOOP\db\DbObject;
 use CheckersOOP\src\CheckerDesk;
 
-session_start();
-
 require_once __DIR__ . '/vendor/autoload.php';
 
 $db = new Database();

@@ -1,6 +1,5 @@
 <?php
 
-use CheckersOOP\db\Database;
 use CheckersOOP\db\DbObject;
 use CheckersOOP\src\BlackTeam;
 use CheckersOOP\src\CheckerDesk;
@@ -9,9 +8,8 @@ use CheckersOOP\src\WhiteTeam;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$db = new Database();
 try {
-    $dbObj = new DbObject($db);
+    $dbObj = new DbObject();
     $checkerDesk = new CheckerDesk($dbObj);
     $white = new WhiteTeam(htmlspecialchars($_POST["white"]));
     $black = new BlackTeam(htmlspecialchars($_POST["black"]));
@@ -48,7 +46,7 @@ try {
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
 </head>
 
 <body class="p-3 mb-2 bg-secondary text-white">
@@ -224,13 +222,12 @@ try {
 </div>
 
 <script>
-    /**receiving a json array and displaying the movement of checkers on the field */
     const tableContainer = document.getElementById('table-responsive');
     const tablePiece = document.querySelectorAll("table td:not(:first-child)");
     const form1 = document.getElementById("form1");
     const form2 = document.getElementById("form2");
-    var white = JSON.parse('<?php echo $jsonWhiteTeam ?>');
-    var black = JSON.parse('<?php echo $jsonBlackTeam ?>');
+    let white = JSON.parse('<?php echo $jsonWhiteTeam ?>');
+    let black = JSON.parse('<?php echo $jsonBlackTeam ?>');
 
     tableContainer.addEventListener("click", function (event) {
         const target = event.target.classList.contains("white") ||
@@ -291,7 +288,7 @@ try {
         xhr.send(formData);
     }
 
-    for (var i = 0; i < tablePiece.length; i++) {
+    for (let i = 0; i < tablePiece.length; i++) {
         if (white.includes(tablePiece[i].id)) {
             const piece = document.createElement('div');
             piece.className = "white-piece";
@@ -299,7 +296,7 @@ try {
         }
     }
 
-    for (var i = 0; i < tablePiece.length; i++) {
+    for (let i = 0; i < tablePiece.length; i++) {
         if (black.includes(tablePiece[i].id)) {
             const piece = document.createElement('div');
             piece.className = "black-piece";
