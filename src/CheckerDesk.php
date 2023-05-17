@@ -9,8 +9,10 @@ final class CheckerDesk
     private DbObject $object;
     private array $startWhite = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
     private array $startBlack = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
-     public array $horizontalSideDesk = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-     public array $verticalSideDesk = [1, 2, 3, 4, 5, 6, 7, 8];
+    public array $horizontalSideDesk = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    public array $verticalSideDesk = [1, 2, 3, 4, 5, 6, 7, 8];
+    private int $checkerDeskSizeStart = 1;
+    private int $checkerDeskSizeEnd = 8;
 
     public function __construct(DbObject $object)
     {
@@ -31,8 +33,7 @@ final class CheckerDesk
 
     public function fillTableByPieces(): void
     {
-
-        for ($i = 1; $i <= 8; $i++) {
+        for ($i = $this->checkerDeskSizeStart; $i <= $this->checkerDeskSizeEnd; $i++) {
             $this->object->insertItems(['id' => 'a' . $i, 'team' => '', 'figure' => '']);
             $this->object->insertItems(['id' => 'b' . $i, 'team' => '', 'figure' => '']);
             $this->object->insertItems(['id' => 'c' . $i, 'team' => '', 'figure' => '']);

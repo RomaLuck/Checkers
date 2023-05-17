@@ -4,8 +4,9 @@ namespace CheckersOOP\src;
 
 abstract class Player
 {
-    public int $moveDirection;
-    public string $color;
-    public string $oppositeSide;
+    const DIRECTION_UP = 1;
+    const DIRECTION_DOWN = -1;
+    const WHITE = 'white';
+    const BLACK = 'black';
     public string $teamName;
 }

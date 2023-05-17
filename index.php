@@ -1,13 +1,11 @@
 <?php
 
-use CheckersOOP\db\Database;
 use CheckersOOP\db\DbObject;
 use CheckersOOP\src\CheckerDesk;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$db = new Database();
-$dbObj = new DbObject($db);
+$dbObj = new DbObject();
 $checkerDesk = new CheckerDesk($dbObj);
 if (isset($_POST['white']) && isset($_POST['black'])) {
     if ($dbObj->showAllItems('id') !== []) {

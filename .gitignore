@@ -2,3 +2,4 @@ trash
 config.php
 vendor
 .idea
+.env
