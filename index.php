@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 use CheckersOOP\db\DbObject;
 use CheckersOOP\src\CheckerDesk;
@@ -14,6 +15,9 @@ if (isset($_POST['white']) && isset($_POST['black'])) {
     $checkerDesk->fillTheTable();
     header("Location: game.php");
 }
+
+$_SESSION['white'] = $_POST['white'];
+$_SESSION['black'] = $_POST['black'];
 
 ?>
 
