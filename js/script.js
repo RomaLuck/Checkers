@@ -2,10 +2,11 @@ const tableContainer = document.getElementById('table-responsive');
 const tablePiece = document.querySelectorAll("table td");
 const form1 = document.getElementById("form1");
 const form2 = document.getElementById("form2");
-const xhr = new XMLHttpRequest();
+const reverseButton = document.getElementById('reverse-button');
+const firstTable = document.getElementById('first-table');
+const secondTable = document.getElementById('second-table');
 let whiteTeam;
 let blackTeam;
-let result;
 
 tableContainer.addEventListener("click", function (event) {
     const target = event.target.classList.contains("white") ||
@@ -25,7 +26,7 @@ tableContainer.addEventListener("click", function (event) {
                 form2: form2.value
             }));
 
-            fetch('game.php', {
+            fetch('../game/game.php', {
                 method: 'POST',
                 body: formData
             })
@@ -49,7 +50,7 @@ tableContainer.addEventListener("click", function (event) {
 });
 async function updateTable() {
     try {
-        const response = await fetch('request.php');
+        const response = await fetch('../game/teamrequest.php');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -85,7 +86,7 @@ async function updateTable() {
 }
 (async function () {
     try {
-        const response = await fetch('request.php');
+        const response = await fetch('../game/teamrequest.php');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -113,3 +114,13 @@ async function updateTable() {
         console.error('There was a problem with the fetch operation:', error);
     }
 })();
+
+reverseButton.addEventListener("click", function toggleTables() {
+    if (firstTable.style.display === "none") {
+        firstTable.style.display = "table";
+        secondTable.style.display = "none";
+    } else {
+        secondTable.style.display = "table";
+        firstTable.style.display = "none";
+    }
+});

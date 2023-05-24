@@ -9,4 +9,7 @@ abstract class Player
     const WHITE = 'white';
     const BLACK = 'black';
     public string $teamName;
+    public string $color;
+    public int $moveDirection;
+    public string $oppositeSide;
 }
