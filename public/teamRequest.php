@@ -1,8 +1,8 @@
 <?php
 
-use CheckersOOP\db\DbObject;
+use CheckersOOP\src\db\DbObject;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 try {
     $dbObj = new DbObject();

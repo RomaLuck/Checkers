@@ -1,6 +1,6 @@
 <?php
 
-namespace CheckersOOP\db;
+namespace CheckersOOP\src\db;
 
 use PDO;
 

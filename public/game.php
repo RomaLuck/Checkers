@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-use CheckersOOP\db\DbObject;
-use CheckersOOP\src\BlackTeam;
-use CheckersOOP\src\CheckerDesk;
-use CheckersOOP\src\CheckerObject;
-use CheckersOOP\src\WhiteTeam;
+use CheckersOOP\src\db\DbObject;
+use CheckersOOP\src\gameCore\BlackTeam;
+use CheckersOOP\src\gameCore\CheckerDesk;
+use CheckersOOP\src\gameCore\CheckerObject;
+use CheckersOOP\src\gameCore\WhiteTeam;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 try {
     $dbObj = new DbObject();
@@ -46,7 +46,7 @@ try {
     <title>Checkers</title>
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body class="p-3 mb-2 bg-secondary text-white">
@@ -330,11 +330,11 @@ try {
         <div class="row justify-content-center">
             <div class="col-md-6">
         <button class="btn btn-primary mt-2 float-start" id="reverse-button">Rotate board</button>
-        <a href="endgame.php" class="btn btn-danger mt-2 float-end">Finish game</a>
+        <a href="endGame.php" class="btn btn-danger mt-2 float-end">Finish game</a>
         </div>
         </div>
 
-        <script src="../js/script.js"></script>
+        <script src="js/script.js"></script>
         <!-- JavaScript Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 </body>

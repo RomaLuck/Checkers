@@ -1,8 +1,8 @@
 <?php
 
-namespace CheckersOOP\src;
+namespace CheckersOOP\src\gameCore;
 
-use CheckersOOP\db\DbObject;
+use CheckersOOP\src\db\DbObject;
 
 final class CheckerDesk
 {

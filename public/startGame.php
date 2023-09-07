@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-use CheckersOOP\db\DbObject;
-use CheckersOOP\src\CheckerDesk;
+use CheckersOOP\src\db\DbObject;
+use CheckersOOP\src\gameCore\CheckerDesk;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 $dbObj = new DbObject();
 $checkerDesk = new CheckerDesk($dbObj);
@@ -13,7 +13,7 @@ if (isset($_POST['white']) && isset($_POST['black'])) {
         $checkerDesk->clearTable();
     }
     $checkerDesk->fillTheTable();
-    header("Location: ../game/game.php");
+    header("Location: public/game.php");
 }
 
 $_SESSION['white'] = $_POST['white'];

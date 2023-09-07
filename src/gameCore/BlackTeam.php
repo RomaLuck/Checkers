@@ -1,6 +1,6 @@
 <?php
 
-namespace CheckersOOP\src;
+namespace CheckersOOP\src\gameCore;
 
 class BlackTeam extends Player
 {
