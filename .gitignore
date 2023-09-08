@@ -3,3 +3,4 @@ config.php
 vendor
 .idea
 .env
+.phpunit.result.cache
