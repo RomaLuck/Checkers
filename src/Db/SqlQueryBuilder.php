@@ -1,6 +1,6 @@
 <?php
 
-namespace CheckersOOP\src\db;
+namespace App\Db;
 
 use PDO;
 use PDOStatement;

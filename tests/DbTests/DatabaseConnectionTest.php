@@ -1,34 +1,31 @@
 <?php
 
-namespace CheckersOOP\src\db;
+namespace App\Tests\DbTests;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 use PDO;
 use PDOException;
+use PHPUnit\Framework\TestCase;
 
-class Database
+class DatabaseConnectionTest extends TestCase
 {
-    private $pdo;
-
-    public function connect(): PDO
+    public function setUp(): void
     {
-        $this->pdo = null;
-
         Dotenv::createUnsafeImmutable(__DIR__ . '/../../')->load();
+    }
+    public function testDatabaseConnection(): void
+    {
         $dsn = 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_DATABASE');
         $username = getenv('DB_USERNAME');
         $password = getenv('DB_PASSWORD');
 
         try {
-            $this->pdo = new PDO($dsn, $username, $password);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo = new PDO($dsn, $username, $password);
+            $this->assertTrue(true);
         } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
+            $this->fail('Помилка підключення до бази даних: ' . $e->getMessage());
         }
-
-        return $this->pdo;
     }
 }
-

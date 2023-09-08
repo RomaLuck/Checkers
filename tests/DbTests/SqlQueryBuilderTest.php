@@ -1,11 +1,10 @@
 <?php
 
-namespace CheckersOOP\tests\dbTests;
+namespace App\Tests\DbTests;
 
-use CheckersOOP\src\db\SqlQueryBuilder;
+use App\Db\SqlQueryBuilder;
 use Mockery;
 use PDO;
-use PDOStatement;
 use PHPUnit\Framework\TestCase;
 
 class SqlQueryBuilderTest extends TestCase

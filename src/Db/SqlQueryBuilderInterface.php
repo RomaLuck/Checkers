@@ -1,8 +1,6 @@
 <?php
 
-namespace CheckersOOP\src\db;
-
-use PDOStatement;
+namespace App\Db;
 
 interface SqlQueryBuilderInterface
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace CheckersOOP\tests\dbTests;
+namespace App\Tests\DbTests;
 
-use CheckersOOP\src\db\SqlQueryBuilder;
+use App\Db\SqlQueryBuilder;
 use Dotenv\Dotenv;
 use PDO;
 use PHPUnit\Framework\TestCase;
