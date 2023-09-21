@@ -2,10 +2,10 @@
 session_start();
 
 use CheckersOOP\src\db\DbObject;
-use CheckersOOP\src\gameCore\BlackTeam;
-use CheckersOOP\src\gameCore\CheckerDesk;
-use CheckersOOP\src\gameCore\CheckerObject;
-use CheckersOOP\src\gameCore\WhiteTeam;
+use App\GameCore\BlackTeam;
+use App\GameCore\CheckerDesk;
+use App\GameCore\CheckerObject;
+use App\GameCore\WhiteTeam;
 
 require_once 'vendor/autoload.php';
 

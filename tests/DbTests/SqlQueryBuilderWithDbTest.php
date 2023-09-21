@@ -3,38 +3,20 @@
 namespace App\Tests\DbTests;
 
 use App\Db\SqlQueryBuilder;
-use Dotenv\Dotenv;
-use PDO;
-use PHPUnit\Framework\TestCase;
 
-class SqlQueryBuilderWithDbTest extends TestCase
+class SqlQueryBuilderWithDbTest extends DbTestAbstract
 {
-    protected PDO $pdo;
-    private string $table = 'CheckerDeskTest';
     protected SqlQueryBuilder $sqlQueryBuilder;
 
     protected function setUp(): void
     {
-        Dotenv::createUnsafeImmutable(__DIR__ . '/../../')->load();
-        $dsn = 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_DATABASE');
-        $username = getenv('DB_USERNAME');
-        $password = getenv('DB_PASSWORD');
-
-        $this->pdo = new PDO($dsn, $username, $password);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        parent::setUp();
         $this->pdo->exec('CREATE TABLE IF NOT EXISTS ' . $this->table . ' (
             id INT AUTO_INCREMENT PRIMARY KEY,
             team VARCHAR(100),
             figure VARCHAR(100)
         )');
-
         $this->sqlQueryBuilder = new SqlQueryBuilder($this->pdo);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->pdo->exec('DROP TABLE IF EXISTS ' . $this->table);
     }
 
     public function testInsertAndSelectOne(): void

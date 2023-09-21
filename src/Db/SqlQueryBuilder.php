@@ -141,4 +141,10 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     {
         return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function deleteAll($table): void
+    {
+        $sql = 'TRUNCATE TABLE ' . $table;
+        $this->pdo->query($sql);
+    }
 }

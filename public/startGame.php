@@ -2,7 +2,7 @@
 session_start();
 
 use CheckersOOP\src\db\DbObject;
-use CheckersOOP\src\gameCore\CheckerDesk;
+use App\GameCore\CheckerDesk;
 
 require_once 'vendor/autoload.php';
 

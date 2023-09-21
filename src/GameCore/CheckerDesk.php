@@ -1,61 +1,65 @@
 <?php
 
-namespace CheckersOOP\src\gameCore;
+namespace App\GameCore;
 
-use CheckersOOP\src\db\DbObject;
+use App\Db\SqlQueryBuilder;
 
 final class CheckerDesk
 {
-    private DbObject $object;
-    private array $startWhite = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
-    private array $startBlack = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
-    public array $horizontalSideDesk = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    public array $verticalSideDesk = [1, 2, 3, 4, 5, 6, 7, 8];
-    private int $checkerDeskSizeStart = 1;
-    private int $checkerDeskSizeEnd = 8;
+    private const DESK_SIZE_START = 1;
+    private const DESK_SIZE_END = 8;
+    private const START_PIECES_WHITE = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
+    private const START_PIECES_BLACK = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
+    private SqlQueryBuilder $queryBuilder;
 
-    public function __construct(DbObject $object)
+    public function __construct(SqlQueryBuilder $queryBuilder)
     {
-        $this->object = $object;
+        $this->queryBuilder = $queryBuilder;
     }
 
-    public function fillTheTable(): void
+    public function fillTheTable(string $table): void
     {
-        $this->fillTableByPieces();
-        $this->fillByWhite();
-        $this->fillByBlack();
+        $this->fillTableByPieces($table);
+        $this->fillByWhite($table);
+        $this->fillByBlack($table);
     }
 
-    public function clearTable(): void
+    public function clearTable(string $table): void
     {
-        $this->object->deleteAll();
+        $this->queryBuilder->deleteAll($table);
     }
 
-    public function fillTableByPieces(): void
+    public function fillTableByPieces(string $table): void
     {
-        for ($i = $this->checkerDeskSizeStart; $i <= $this->checkerDeskSizeEnd; $i++) {
-            $this->object->insertItems(['id' => 'a' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'b' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'c' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'd' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'e' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'f' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'g' . $i, 'team' => '', 'figure' => '']);
-            $this->object->insertItems(['id' => 'h' . $i, 'team' => '', 'figure' => '']);
+        for ($i = self::DESK_SIZE_START; $i <= self::DESK_SIZE_END; $i++) {
+            $this->queryBuilder->insert($table, ['id' => ':a', 'team' => "''", 'figure' => "''"])->setParameters([':a' => 'a' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':b', 'team' => "''", 'figure' => "''"])->setParameters([':b' => 'b' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':c', 'team' => "''", 'figure' => "''"])->setParameters([':c' => 'c' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':d', 'team' => "''", 'figure' => "''"])->setParameters([':d' => 'd' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':e', 'team' => "''", 'figure' => "''"])->setParameters([':e' => 'e' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':f', 'team' => "''", 'figure' => "''"])->setParameters([':f' => 'f' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':g', 'team' => "''", 'figure' => "''"])->setParameters([':g' => 'g' . $i])->getQuery();
+            $this->queryBuilder->insert($table, ['id' => ':h', 'team' => "''", 'figure' => "''"])->setParameters([':h' => 'h' . $i])->getQuery();
         }
     }
 
-    public function fillByWhite(): void
+    public function fillByWhite(string $table): void
     {
-        foreach ($this->startWhite as $i) {
-            $this->object->updateItems(['team' => 'white', 'figure' => 'checker'], ['id' => $i]);
+        foreach (self::START_PIECES_WHITE as $i) {
+            $this->queryBuilder->update($table, ['team' => ':w', 'figure' => ':c'])
+                ->where('id', "'$i'")
+                ->setParameters([':w' => 'white', ':c' => 'checker'])
+                ->getQuery();
         }
     }
 
-    public function fillByBlack(): void
+    public function fillByBlack(string $table): void
     {
-        foreach ($this->startBlack as $i) {
-            $this->object->updateItems(['team' => 'black', 'figure' => 'checker'], ['id' => $i]);
+        foreach (self::START_PIECES_BLACK as $i) {
+            $this->queryBuilder->update($table, ['team' => ':w', 'figure' => ':c'])
+                ->where('id', "'$i'")
+                ->setParameters([':w' => 'black', ':c' => 'checker'])
+                ->getQuery();
         }
     }
 }
