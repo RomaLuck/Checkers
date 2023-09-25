@@ -10,14 +10,13 @@ use PHPUnit\Framework\TestCase;
 class SqlQueryBuilderTest extends TestCase
 {
     protected PDO $pdo;
-
-    private $table = 'CheckerDesk';
+    private string $table = 'CheckerDesk';
     protected SqlQueryBuilder $sqlQueryBuilder;
 
     protected function setUp(): void
     {
         $this->pdo = Mockery::mock(PDO::class);
-        $this->pdo->shouldReceive('connect')->andReturn($this->pdo);
+//        $this->pdo->shouldReceive('connect')->andReturn($this->pdo);
         $this->sqlQueryBuilder = new SqlQueryBuilder($this->pdo);
     }
 

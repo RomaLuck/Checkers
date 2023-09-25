@@ -11,22 +11,17 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pdo->exec('CREATE TABLE IF NOT EXISTS ' . $this->table . ' (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            team VARCHAR(100),
-            figure VARCHAR(100)
-        )');
         $this->sqlQueryBuilder = new SqlQueryBuilder($this->pdo);
     }
 
     public function testInsertAndSelectOne(): void
     {
         $this->sqlQueryBuilder->insert($this->table, ['team' => ':white'])->setParameters([':white' => 'white'])->getQuery();
-        $result = $this->sqlQueryBuilder->select($this->table)->getQuery()->findOne();
+        $result = $this->sqlQueryBuilder->select($this->table, ['team'])->getQuery()->findOne();
 
-        $this->assertIsArray($result);
+        $this->assertIsString($result);
         $this->assertNotEquals([], $result);
-        $this->assertEquals('white', $result['team']);
+        $this->assertEquals('white', $result);
     }
 
     public function testInsertAndSelectMany(): void
@@ -41,7 +36,8 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
 
         $result = $this->sqlQueryBuilder->select($this->table, ['team'])->getQuery()->findAll();
 
-        $this->assertEquals(['white', 'black'], array_column($result, 'team'));
+        $this->assertIsArray($result);
+        $this->assertEquals(['white', 'black'], $result);
     }
 
     public function testUpdateAndWhere(): void
@@ -58,8 +54,7 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
             ->getQuery()
             ->findOne();
 
-        $this->assertArrayHasKey('team', $result);
-        $this->assertEquals('white', $result['team']);
+        $this->assertEquals('white', $result);
     }
 
     public function testOffset(): void

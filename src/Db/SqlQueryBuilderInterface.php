@@ -24,5 +24,5 @@ interface SqlQueryBuilderInterface
 
     public function findAll(): array;
 
-    public function findOne(): array;
+    public function findOne(): string;
 }

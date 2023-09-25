@@ -1,7 +1,7 @@
 <?php
 
 use CheckersOOP\src\db\DbObject;
-use App\GameCore\CheckerDesk;
+use App\Db\CheckerObjectRepository;
 
 session_start();
 session_unset();
@@ -10,7 +10,7 @@ session_destroy();
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $dbObj = new DbObject();
-$checkerDesk = new CheckerDesk($dbObj);
+$checkerDesk = new CheckerObjectRepository($dbObj);
 $checkerDesk->clearTable();
 ?>
 <!--page the end of the game -->

@@ -1,15 +1,12 @@
 <?php
 
-namespace CheckersOOP\src\gameCore;
+namespace App\GameCore;
 
-abstract class FigureType implements Figure
+abstract class FigureType
 {
     public string $figure;
     const CHECKER = 'checker';
     const QUEEN = 'queen';
 
-    public function getValue(): string
-    {
-        return $this->figure;
-    }
+    abstract public function getValue(): string;
 }

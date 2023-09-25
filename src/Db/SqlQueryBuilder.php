@@ -33,6 +33,7 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
         }
 
         $this->query->type = 'select';
+        $this->query->fields = $fields;
 
         return $this;
     }
@@ -130,19 +131,26 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
     public function findAll(): array
     {
         $result = [];
+        $fields = $this->query->fields;
+
         while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = $row;
+            $result[] = (count($fields) === 1) ? $row[$fields[0]] : $row;
         }
 
         return $result;
     }
 
-    public function findOne(): array
+    public function findOne(): string
     {
-        return $this->stmt->fetch(PDO::FETCH_ASSOC);
+        if (count($this->query->fields) === 1) {
+            $column = array_shift($this->query->fields);
+            return $this->stmt->fetch(PDO::FETCH_ASSOC)[$column];
+        }
+        throw new \RuntimeException("You have selected more fields");
     }
 
-    public function deleteAll($table): void
+    public
+    function deleteAll($table): void
     {
         $sql = 'TRUNCATE TABLE ' . $table;
         $this->pdo->query($sql);

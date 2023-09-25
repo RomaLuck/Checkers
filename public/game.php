@@ -3,19 +3,19 @@ session_start();
 
 use CheckersOOP\src\db\DbObject;
 use App\GameCore\BlackTeam;
-use App\GameCore\CheckerDesk;
-use App\GameCore\CheckerObject;
+use App\Db\CheckerObjectRepository;
+use App\Db\CheckerObjectRepository;
 use App\GameCore\WhiteTeam;
 
 require_once 'vendor/autoload.php';
 
 try {
     $dbObj = new DbObject();
-    $checkerDesk = new CheckerDesk($dbObj);
+    $checkerDesk = new CheckerObjectRepository($dbObj);
     $white = new WhiteTeam(htmlspecialchars($_SESSION["white"]));
     $black = new BlackTeam(htmlspecialchars($_SESSION["black"]));
-    $whiteObject = new CheckerObject($dbObj, $white, $checkerDesk);
-    $blackObject = new CheckerObject($dbObj, $black, $checkerDesk);
+    $whiteObject = new CheckerObjectRepository($dbObj, $white, $checkerDesk);
+    $blackObject = new CheckerObjectRepository($dbObj, $black, $checkerDesk);
     $whiteObject->createFigure('checker');
     $blackObject->createFigure('checker');
 

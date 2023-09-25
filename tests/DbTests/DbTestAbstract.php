@@ -6,8 +6,7 @@ use Dotenv\Dotenv;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-
-//require __DIR__ . '/../../vendor/autoload.php';
+use function PHPUnit\Framework\assertTrue;
 
 class DbTestAbstract extends TestCase
 {
@@ -18,7 +17,6 @@ class DbTestAbstract extends TestCase
     {
         Dotenv::createUnsafeImmutable(__DIR__ . '/../../')->load();
         $this->testDatabaseConnection();
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     protected function tearDown(): void
@@ -34,9 +32,16 @@ class DbTestAbstract extends TestCase
 
         try {
             $this->pdo = new PDO($dsn, $username, $password);
-            $this->assertTrue(true);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->exec('CREATE TABLE IF NOT EXISTS ' . $this->table . ' (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            cell VARCHAR(10),
+            team VARCHAR(100),
+            figure VARCHAR(100)
+        )');
+            self::assertTrue(true);
         } catch (PDOException $e) {
-            $this->fail('Помилка підключення до бази даних: ' . $e->getMessage());
+            self::fail('Database connection error: ' . $e->getMessage());
         }
     }
 }
