@@ -1,6 +1,6 @@
 <?php
 
-namespace CheckersOOP\src\gameCore;
+namespace App\GameCore;
 
 class WhiteTeam extends Player
 {

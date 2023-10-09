@@ -3,12 +3,6 @@
 namespace App\GameCore;
 
 use App\Db\CheckerObjectRepository;
-use App\Db\CheckerObjectRepository;
-use App\Db\DbObject;
-use CheckersOOP\src\gameCore\Checker;
-use CheckersOOP\src\gameCore\Figure;
-use CheckersOOP\src\gameCore\FigureType;
-use CheckersOOP\src\gameCore\Queen;
 use Exception;
 
 abstract class Player

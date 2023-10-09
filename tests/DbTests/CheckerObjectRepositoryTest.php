@@ -4,7 +4,6 @@ namespace App\Tests\DbTests;
 
 use App\Db\CheckerObjectRepository;
 use App\Db\SqlQueryBuilder;
-use function PHPUnit\Framework\assertEquals;
 
 class CheckerObjectRepositoryTest extends DbTestAbstract
 {
@@ -37,6 +36,11 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
         self::$checkerObject = null;
     }
 
+    public function testTableName(): void
+    {
+        self::assertEquals('CheckerDeskTest', self::$checkerObject->getTableName());
+    }
+
     public function testBoard(): void
     {
         $black = $this->sqlQueryBuilder->select(self::$table, ['team'])
@@ -64,7 +68,7 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
     public function testShowAllItems(): void
     {
         $result = self::$checkerObject->showAllItems();
-        assertEquals(['id' => 1, 'cell' => 'a1', 'team' => 'white', 'figure' => 'checker'], $result[0]);
+        self::assertEquals(['id' => 1, 'cell' => 'a1', 'team' => 'white', 'figure' => 'checker'], $result[0]);
     }
 
     public function testGetAreaForWalk(): void
@@ -75,5 +79,22 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
         } catch (\RuntimeException $exception) {
             self::fail($exception->getMessage());
         }
+    }
+
+    public function testGetPositionOnDesk(): void
+    {
+        self::assertEquals('7', self::$checkerObject->getPositionOnDesk('h1', self::$checkerObject::HORIZONTAL_SIDE_OF_DESK));
+    }
+
+    public function testGetFuturePositionAfterBeat(): void
+    {
+        self::assertEquals('c3', self::$checkerObject->getFuturePositionAfterBeat('a1', 'b2'));
+    }
+
+    public function testIsStepAfterAttackOnDesk(): void
+    {
+        self::assertFalse(self::$checkerObject->isStepAfterAttackOnDesk('g3', 'h4'));
+        self::assertFalse(self::$checkerObject->isStepAfterAttackOnDesk('b2', 'a1'));
+        self::assertTrue(self::$checkerObject->isStepAfterAttackOnDesk('a1', 'b2'));
     }
 }

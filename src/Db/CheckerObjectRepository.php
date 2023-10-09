@@ -147,19 +147,30 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function getFuturePositionAfterBeat(string $stepFrom, string $stepTo): string
     {
-        $horizontalSide = self::HORIZONTAL_SIDE_OF_DESK[($this->getPositionOnDesk($stepTo, self::HORIZONTAL_SIDE_OF_DESK)
-            - $this->getPositionOnDesk($stepFrom, self::HORIZONTAL_SIDE_OF_DESK)) * 2
-        + $this->getPositionOnDesk($stepFrom, self::HORIZONTAL_SIDE_OF_DESK)];
+        $keyHSide = ($this->getPositionOnDesk($stepTo, self::HORIZONTAL_SIDE_OF_DESK)
+                - $this->getPositionOnDesk($stepFrom, self::HORIZONTAL_SIDE_OF_DESK)) * 2
+            + $this->getPositionOnDesk($stepFrom, self::HORIZONTAL_SIDE_OF_DESK);
 
-        $verticalSide = self::VERTICAL_SIDE_OF_DESK[($this->getPositionOnDesk($stepTo, self::VERTICAL_SIDE_OF_DESK)
-            - $this->getPositionOnDesk($stepFrom, self::VERTICAL_SIDE_OF_DESK)) * 2
-        + $this->getPositionOnDesk($stepFrom, self::VERTICAL_SIDE_OF_DESK)];
+        $keyVSide = ($this->getPositionOnDesk($stepTo, self::VERTICAL_SIDE_OF_DESK)
+                - $this->getPositionOnDesk($stepFrom, self::VERTICAL_SIDE_OF_DESK)) * 2
+            + $this->getPositionOnDesk($stepFrom, self::VERTICAL_SIDE_OF_DESK);
+
+        if ($keyVSide > 7 || $keyHSide > 7 || $keyVSide < 0 || $keyHSide < 0) {
+            return '';
+        }
+
+        $horizontalSide = self::HORIZONTAL_SIDE_OF_DESK[$keyHSide];
+
+        $verticalSide = self::VERTICAL_SIDE_OF_DESK[$keyVSide];
 
         return $horizontalSide . $verticalSide;
     }
 
     public function getPositionOnDesk(string $cell, array $sideOfDesk): int
     {
+        if (!in_array($cell, array_column($this->showAllItems(), 'cell'))) {
+            throw new \RuntimeException('Your checker is out of the board');
+        }
         $idPiece = match ($sideOfDesk) {
             self::VERTICAL_SIDE_OF_DESK => 1,
             self::HORIZONTAL_SIDE_OF_DESK => 0,
