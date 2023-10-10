@@ -97,4 +97,57 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
         self::assertFalse(self::$checkerObject->isStepAfterAttackOnDesk('b2', 'a1'));
         self::assertTrue(self::$checkerObject->isStepAfterAttackOnDesk('a1', 'b2'));
     }
+
+    public function testIsStepForAttack(): void
+    {
+        self::assertTrue(self::$checkerObject->isStepForAttack('f8', 'black'));
+        self::assertTrue(self::$checkerObject->isStepForAttack('e1', 'white'));
+        self::assertFalse(self::$checkerObject->isStepForAttack('d6', 'white'));
+    }
+
+    public function testIsStepForMove(): void
+    {
+        self::assertTrue(self::$checkerObject->isStepForMove('d5'));
+        self::assertFalse(self::$checkerObject->isStepForMove('f8'));
+    }
+
+    public function testIsCheckerOnDesk(): void
+    {
+        self::assertTrue(self::$checkerObject->isCheckerInDesk('a1', 'b2'));
+        self::assertFalse(self::$checkerObject->isCheckerInDesk('a0', 'b2'));
+    }
+
+    public function testIsCellAfterAttackAvailable(): void
+    {
+        self::assertFalse(self::$checkerObject->isCellAfterAttackAvailable('d4', 'e5'));
+        self::assertTrue(self::$checkerObject->isCellAfterAttackAvailable('c3', 'b4'));
+    }
+
+    public function testIsCheckerInTeam(): void
+    {
+        self::assertTrue(self::$checkerObject->isCheckerInTeam('b2', 'white'));
+        self::assertFalse(self::$checkerObject->isCheckerInTeam('b3', 'white'));
+    }
+
+    public function testWalk(): void
+    {
+        self::$checkerObject->walk('white', 'checker', 'a3', 'b4');
+        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table, ['team'])
+            ->where('cell', ':c')
+            ->setParameters([':c' => 'b4'])
+            ->getQuery()
+            ->findOne();
+        self::assertEquals('white', $stepAfterWalk);
+    }
+
+    public function testAttackOppositePlayer(): void
+    {
+        self::$checkerObject->attackOppositePlayer('white', 'checker', 'c3', 'd4');
+        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table, ['team'])
+            ->where('cell', ':c')
+            ->setParameters([':c' => 'e5'])
+            ->getQuery()
+            ->findOne();
+        self::assertEquals('white', $stepAfterWalk);
+    }
 }

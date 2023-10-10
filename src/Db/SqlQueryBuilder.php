@@ -111,7 +111,7 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
 
     public function setParameters(array $parameters): self
     {
-        $this->query->parameters = $parameters;
+        $this->query->parameters = array_merge($parameters, $this->query->parameters);
 
         return $this;
     }

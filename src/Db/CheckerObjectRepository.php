@@ -60,30 +60,39 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function attackOppositePlayer($playerColor, $playerFigure, $stepFrom, $stepTo): void
     {
-        $this->update($this->getTableName(), ['team' => $playerColor, 'figure' => $playerFigure])
-            ->where('id', ':i')
-            ->setParameters([':i' => $this->getFuturePositionAfterBeat($stepFrom, $stepTo)])
+        $futurePositionAfterBeat = $this->getFuturePositionAfterBeat($stepFrom, $stepTo);
+        if ($futurePositionAfterBeat === '') {
+            throw new \RuntimeException('Future position is out of the board');
+        }
+        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+            ->setParameters([':t' => $playerColor, ':f' => $playerFigure])
+            ->where('cell', ':i')
+            ->setParameters([':i' => $futurePositionAfterBeat])
             ->getQuery();
 
-        $this->update($this->getTableName(), ['team' => '', 'figure' => ''])
-            ->where('id', ':i')
+        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+            ->setParameters([':t' => '', ':f' => ''])
+            ->where('cell', ':i')
             ->setParameters([':i' => $stepFrom])
             ->getQuery();
 
-        $this->update($this->getTableName(), ['team' => '', 'figure' => ''])
-            ->where('id', ':i')
+        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+            ->setParameters([':t' => '', ':f' => ''])
+            ->where('cell', ':i')
             ->setParameters([':i' => $stepTo])
             ->getQuery();
     }
 
     public function walk($playerColor, $playerFigure, $stepFrom, $stepTo): void
     {
-        $this->update($this->getTableName(), ['team' => $playerColor, 'figure' => $playerFigure])
+        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+            ->setParameters([':t' => $playerColor, ':f' => $playerFigure])
             ->where('cell', ':c')
             ->setParameters([':c' => $stepTo])
             ->getQuery();
 
-        $this->update($this->getTableName(), ['team' => '', 'figure' => ''])
+        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+            ->setParameters([':t' => '', ':f' => ''])
             ->where('cell', ':c')
             ->setParameters([':c' => $stepFrom])
             ->getQuery();
@@ -102,9 +111,11 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function isCellAfterAttackAvailable(string $stepFrom, string $stepTo): bool
     {
+        $futurePositionAfterBeat = $this->getFuturePositionAfterBeat($stepFrom, $stepTo);
+
         return $this->select($this->getTableName(), ['team'])
                 ->where('cell', ':i')
-                ->setParameters([':i' => $this->getFuturePositionAfterBeat($stepFrom, $stepTo)])
+                ->setParameters([':i' => $futurePositionAfterBeat])
                 ->getQuery()
                 ->findOne()
             === '';
