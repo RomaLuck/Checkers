@@ -58,7 +58,7 @@ final class CheckerObjectRepository extends SqlQueryBuilder
         }
     }
 
-    public function attackOppositePlayer($playerColor, $playerFigure, $stepFrom, $stepTo): void
+    public function attackOppositePlayer($stepFrom, $stepTo, $playerColor, $playerFigure): void
     {
         $futurePositionAfterBeat = $this->getFuturePositionAfterBeat($stepFrom, $stepTo);
         if ($futurePositionAfterBeat === '') {
@@ -83,7 +83,7 @@ final class CheckerObjectRepository extends SqlQueryBuilder
             ->getQuery();
     }
 
-    public function walk($playerColor, $playerFigure, $stepFrom, $stepTo): void
+    public function walk($stepFrom, $stepTo, $playerColor, $playerFigure): void
     {
         $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
             ->setParameters([':t' => $playerColor, ':f' => $playerFigure])
