@@ -4,14 +4,11 @@ namespace App\GameCore;
 
 class WhiteTeam extends Player
 {
-
-    public int $moveDirection = Player::DIRECTION_UP;
-    public string $color = Player::WHITE;
-    public string $oppositeSide = Player::BLACK;
-    public string $teamName;
-
-    public function __construct($teamName)
+    public function __construct(string $teamName)
     {
-        $this->teamName = $teamName;
+        parent::__construct($teamName);
+        $this->moveDirection  = Player::DIRECTION_UP;
+        $this->color = Player::WHITE;
+        $this->oppositeSideColor = Player::BLACK;
     }
 }

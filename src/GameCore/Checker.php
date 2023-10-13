@@ -2,13 +2,14 @@
 
 namespace App\GameCore;
 
+use App\Db\CheckerObjectRepository;
+
 class Checker extends FigureType
 {
-    public int $moveOpportunity = 1;
-    public string $figure = FigureType::CHECKER;
-
-    public function getValue(): string
+    public function __construct(CheckerObjectRepository $repository)
     {
-        return $this->figure;
+        parent::__construct($repository);
+        $this->moveOpportunity = 1;
+        $this->figureName = FigureType::CHECKER;
     }
 }

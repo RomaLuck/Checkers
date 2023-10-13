@@ -2,13 +2,14 @@
 
 namespace App\GameCore;
 
-class Queen extends FigureType implements Figure
-{
-    public int $moveOpportunity=100;
-    public string $figure = FigureType::QUEEN;
+use App\Db\CheckerObjectRepository;
 
-    public function getValue(): string
+class Queen extends FigureType
+{
+    public function __construct(CheckerObjectRepository $repository)
     {
-        return $this->figure;
+        parent::__construct($repository);
+        $this->moveOpportunity = 100;
+        $this->figureName = FigureType::QUEEN;
     }
 }
