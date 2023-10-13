@@ -12,8 +12,6 @@ class Database
 {
     public function connect(): PDO
     {
-        $pdo = null;
-
         Dotenv::createUnsafeImmutable(__DIR__ . '/../../')->load();
         $dsn = 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_DATABASE');
         $username = getenv('DB_USERNAME');

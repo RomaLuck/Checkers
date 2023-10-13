@@ -131,7 +131,7 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
 
     public function testWalk(): void
     {
-        self::$checkerObject->walk('white', 'checker', 'a3', 'b4');
+        self::$checkerObject->walk('a3', 'b4', 'white', 'checker');
         $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table, ['team'])
             ->where('cell', ':c')
             ->setParameters([':c' => 'b4'])
@@ -142,7 +142,7 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
 
     public function testAttackOppositePlayer(): void
     {
-        self::$checkerObject->attackOppositePlayer('white', 'checker', 'c3', 'd4');
+        self::$checkerObject->attackOppositePlayer('c3', 'd4', 'white', 'checker');
         $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table, ['team'])
             ->where('cell', ':c')
             ->setParameters([':c' => 'e5'])
