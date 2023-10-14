@@ -17,6 +17,7 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
     protected function tearDown(): void
     {
         parent::tearDown();
+        $this->sqlQueryBuilder->deleteAll(self::$table);
         $this->sqlQueryBuilder = null;
     }
 
@@ -38,12 +39,15 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
 
     public function testInsertAndSelectOne(): void
     {
-        $this->sqlQueryBuilder->insert(self::$table, ['team' => ':white'])->setParameters([':white' => 'white'])->getQuery();
-        $result = $this->sqlQueryBuilder->select(self::$table, ['team'])->getQuery()->findOne();
+        $this->sqlQueryBuilder
+            ->insert(self::$table, ['cell' => ':c', 'team' => ':w'])
+            ->setParameters([':c' => 'a1', ':w' => 'white'])
+            ->getQuery();
+        $result = $this->sqlQueryBuilder->select(self::$table)->getQuery()->findOne();
 
-        $this->assertIsString($result);
-        $this->assertNotEquals([], $result);
-        $this->assertEquals('white', $result);
+        $this->assertIsString($result->getCell());
+        $this->assertNotEquals([], $result->getTeam());
+        $this->assertEquals('white', $result->getTeam());
     }
 
     public function testUpdateAndWhere(): void
@@ -60,7 +64,7 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
             ->getQuery()
             ->findOne();
 
-        $this->assertEquals('white', $result);
+        $this->assertEquals('white', $result->getTeam());
     }
 
     public function testOffset(): void
@@ -87,5 +91,4 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
         $this->assertCount(2, array_column($result, 'team'));
         $this->assertEquals(3, array_column($result, 'id')[0]);
     }
-
 }

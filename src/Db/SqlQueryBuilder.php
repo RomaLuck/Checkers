@@ -140,17 +140,12 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
         return $result;
     }
 
-    public function findOne(): string
+    public function findOne(): CheckerObject
     {
-        if (count($this->query->fields) === 1) {
-            $column = array_shift($this->query->fields);
-            return $this->stmt->fetch(PDO::FETCH_ASSOC)[$column];
-        }
-        throw new \RuntimeException("You have selected more fields");
+        return new CheckerObject($this->stmt->fetch(PDO::FETCH_ASSOC));
     }
 
-    public
-    function deleteAll($table): void
+    public function deleteAll($table): void
     {
         $sql = 'TRUNCATE TABLE ' . $table;
         $this->pdo->query($sql);

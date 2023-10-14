@@ -2,7 +2,9 @@
 
 namespace App\Db;
 
-final class CheckerObjectRepository extends SqlQueryBuilder
+use PDO;
+
+final class CheckerObjectRepository
 {
     private const DESK_SIZE_START = 1;
     private const DESK_SIZE_END = 8;
@@ -11,6 +13,12 @@ final class CheckerObjectRepository extends SqlQueryBuilder
     public const HORIZONTAL_SIDE_OF_DESK = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     public const VERTICAL_SIDE_OF_DESK = [1, 2, 3, 4, 5, 6, 7, 8];
     private string $tableName;
+    private SqlQueryBuilder $sqlQueryBuilder;
+
+    public function __construct(PDO $pdo)
+    {
+        $this->sqlQueryBuilder = new SqlQueryBuilder($pdo);
+    }
 
     public function fillTheTable(): void
     {
@@ -21,37 +29,37 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function clearTable(): void
     {
-        $this->deleteAll($this->getTableName());
+        $this->sqlQueryBuilder->deleteAll($this->getTableName());
     }
 
-    public function fillTableByPieces(): void
+    private function fillTableByPieces(): void
     {
         for ($i = self::DESK_SIZE_START; $i <= self::DESK_SIZE_END; $i++) {
-            $this->insert($this->getTableName(), ['cell' => ':a', 'team' => "''", 'figure' => "''"])->setParameters([':a' => 'a' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':b', 'team' => "''", 'figure' => "''"])->setParameters([':b' => 'b' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':c', 'team' => "''", 'figure' => "''"])->setParameters([':c' => 'c' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':d', 'team' => "''", 'figure' => "''"])->setParameters([':d' => 'd' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':e', 'team' => "''", 'figure' => "''"])->setParameters([':e' => 'e' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':f', 'team' => "''", 'figure' => "''"])->setParameters([':f' => 'f' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':g', 'team' => "''", 'figure' => "''"])->setParameters([':g' => 'g' . $i])->getQuery();
-            $this->insert($this->getTableName(), ['cell' => ':h', 'team' => "''", 'figure' => "''"])->setParameters([':h' => 'h' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':a', 'team' => "''", 'figure' => "''"])->setParameters([':a' => 'a' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':b', 'team' => "''", 'figure' => "''"])->setParameters([':b' => 'b' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':c', 'team' => "''", 'figure' => "''"])->setParameters([':c' => 'c' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':d', 'team' => "''", 'figure' => "''"])->setParameters([':d' => 'd' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':e', 'team' => "''", 'figure' => "''"])->setParameters([':e' => 'e' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':f', 'team' => "''", 'figure' => "''"])->setParameters([':f' => 'f' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':g', 'team' => "''", 'figure' => "''"])->setParameters([':g' => 'g' . $i])->getQuery();
+            $this->sqlQueryBuilder->insert($this->getTableName(), ['cell' => ':h', 'team' => "''", 'figure' => "''"])->setParameters([':h' => 'h' . $i])->getQuery();
         }
     }
 
-    public function fillByWhite(): void
+    private function fillByWhite(): void
     {
         foreach (self::START_PIECES_WHITE as $i) {
-            $this->update($this->getTableName(), ['team' => ':w', 'figure' => ':c'])
+            $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':w', 'figure' => ':c'])
                 ->where('cell', "'$i'")
                 ->setParameters([':w' => 'white', ':c' => 'checker'])
                 ->getQuery();
         }
     }
 
-    public function fillByBlack(): void
+    private function fillByBlack(): void
     {
         foreach (self::START_PIECES_BLACK as $i) {
-            $this->update($this->getTableName(), ['team' => ':w', 'figure' => ':c'])
+            $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':w', 'figure' => ':c'])
                 ->where('cell', "'$i'")
                 ->setParameters([':w' => 'black', ':c' => 'checker'])
                 ->getQuery();
@@ -64,19 +72,19 @@ final class CheckerObjectRepository extends SqlQueryBuilder
         if ($futurePositionAfterBeat === '') {
             throw new \RuntimeException('Future position is out of the board');
         }
-        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+        $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
             ->setParameters([':t' => $playerColor, ':f' => $playerFigure])
             ->where('cell', ':i')
             ->setParameters([':i' => $futurePositionAfterBeat])
             ->getQuery();
 
-        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+        $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
             ->setParameters([':t' => '', ':f' => ''])
             ->where('cell', ':i')
             ->setParameters([':i' => $stepFrom])
             ->getQuery();
 
-        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+        $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
             ->setParameters([':t' => '', ':f' => ''])
             ->where('cell', ':i')
             ->setParameters([':i' => $stepTo])
@@ -85,13 +93,13 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function walk($stepFrom, $stepTo, $playerColor, $playerFigure): void
     {
-        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+        $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
             ->setParameters([':t' => $playerColor, ':f' => $playerFigure])
             ->where('cell', ':c')
             ->setParameters([':c' => $stepTo])
             ->getQuery();
 
-        $this->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
+        $this->sqlQueryBuilder->update($this->getTableName(), ['team' => ':t', 'figure' => ':f'])
             ->setParameters([':t' => '', ':f' => ''])
             ->where('cell', ':c')
             ->setParameters([':c' => $stepFrom])
@@ -100,7 +108,7 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function isCheckerInTeam($stepFrom, $playerColor): bool
     {
-        $team = $this->select($this->getTableName(), ['cell'])
+        $team = $this->sqlQueryBuilder->select($this->getTableName(), ['cell'])
             ->where('team', ':t')
             ->setParameters([':t' => $playerColor])
             ->getQuery()
@@ -113,11 +121,12 @@ final class CheckerObjectRepository extends SqlQueryBuilder
     {
         $futurePositionAfterBeat = $this->getFuturePositionAfterBeat($stepFrom, $stepTo);
 
-        return $this->select($this->getTableName(), ['team'])
+        return $this->sqlQueryBuilder->select($this->getTableName())
                 ->where('cell', ':i')
                 ->setParameters([':i' => $futurePositionAfterBeat])
                 ->getQuery()
                 ->findOne()
+                ->getTeam()
             === '';
 
     }
@@ -130,21 +139,23 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function isStepForMove($stepTo): bool
     {
-        return $this->select($this->getTableName(), ['team'])
+        return $this->sqlQueryBuilder->select($this->getTableName())
                 ->where('cell', ':i')
                 ->setParameters([':i' => $stepTo])
                 ->getQuery()
                 ->findOne()
+                ->getTeam()
             === '';
     }
 
     public function isStepForAttack(string $stepTo, string $oppositePlayer): bool
     {
-        return $this->select($this->getTableName(), ['team'])
+        return $this->sqlQueryBuilder->select($this->getTableName())
                 ->where('cell', ':i')
                 ->setParameters([':i' => $stepTo])
                 ->getQuery()
                 ->findOne()
+                ->getTeam()
             === $oppositePlayer;
     }
 
@@ -218,7 +229,7 @@ final class CheckerObjectRepository extends SqlQueryBuilder
 
     public function showAllItems(): array
     {
-        return $this->select($this->getTableName())->getQuery()->findAll();
+        return $this->sqlQueryBuilder->select($this->getTableName())->getQuery()->findAll();
     }
 
     public function getSplitCell(string $data, int $key): string
@@ -234,5 +245,15 @@ final class CheckerObjectRepository extends SqlQueryBuilder
     public function getTableName(): string
     {
         return $this->tableName;
+    }
+
+    public function findOneBy(array $parameters): CheckerObject
+    {
+        $tableName = $this->sqlQueryBuilder->select($this->getTableName());
+        foreach ($parameters as $key => $value) {
+            $str = ':' . $key[0];
+            $tableName->where($key, $str)->setParameters([$str=>$value]);
+        }
+        return $tableName->getQuery()->findOne();
     }
 }

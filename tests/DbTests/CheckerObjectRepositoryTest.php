@@ -43,26 +43,32 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
 
     public function testBoard(): void
     {
-        $black = $this->sqlQueryBuilder->select(self::$table, ['team'])
+        $black = $this->sqlQueryBuilder->select(self::$table)
             ->where('cell', ':c')
             ->setParameters([':c' => 'h6'])
             ->getQuery()
             ->findOne();
 
-        $white = $this->sqlQueryBuilder->select(self::$table, ['team'])
+        $white = $this->sqlQueryBuilder->select(self::$table)
             ->where('cell', ':c')
             ->setParameters([':c' => 'd2'])
             ->getQuery()
             ->findOne();
 
-        self::assertEquals('black', $black);
-        self::assertEquals('white', $white);
+        self::assertEquals('black', $black->getTeam());
+        self::assertEquals('white', $white->getTeam());
     }
 
-    public function testSplitCell(): void
+    public function testFindOneBy(): void
     {
-        $result = self::$checkerObject->getSplitCell('a1', 1);
-        self::assertEquals('1', $result);
+        $expected = $this->sqlQueryBuilder->select(self::$table)
+            ->where('cell', ':c')
+            ->setParameters([':c' => 'h6'])
+            ->getQuery()
+            ->findOne();
+
+        $result = self::$checkerObject->findOneBy(['cell' => 'h6']);
+        self::assertEquals($expected, $result);
     }
 
     public function testShowAllItems(): void
@@ -132,22 +138,22 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
     public function testWalk(): void
     {
         self::$checkerObject->walk('a3', 'b4', 'white', 'checker');
-        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table, ['team'])
+        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table)
             ->where('cell', ':c')
             ->setParameters([':c' => 'b4'])
             ->getQuery()
             ->findOne();
-        self::assertEquals('white', $stepAfterWalk);
+        self::assertEquals('white', $stepAfterWalk->getTeam());
     }
 
     public function testAttackOppositePlayer(): void
     {
         self::$checkerObject->attackOppositePlayer('c3', 'd4', 'white', 'checker');
-        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table, ['team'])
+        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table)
             ->where('cell', ':c')
             ->setParameters([':c' => 'e5'])
             ->getQuery()
             ->findOne();
-        self::assertEquals('white', $stepAfterWalk);
+        self::assertEquals('white', $stepAfterWalk->getTeam());
     }
 }
