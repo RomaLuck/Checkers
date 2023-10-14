@@ -120,51 +120,29 @@ final class CheckerObjectRepository
     public function isCellAfterAttackAvailable(string $stepFrom, string $stepTo): bool
     {
         $futurePositionAfterBeat = $this->getFuturePositionAfterBeat($stepFrom, $stepTo);
-
-        return $this->sqlQueryBuilder->select($this->getTableName())
-                ->where('cell', ':i')
-                ->setParameters([':i' => $futurePositionAfterBeat])
-                ->getQuery()
-                ->findOne()
-                ->getTeam()
-            === '';
+        return $this->findOneBy(['cell' => $futurePositionAfterBeat])->getTeam() === '';
 
     }
 
     public function isCheckerInDesk($stepFrom, $stepTo): bool
     {
-        return in_array($stepFrom, array_column($this->showAllItems(), 'cell'))
-            && in_array($stepTo, array_column($this->showAllItems(), 'cell'));
+        return in_array($stepFrom, $this->showAllItems(['cell']))
+            && in_array($stepTo, $this->showAllItems(['cell']));
     }
 
     public function isStepForMove($stepTo): bool
     {
-        return $this->sqlQueryBuilder->select($this->getTableName())
-                ->where('cell', ':i')
-                ->setParameters([':i' => $stepTo])
-                ->getQuery()
-                ->findOne()
-                ->getTeam()
-            === '';
+        return $this->findOneBy(['cell' => $stepTo])->getTeam() === '';
     }
 
     public function isStepForAttack(string $stepTo, string $oppositePlayer): bool
     {
-        return $this->sqlQueryBuilder->select($this->getTableName())
-                ->where('cell', ':i')
-                ->setParameters([':i' => $stepTo])
-                ->getQuery()
-                ->findOne()
-                ->getTeam()
-            === $oppositePlayer;
+        return $this->findOneBy(['cell' => $stepTo])->getTeam() === $oppositePlayer;
     }
 
     public function isStepAfterAttackOnDesk(string $stepFrom, string $stepTo): bool
     {
-        return in_array(
-            $this->getFuturePositionAfterBeat($stepFrom, $stepTo),
-            array_column($this->showAllItems(), 'cell'),
-        );
+        return in_array($this->getFuturePositionAfterBeat($stepFrom, $stepTo), $this->showAllItems(['cell']));
     }
 
     public function getFuturePositionAfterBeat(string $stepFrom, string $stepTo): string
@@ -190,7 +168,7 @@ final class CheckerObjectRepository
 
     public function getPositionOnDesk(string $cell, array $sideOfDesk): int
     {
-        if (!in_array($cell, array_column($this->showAllItems(), 'cell'))) {
+        if (!in_array($cell, $this->showAllItems(['cell']))) {
             throw new \RuntimeException('Your checker is out of the board');
         }
         $idPiece = match ($sideOfDesk) {
@@ -224,12 +202,12 @@ final class CheckerObjectRepository
         ) - $moveOpportunity];
 
         return array_intersect([$right . $forward, $left . $forward, $right . $back, $left . $back],
-            array_column($this->showAllItems(), 'cell'));
+            $this->showAllItems(['cell']));
     }
 
-    public function showAllItems(): array
+    public function showAllItems(array $items = []): array
     {
-        return $this->sqlQueryBuilder->select($this->getTableName())->getQuery()->findAll();
+        return $this->sqlQueryBuilder->select($this->getTableName(), $items)->getQuery()->findAll();
     }
 
     public function getSplitCell(string $data, int $key): string
@@ -252,7 +230,7 @@ final class CheckerObjectRepository
         $tableName = $this->sqlQueryBuilder->select($this->getTableName());
         foreach ($parameters as $key => $value) {
             $str = ':' . $key[0];
-            $tableName->where($key, $str)->setParameters([$str=>$value]);
+            $tableName->where($key, $str)->setParameters([$str => $value]);
         }
         return $tableName->getQuery()->findOne();
     }

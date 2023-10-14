@@ -43,18 +43,8 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
 
     public function testBoard(): void
     {
-        $black = $this->sqlQueryBuilder->select(self::$table)
-            ->where('cell', ':c')
-            ->setParameters([':c' => 'h6'])
-            ->getQuery()
-            ->findOne();
-
-        $white = $this->sqlQueryBuilder->select(self::$table)
-            ->where('cell', ':c')
-            ->setParameters([':c' => 'd2'])
-            ->getQuery()
-            ->findOne();
-
+        $black = self::$checkerObject->findOneBy(['cell' => 'h6']);
+        $white = self::$checkerObject->findOneBy(['cell' => 'd2']);
         self::assertEquals('black', $black->getTeam());
         self::assertEquals('white', $white->getTeam());
     }
@@ -138,22 +128,14 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
     public function testWalk(): void
     {
         self::$checkerObject->walk('a3', 'b4', 'white', 'checker');
-        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table)
-            ->where('cell', ':c')
-            ->setParameters([':c' => 'b4'])
-            ->getQuery()
-            ->findOne();
+        $stepAfterWalk = self::$checkerObject->findOneBy(['cell' => 'b4']);
         self::assertEquals('white', $stepAfterWalk->getTeam());
     }
 
     public function testAttackOppositePlayer(): void
     {
         self::$checkerObject->attackOppositePlayer('c3', 'd4', 'white', 'checker');
-        $stepAfterWalk = $this->sqlQueryBuilder->select(self::$table)
-            ->where('cell', ':c')
-            ->setParameters([':c' => 'e5'])
-            ->getQuery()
-            ->findOne();
+        $stepAfterWalk = self::$checkerObject->findOneBy(['cell' => 'e5']);
         self::assertEquals('white', $stepAfterWalk->getTeam());
     }
 }

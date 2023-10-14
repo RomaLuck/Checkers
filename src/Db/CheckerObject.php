@@ -2,17 +2,12 @@
 
 namespace App\Db;
 
-class CheckerObject
+class CheckerObject extends DbObject
 {
-    private int $id;
-    private string $cell;
-    private string $team;
-    private string $figure;
-
-    public function __construct(array $data)
-    {
-        $this->setData($data);
-    }
+    protected int $id;
+    protected string $cell;
+    protected string $team;
+    protected string $figure;
 
     private function setId(int $id): void
     {
@@ -52,15 +47,5 @@ class CheckerObject
     public function setFigure(?string $figure): void
     {
         $this->figure = $figure;
-    }
-
-    public function setData(array $data): void
-    {
-        if (!is_iterable($data)) {
-            throw new \RuntimeException('Input data is not iterable');
-        }
-        foreach ($data as $item => $value) {
-            $this->$item = $value ?? '';
-        }
     }
 }
