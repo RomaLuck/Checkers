@@ -10,8 +10,8 @@ final class CheckerObjectRepository
     private const DESK_SIZE_END = 8;
     private const START_PIECES_WHITE = ['a1', 'a3', 'b2', 'c1', 'c3', 'd2', 'e1', 'e3', 'f2', 'g1', 'g3', 'h2'];
     private const START_PIECES_BLACK = ['a7', 'b8', 'b6', 'c7', 'd8', 'd6', 'e7', 'f8', 'f6', 'g7', 'h8', 'h6'];
-    public const HORIZONTAL_SIDE_OF_DESK = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    public const VERTICAL_SIDE_OF_DESK = [1, 2, 3, 4, 5, 6, 7, 8];
+    private const HORIZONTAL_SIDE_OF_DESK = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    private const VERTICAL_SIDE_OF_DESK = [1, 2, 3, 4, 5, 6, 7, 8];
     private string $tableName;
     private SqlQueryBuilder $sqlQueryBuilder;
 

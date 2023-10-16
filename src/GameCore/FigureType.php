@@ -7,14 +7,14 @@ use Exception;
 
 class FigureType
 {
-    public const CHECKER = 'checker';
-    public const QUEEN = 'queen';
-    public string $stepFrom;
-    public string $stepTo;
-    public int $moveOpportunity;
-    public string $figureName;
+    protected const CHECKER = 'checker';
+    protected const QUEEN = 'queen';
+    private string $stepFrom;
+    private string $stepTo;
+    protected int $moveOpportunity;
+    protected string $figureName;
 
-    public CheckerObjectRepository $repository;
+    private CheckerObjectRepository $repository;
 
     public function __construct(CheckerObjectRepository $repository)
     {

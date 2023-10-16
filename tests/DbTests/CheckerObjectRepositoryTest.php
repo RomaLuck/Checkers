@@ -77,11 +77,6 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
         }
     }
 
-    public function testGetPositionOnDesk(): void
-    {
-        self::assertEquals('7', self::$checkerObject->getPositionOnDesk('h1', self::$checkerObject::HORIZONTAL_SIDE_OF_DESK));
-    }
-
     public function testGetFuturePositionAfterBeat(): void
     {
         self::assertEquals('c3', self::$checkerObject->getFuturePositionAfterBeat('a1', 'b2'));
