@@ -10,7 +10,7 @@ class Player
     public const BLACK = 'black';
     public string $color;
     public string $oppositeSideColor;
-    public string $teamName;
+    private string $teamName;
     public int $moveDirection;
     public FigureType $figureType;
 
