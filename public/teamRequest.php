@@ -1,15 +1,11 @@
 <?php
 
-use CheckersOOP\src\db\DbObject;
-
-require_once 'vendor/autoload.php';
+require_once 'instances.php';
 
 try {
-    $dbObj = new DbObject();
-
     echo json_encode([
-        'jsonWhiteTeam'=>$dbObj->showItems('id', ['team' => 'white']),
-        'jsonBlackTeam'=>$dbObj->showItems('id', ['team' => 'black'])
+        'jsonWhiteTeam'=>$repository->findBy(['team' => 'white'])->filterByField('cell'),
+        'jsonBlackTeam'=>$repository->findBy(['team' => 'black'])->filterByField('cell'),
     ]);
 
 } catch (Exception $e) {

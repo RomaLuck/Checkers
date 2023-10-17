@@ -22,7 +22,7 @@ interface SqlQueryBuilderInterface
 
     public function getQuery(): SqlQueryBuilderInterface;
 
-    public function findAll(): array;
+    public function find(): array;
 
     public function findOne(): CheckerObject;
 }

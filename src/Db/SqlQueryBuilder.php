@@ -128,7 +128,7 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
         return $this;
     }
 
-    public function findAll(): array
+    public function find(): array
     {
         $result = [];
         $fields = $this->query->fields;
@@ -142,12 +142,22 @@ class SqlQueryBuilder implements SqlQueryBuilderInterface
 
     public function findOne(): CheckerObject
     {
-        return new CheckerObject($this->stmt->fetch(PDO::FETCH_ASSOC));
+        return (new CheckerObject($this->stmt->fetch(PDO::FETCH_ASSOC)))->initializeDataFields();
     }
 
     public function deleteAll($table): void
     {
         $sql = 'TRUNCATE TABLE ' . $table;
         $this->pdo->query($sql);
+    }
+
+    public function findAll(): CheckerObject
+    {
+        $result = [];
+        while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = $row;
+        }
+
+        return new CheckerObject($result);
     }
 }

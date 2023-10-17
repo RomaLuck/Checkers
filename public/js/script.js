@@ -26,7 +26,7 @@ tableContainer.addEventListener("click", function (event) {
                 form2: form2.value
             }));
 
-            fetch('../game/game.php', {
+            fetch('../public/game.php', {
                 method: 'POST',
                 body: formData
             })
@@ -50,7 +50,7 @@ tableContainer.addEventListener("click", function (event) {
 });
 async function updateTable() {
     try {
-        const response = await fetch('../game/teamrequest.php');
+        const response = await fetch('../public/teamRequest.php');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -86,7 +86,7 @@ async function updateTable() {
 }
 (async function () {
     try {
-        const response = await fetch('../game/teamrequest.php');
+        const response = await fetch('../public/teamRequest.php');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

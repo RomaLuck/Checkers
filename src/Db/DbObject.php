@@ -5,19 +5,29 @@ namespace App\Db;
 class DbObject
 {
 
+    private array $data;
+
     public function __construct(array $data)
     {
-        $this->setData($data);
+        $this->data = $data;
     }
 
 
-    public function setData(array $data): void
+    public function initializeDataFields(): self
     {
-        if (!is_iterable($data)) {
-            throw new \RuntimeException('Input data is not iterable');
-        }
-        foreach ($data as $item => $value) {
+        foreach ($this->data as $item => $value) {
             $this->$item = $value ?? '';
         }
+        return $this;
+    }
+
+    public function filterByField(string $field): array
+    {
+        return array_column($this->data, $field);
+    }
+
+    public function toArray(): array
+    {
+        return $this->data;
     }
 }

@@ -1,17 +1,12 @@
 <?php
 
-use CheckersOOP\src\db\DbObject;
-use App\Db\CheckerObjectRepository;
-
 session_start();
 session_unset();
 session_destroy();
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'instances.php';
 
-$dbObj = new DbObject();
-$checkerDesk = new CheckerObjectRepository($dbObj);
-$checkerDesk->clearTable();
+$repository->clearTable();
 ?>
 <!--page the end of the game -->
 <!DOCTYPE html>
@@ -33,7 +28,7 @@ $checkerDesk->clearTable();
             <div class="col-5">
                 <h5>Game over!</h5>
                 <h5>
-                    <a href="../index.php" class="badge bg-primary">Try again?</a>
+                    <a href="startGame.php" class="badge bg-primary">Try again?</a>
                 </h5>
             </div>
         </div>

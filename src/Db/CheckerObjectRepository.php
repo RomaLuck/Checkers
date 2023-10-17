@@ -112,7 +112,7 @@ final class CheckerObjectRepository
             ->where('team', ':t')
             ->setParameters([':t' => $playerColor])
             ->getQuery()
-            ->findAll();
+            ->find();
 
         return in_array($stepFrom, $team);
     }
@@ -207,7 +207,7 @@ final class CheckerObjectRepository
 
     public function showAllItems(array $items = []): array
     {
-        return $this->sqlQueryBuilder->select($this->getTableName(), $items)->getQuery()->findAll();
+        return $this->sqlQueryBuilder->select($this->getTableName(), $items)->getQuery()->find();
     }
 
     public function getSplitCell(string $data, int $key): string
@@ -233,5 +233,15 @@ final class CheckerObjectRepository
             $tableName->where($key, $str)->setParameters([$str => $value]);
         }
         return $tableName->getQuery()->findOne();
+    }
+
+    public function findBy(array $parameters): CheckerObject
+    {
+        $tableName = $this->sqlQueryBuilder->select($this->getTableName());
+        foreach ($parameters as $key => $value) {
+            $str = ':' . $key[0];
+            $tableName->where($key, $str)->setParameters([$str => $value]);
+        }
+        return $tableName->getQuery()->findAll();
     }
 }

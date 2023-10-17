@@ -31,7 +31,7 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
             ->setParameters([':black' => 'black', ':checker' => 'checker'])
             ->getQuery();
 
-        $result = $this->sqlQueryBuilder->select(self::$table, ['team'])->getQuery()->findAll();
+        $result = $this->sqlQueryBuilder->select(self::$table, ['team'])->getQuery()->find();
 
         $this->assertIsArray($result);
         $this->assertEquals(['white', 'black'], $result);
@@ -85,7 +85,7 @@ class SqlQueryBuilderWithDbTest extends DbTestAbstract
             ->setParameters([':black' => 'white', ':checker' => 'checker'])
             ->getQuery();
 
-        $result = $this->sqlQueryBuilder->select(self::$table)->limit(2, 2)->getQuery()->findAll();
+        $result = $this->sqlQueryBuilder->select(self::$table)->limit(2, 2)->getQuery()->find();
 
         $this->assertIsArray($result);
         $this->assertCount(2, array_column($result, 'team'));

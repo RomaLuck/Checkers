@@ -61,6 +61,30 @@ class CheckerObjectRepositoryTest extends DbTestAbstract
         self::assertEquals($expected, $result);
     }
 
+    public function testFindByGeneral(): void
+    {
+        $expected = $this->sqlQueryBuilder->select(self::$table)
+            ->where('team', ':c')
+            ->setParameters([':c' => 'white'])
+            ->getQuery()
+            ->find();
+
+        $result = self::$checkerObject->findBy(['team' => 'white'])->toArray();
+        self::assertEquals($expected, $result);
+    }
+
+    public function testFindByWithFilter(): void
+    {
+        $expected = $this->sqlQueryBuilder->select(self::$table,['team'])
+            ->where('team', ':c')
+            ->setParameters([':c' => 'white'])
+            ->getQuery()
+            ->find();
+
+        $result = self::$checkerObject->findBy(['team' => 'white'])->filterByField('team');
+        self::assertEquals($expected, $result);
+    }
+
     public function testShowAllItems(): void
     {
         $result = self::$checkerObject->showAllItems();
