@@ -25,6 +25,8 @@ RUN curl -sL https://getcomposer.org/installer | php -- --install-dir /usr/bin -
 
 WORKDIR /app
 
+RUN echo 'pm.max_children = 30' >> /usr/local/etc/php-fpm.d/zz-docker.conf
+
 RUN docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-install opcache
 
