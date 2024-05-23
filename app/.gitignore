@@ -1,6 +1,7 @@
 /.env
 /.env.local
 /var/
+/logs/
 /vendor/
 .idea
 
