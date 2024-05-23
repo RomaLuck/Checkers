@@ -11,16 +11,20 @@
   ],
   "autoload": {
     "psr-4": {
-      "Src\\": "/src",
-      "Tests\\": "/tests"
+      "Src\\": "src/",
+      "Tests\\": "tests/"
     }
   },
   "require-dev": {
-    "pestphp/pest": "^2.34"
+    "pestphp/pest": "^2.34",
+    "symfony/var-dumper": "^7.0"
   },
   "config": {
     "allow-plugins": {
       "pestphp/pest-plugin": true
     }
+  },
+  "require": {
+    "monolog/monolog": "^3.6"
   }
 }
