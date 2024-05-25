@@ -4,7 +4,9 @@ namespace Src;
 
 use Psr\Log\LoggerInterface;
 use Src\Helpers\LoggerFactory;
+use Src\Teams\Black;
 use Src\Teams\TeamPlayer;
+use Src\Teams\White;
 
 class Game
 {
@@ -19,19 +21,19 @@ class Game
 
     public function __construct(TeamPlayer $white, TeamPlayer $black)
     {
-        $this->desk = CheckerDesk::initDesk();
+       if (isset($_SESSION['desk'])) {
+            $this->desk = $_SESSION['desk'];
+        } else {
+            $this->desk = CheckerDesk::initDesk();
+        }
+
         $this->logger = LoggerFactory::getLogger('checkers');
         $this->rules = new Rules($this->logger);
         $this->white = $white;
         $this->black = $black;
     }
 
-    public function start(): void
-    {
-        //
-    }
-
-    public function move(array $desk, string $from, string $to): void
+    public function run(string $from, string $to): void
     {
         try {
             $cellFrom = $this->transform($from);
@@ -42,9 +44,12 @@ class Game
             return;
         }
 
-        if ($this->rules->check($player, $desk, $cellFrom, $cellTo)) {
+        if ($this->rules->check($player, $this->desk, $cellFrom, $cellTo)) {
+            $selectedTeamNumber = $this->desk[$cellFrom[0]][$cellFrom[1]];
             $this->desk[$cellFrom[0]][$cellFrom[1]] = 0;
-            $this->desk[$cellTo[0]][$cellTo[1]] = $player->getTeamNumber();
+            $this->desk[$cellTo[0]][$cellTo[1]] = $selectedTeamNumber;
+            $this->logger->info("{$player->getName()} moved from cell $from to cell $to");
+            $_SESSION['desk'] = $this->desk;
         } else {
             $this->logger->error('Something was wrong');
         }
@@ -54,10 +59,10 @@ class Game
     {
         $selectedTeamNumber = $this->desk[$from[0]][$from[1]];
         if ($selectedTeamNumber > 0) {
-            if ($selectedTeamNumber === $this->white->getTeamNumber()) {
+            if ($selectedTeamNumber === White::WHITE_CHECKER) {
                 return $this->white;
             }
-            if ($selectedTeamNumber === $this->black->getTeamNumber()) {
+            if ($selectedTeamNumber === Black::BLACK_CHECKER) {
                 return $this->black;
             }
         }
@@ -77,5 +82,28 @@ class Game
             throw new \RuntimeException('Cell is unavailable');
         }
         throw new \RuntimeException('Cell is incorrect');
+    }
+
+    public function getDesk(): array
+    {
+        return $this->desk;
+    }
+
+    public function isGameOver(): bool
+    {
+        $whiteCheckers = 0;
+        $blackCheckers = 0;
+
+        foreach ($this->desk as $row) {
+            foreach ($row as $cell) {
+                if ($cell === White::WHITE_CHECKER) {
+                    $whiteCheckers++;
+                } elseif ($cell === Black::BLACK_CHECKER) {
+                    $blackCheckers++;
+                }
+            }
+        }
+
+        return $whiteCheckers === 0 || $blackCheckers === 0;
     }
 }
