@@ -31,7 +31,7 @@ function handleTableClick() {
                 form2: form2.value
             }));
 
-            fetch('/game.php', {
+            fetch('/game', {
                 method: 'POST',
                 body: formData
             })

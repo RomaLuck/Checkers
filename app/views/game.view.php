@@ -1,45 +1,4 @@
-<?php
-
-session_start();
-
-require __DIR__ . '/../vendor/autoload.php';
-
-use Src\Game;
-use Src\Helpers\LogReader;
-use Src\Teams\Black;
-use Src\Teams\White;
-
-if (isset($_POST['white'], $_POST['black'])) {
-    $_SESSION['white'] = $_POST['white'];
-    $_SESSION['black'] = $_POST['black'];
-}
-
-$white = new White($_SESSION['white']);
-$black = new Black($_SESSION['black']);
-$game = new Game($white, $black);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
-    $data = json_decode($_POST['formData'], true);
-    $from = htmlspecialchars($data['form1']);
-    $to = htmlspecialchars($data['form2']);
-
-    if ($from && $to) {
-        $game->run($from, $to);
-    }
-}
-
-$logs = LogReader::read(10);
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Input Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles/style.css">
-</head>
+<?php require base_path('views/_partials/header.php') ?>
 <body>
 <div class="container mt-5">
     <form method="POST" class="form d-flex justify-content-center d-none" autocomplete="off">
@@ -80,7 +39,7 @@ $logs = LogReader::read(10);
                         } ?>
                     </table>
                     <div class="row justify-content-center">
-                        <a href="end_game.php" class="btn btn-danger mt-2">Finish game</a>
+                        <a href="/end" class="btn btn-danger mt-2">Finish game</a>
                     </div>
 
                 </div>
@@ -100,6 +59,5 @@ $logs = LogReader::read(10);
 </div>
 
 <script src="js/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+<?php require base_path('views/_partials/footer.php') ?>
