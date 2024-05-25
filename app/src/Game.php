@@ -48,7 +48,7 @@ class Game
             $selectedTeamNumber = $this->desk[$cellFrom[0]][$cellFrom[1]];
             $this->desk[$cellFrom[0]][$cellFrom[1]] = 0;
             $this->desk[$cellTo[0]][$cellTo[1]] = $selectedTeamNumber;
-            $this->logger->info("{$player->getName()} moved from cell $from to cell $to");
+            $this->logger->info("{$player->getName()} moved from cell [$from] to cell [$to]");
             $_SESSION['desk'] = $this->desk;
         } else {
             $this->logger->error('Something was wrong');
@@ -105,5 +105,10 @@ class Game
         }
 
         return $whiteCheckers === 0 || $blackCheckers === 0;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
     }
 }

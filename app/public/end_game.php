@@ -4,8 +4,16 @@ session_start();
 session_unset();
 session_destroy();
 
+use Symfony\Component\Finder\Finder;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$finder = new Finder();
+$logs = $finder->files()->in(__DIR__ . '/../logs')->name('*.log');
+foreach ($logs as $log) {
+    unlink($log->getRealPath());
+}
 ?>
-<!--page the end of the game -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,16 +27,15 @@ session_destroy();
 </head>
 
 <body class="p-3 mb-2 bg-secondary text-white">
-    <div class="container">
-        <div class="position-absolute bottom-50 end-50">
-            <div class="col-5">
-                <h5>Game over!</h5>
-                <h5>
-                    <a href="index.php" class="badge bg-primary">Try again?</a>
-                </h5>
-            </div>
+<div class="container">
+    <div class="position-absolute bottom-50 end-50">
+        <div class="col-5">
+            <h5>Game over!</h5>
+            <h5>
+                <a href="index.php" class="badge bg-primary">Try again?</a>
+            </h5>
         </div>
     </div>
+</div>
 </body>
-
 </html>

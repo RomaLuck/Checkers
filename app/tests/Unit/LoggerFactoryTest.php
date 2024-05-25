@@ -14,7 +14,7 @@ test('logger message file', function () {
     $logger = LoggerFactory::getLogger('test');
     $logger->info('Test log message');
 
-    $logContent = LogReader::read($logger, 1);
+    $logContent = LogReader::read(1);
 
     expect($logContent[0])->toContain('Test log message');
 });

@@ -2,29 +2,33 @@
 
 namespace Src\Helpers;
 
-use Monolog\Handler\RotatingFileHandler;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Finder\Finder;
 
 class LogReader
 {
-    public static function read(LoggerInterface $logger, int $linesNum): array
+    public static function read(int $linesNum): array
     {
-        $handlers = $logger->getHandlers();
+        $logs = [];
 
-        $logFileName = null;
-        foreach ($handlers as $handler) {
-            if ($handler instanceof RotatingFileHandler) {
-                $logFileName = $handler->getUrl();
-                break;
+        $finder = new Finder();
+        $logFiles = $finder->files()
+            ->in(__DIR__ . '/../../logs')
+            ->name('*.log')
+            ->date('since today');
+
+        foreach ($logFiles as $logFile) {
+            $splitContent = explode("\n", $logFile->getContents());
+
+            foreach ($splitContent as $item) {
+                $logs[] = $item;
             }
         }
 
-        if ($logFileName === null) {
-            return [];
+        $maxLines = count($logs);
+        if ($maxLines < $linesNum) {
+            $linesNum = $maxLines;
         }
 
-        $logLines = file($logFileName);
-
-        return array_slice($logLines, -1 * $linesNum);
+        return array_slice($logs, -1 * $linesNum);
     }
 }

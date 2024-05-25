@@ -5,6 +5,7 @@ session_start();
 require __DIR__ . '/../vendor/autoload.php';
 
 use Src\Game;
+use Src\Helpers\LogReader;
 use Src\Teams\Black;
 use Src\Teams\White;
 
@@ -27,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
     }
 }
 
+$logs = LogReader::read(10);
 ?>
 
 <!DOCTYPE html>
@@ -57,33 +59,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
 </div>
 
 <div class="container">
-    <div class="row" id="table-responsive">
-        <div class="d-flex justify-content-center">
-            <div class="table-responsive text-center">
-                <table class="chess-board">
-                    <?php
-                    $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-                    $i = 0;
-                    foreach ($game->getDesk() as $deskRow) {
-                        $j = 1;
-                        ?>
-                        <tr>
-                            <?php foreach ($deskRow as $cell) { ?>
-                                <td id="<?= $letters[$i] . $j++ ?>"><?= $cell ?></td>
-                            <?php } ?>
-                        </tr>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center">
+                <div class="table-responsive text-center" id="table-responsive">
+                    <table class="chess-board">
                         <?php
-                        $i++;
-                    } ?>
-                </table>
+                        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+                        $i = 0;
+                        foreach ($game->getDesk() as $deskRow) {
+                            $j = 1;
+                            ?>
+                            <tr>
+                                <?php foreach ($deskRow as $cell) { ?>
+                                    <td id="<?= $letters[$i] . $j++ ?>"><?= $cell ?></td>
+                                <?php } ?>
+                            </tr>
+                            <?php
+                            $i++;
+                        } ?>
+                    </table>
+                    <div class="row justify-content-center">
+                        <a href="end_game.php" class="btn btn-danger mt-2">Finish game</a>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <a href="end_game.php" class="btn btn-danger mt-2 float-end">Finish game</a>
+        <div class="col-md-6">
+            <h2 class="text-center">Game Log</h2>
+            <div class="d-flex justify-content-center">
+                <ul id="game-log">
+                    <?php foreach ($logs as $log) { ?>
+                        <li><?= $log ?></li>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
