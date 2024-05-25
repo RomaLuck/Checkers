@@ -4,7 +4,7 @@ namespace Src\Teams;
 
 class White implements TeamPlayer
 {
-    public const WHITE = 1;
+    public const WHITE_CHECKER = 1;
     public const DIRECTION_WHITE = -1;
 
     private string $name;
@@ -21,6 +21,6 @@ class White implements TeamPlayer
 
     public function getTeamNumber(): int
     {
-        return self::WHITE;
+        return self::WHITE_CHECKER;
     }
 }
