@@ -15,6 +15,7 @@ beforeEach(function () {
 
 test('transform', function () {
     $result = $this->game->transform('a2');
+
     expect($result)->tobe([0, 1]);
 });
 
@@ -29,10 +30,19 @@ test('transform(incorrect exception)', function () {
 test('init player', function () {
     $cell = $this->game->transform('a3');
     $player = $this->game->initPlayer($cell);
+
     expect($player)->toBeInstanceOf(TeamPlayer::class);
 });
 
 test('init player(exception)', function () {
     $cell = $this->game->transform('a4');
-    $player = $this->game->initPlayer($cell);
+    $this->game->initPlayer($cell);
 })->throws(RuntimeException::class, 'Can not find player on this cell');
+
+test('run', function () {
+    $this->game->run('a3','b4');
+
+    $updatedDesk = $this->game->getDesk();
+    expect($updatedDesk[0][2])->toBe(0)
+        ->and($updatedDesk[1][3])->toBe(1);
+});
