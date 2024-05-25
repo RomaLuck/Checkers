@@ -10,17 +10,15 @@ class LogReader
     {
         $logs = [];
 
-        $finder = new Finder();
-        $logFiles = $finder->files()
-            ->in(__DIR__ . '/../../logs')
-            ->name('*.log')
-            ->date('since today');
+        $logFiles = self::getLogFiles();
 
         foreach ($logFiles as $logFile) {
             $splitContent = explode("\n", $logFile->getContents());
 
             foreach ($splitContent as $item) {
-                $logs[] = $item;
+                if ($item !== '') {
+                    $logs[] = $item;
+                }
             }
         }
 
@@ -30,5 +28,27 @@ class LogReader
         }
 
         return array_slice($logs, -1 * $linesNum);
+    }
+
+    public static function deleteLogFiles(): void
+    {
+        $logFiles = self::getLogFiles();
+
+        foreach ($logFiles as $logFile) {
+            unlink($logFile->getRealPath());
+        }
+    }
+
+    /**
+     * @return Finder
+     */
+    public static function getLogFiles(): Finder
+    {
+        $finder = new Finder();
+
+        return $finder->files()
+            ->in(__DIR__ . '/../../logs')
+            ->name('*.log')
+            ->date('since today');
     }
 }

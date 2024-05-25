@@ -17,4 +17,6 @@ test('logger message file', function () {
     $logContent = LogReader::read(1);
 
     expect($logContent[0])->toContain('Test log message');
+
+    LogReader::deleteLogFiles();
 });
