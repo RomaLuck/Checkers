@@ -25,6 +25,7 @@
     }
   },
   "require": {
-    "monolog/monolog": "^3.6"
+    "monolog/monolog": "^3.6",
+    "symfony/finder": "^7.0"
   }
 }
