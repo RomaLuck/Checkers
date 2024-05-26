@@ -1,8 +1,8 @@
 <?php
 
 use Src\Game;
-use Src\Teams\Black;
-use Src\Teams\White;
+use Src\Team\Black;
+use Src\Team\White;
 
 $white = new White($_SESSION['white']);
 $black = new Black($_SESSION['black']);
