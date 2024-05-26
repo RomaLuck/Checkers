@@ -12,6 +12,11 @@ beforeEach(function () {
     $this->black = new Black('Olena');
     $this->game = new Game($this->white, $this->black);
     $this->desk = CheckerDesk::initDesk();
+    $_SESSION['desk'] = $this->desk;
+});
+
+afterEach(function () {
+    $_SESSION['desk'] = null;
 });
 
 test('transform', function () {
@@ -41,7 +46,7 @@ test('init player(exception)', function () {
 })->throws(RuntimeException::class, 'Can not find player on this cell');
 
 test('run', function () {
-    $this->game->run('a3','b4');
+    $this->game->run('a3', 'b4');
 
     $updatedDesk = $this->game->getDesk();
     expect($updatedDesk[0][2])->toBe(0)
@@ -49,12 +54,24 @@ test('run', function () {
 });
 
 test('false direction', function () {
-    $this->game->run('a3','b4');
-    $this->game->run('b4','a3');
+    $this->game->run('a3', 'b4');
+    $this->game->run('b4', 'a3');
 
     $updatedDesk = $this->game->getDesk();
     expect($updatedDesk[0][2])->toBe(0)
         ->and($updatedDesk[1][3])->toBe(1);
+
+    $logContent = LogReader::read(1);
+
+    expect($logContent[0])->toContain('Something went wrong. Follow the rules!');
+});
+
+test('false step opportunity', function () {
+    $this->game->run('a3', 'c5');
+
+    $updatedDesk = $this->game->getDesk();
+    expect($updatedDesk[0][2])->toBe(1)
+        ->and($updatedDesk[2][4])->toBe(0);
 
     $logContent = LogReader::read(1);
 

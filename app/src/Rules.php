@@ -23,7 +23,9 @@ class Rules
         $this->from = $from;
         $this->to = $to;
 
-        return $this->isAvailableCell() && $this->isTrueDirection();
+        return $this->isAvailableCell()
+            && $this->isTrueDirection()
+            && $this->isOpportunityForMove();
     }
 
     public function setDesk(array $desk): void
@@ -54,8 +56,23 @@ class Rules
         $availableDirections = array_map(function ($playerFigureDirection) use ($playerDirection) {
             return $playerFigureDirection * $playerDirection;
         }, $playerFigureDirections);
+        if (in_array($this->defineDirection(), $availableDirections)) {
+            return true;
+        }
 
-        return in_array($this->defineDirection(), $availableDirections);
+        $this->logger->error('The direction is wrong');
+        return false;
+    }
+
+    private function isOpportunityForMove(): bool
+    {
+        $step = $this->defineStep() * $this->defineDirection();
+        if ($step <= $this->player->getFigure()->getStepOpportunityForMove()) {
+            return true;
+        }
+
+        $this->logger->error('You do not have ability to reach this cell');
+        return false;
     }
 
     private function defineDirection(): int
