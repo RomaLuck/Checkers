@@ -20,28 +20,28 @@ afterEach(function () {
 });
 
 test('transform', function () {
-    $result = $this->game->transform('a2');
+    $result = $this->game->transformInputData('a2');
 
     expect($result)->tobe([0, 1]);
 });
 
 test('transform(unavailable exception)', function () {
-    $this->game->transform('a10');
+    $this->game->transformInputData('a10');
 })->throws(RuntimeException::class, 'Cell is unavailable');
 
 test('transform(incorrect exception)', function () {
-    $this->game->transform('10');
+    $this->game->transformInputData('10');
 })->throws(RuntimeException::class, 'Cell is incorrect');
 
 test('init player', function () {
-    $cell = $this->game->transform('a3');
+    $cell = $this->game->transformInputData('a3');
     $player = $this->game->initPlayer($cell);
 
     expect($player)->toBeInstanceOf(TeamPlayerInterface::class);
 });
 
 test('init player(exception)', function () {
-    $cell = $this->game->transform('a4');
+    $cell = $this->game->transformInputData('a4');
     $this->game->initPlayer($cell);
 })->throws(RuntimeException::class, 'Can not find player on this cell');
 

@@ -18,7 +18,7 @@ class Rules
         $this->logger = $logger;
     }
 
-    public function check(array $from, array $to): bool
+    public function checkForMove(array $from, array $to): bool
     {
         $this->from = $from;
         $this->to = $to;
@@ -26,6 +26,15 @@ class Rules
         return $this->isAvailableCell()
             && $this->isTrueDirection()
             && $this->isOpportunityForMove();
+    }
+
+    public function checkForBeat(array $from, array $to): bool
+    {
+        $this->from = $from;
+        $this->to = $to;
+
+        return $this->isAvailableCell()
+            && $this->isOpportunityForBeat();
     }
 
     public function setDesk(array $desk): void
@@ -75,6 +84,17 @@ class Rules
         return false;
     }
 
+    private function isOpportunityForBeat(): bool
+    {
+        $step = $this->defineStep() * $this->defineDirection();
+        if ($step <= $this->player->getFigure()->getStepOpportunityForAttack()) {
+            return true;
+        }
+
+        $this->logger->error('You do not have an ability to reach this cell');
+        return false;
+    }
+
     private function defineDirection(): int
     {
         $step = $this->defineStep();
@@ -88,5 +108,22 @@ class Rules
     private function defineStep(): int
     {
         return $this->to[1] - $this->from[1];
+    }
+
+    public function findFiguresForBeat(array $from, array $to): array
+    {
+        $figuresCells = [];
+        $letters = [$from[0], $to[0]];
+        $numbers = [$from[1], $to[1]];
+
+        for ($i = min($letters) + 1; $i < max($letters); $i++) {
+            for ($j = min($numbers) + 1; $j < max($numbers); $j++) {
+                if ($this->desk[$i][$j] > 0) {
+                    $figuresCells[] = [$i, $j];
+                }
+            }
+        }
+
+        return $figuresCells;
     }
 }
