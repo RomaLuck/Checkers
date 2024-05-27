@@ -14,6 +14,8 @@ use Src\Team\White;
 
 class Game
 {
+    public const WHITE_QUEUE = 1;
+    public const BLACK_QUEUE = -1;
     /**
      * @var array[]
      */
@@ -22,6 +24,7 @@ class Game
     private Rules $rules;
     private TeamPlayerInterface $white;
     private TeamPlayerInterface $black;
+    private int $queue;
 
     public function __construct(TeamPlayerInterface $white, TeamPlayerInterface $black)
     {
@@ -29,6 +32,12 @@ class Game
             $this->desk = $_SESSION['desk'];
         } else {
             $this->desk = CheckerDesk::initDesk();
+        }
+
+        if (isset($_SESSION['queue'])) {
+            $this->queue = $_SESSION['queue'];
+        } else {
+            $this->queue = self::WHITE_QUEUE;
         }
 
         $this->logger = LoggerFactory::getLogger('checkers');
@@ -73,6 +82,7 @@ class Game
         if ($this->isGameOver()) {
             $this->logger->info('GAME OVER');
         }
+        $_SESSION['queue'] = $this->queue * -1;
     }
 
     public function initPlayer(array $from): TeamPlayerInterface
@@ -154,5 +164,10 @@ class Game
     public function getSelectedTeamNumber(array $cellFrom): mixed
     {
         return $this->desk[$cellFrom[0]][$cellFrom[1]];
+    }
+
+    public function getQueue(): int
+    {
+        return $this->queue;
     }
 }

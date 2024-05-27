@@ -51,5 +51,18 @@ function handleTableClick() {
     });
 }
 
+function rotateTable() {
+    const table = document.getElementById('chess-board');
+    const queueParam = document.getElementById('queue');
+
+    if (queueParam.innerText.trim() === '1') {
+        table.style.transform = 'rotate(-90deg)';
+    }
+    if (queueParam.innerText.trim() === '-1') {
+        table.style.transform = 'rotate(90deg)';
+    }
+}
+
 assignPiecesToCells();
 handleTableClick();
+rotateTable();

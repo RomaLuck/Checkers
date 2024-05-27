@@ -1,5 +1,5 @@
 <?php require base_path('views/_partials/header.php') ?>
-<body>
+    <body>
 <div class="container mt-5">
     <form method="POST" class="form d-flex justify-content-center d-none" autocomplete="off">
         <div class="col-md-4">
@@ -22,7 +22,7 @@
         <div class="col-md-6">
             <div class="d-flex justify-content-center">
                 <div class="table-responsive text-center" id="table-responsive">
-                    <table class="chess-board">
+                    <table class="chess-board" id="chess-board">
                         <?php
                         $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
                         $i = 0;
@@ -57,7 +57,7 @@
         </div>
     </div>
 </div>
-
+<div id="queue" class="d-none"><?= $queue ?></div>
 <script src="js/script.js"></script>
 
 <?php require base_path('views/_partials/footer.php') ?>
