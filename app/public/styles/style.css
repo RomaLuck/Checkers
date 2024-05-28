@@ -37,3 +37,8 @@
 .table-responsive td:hover {
     opacity: 0.8;
 }
+
+.image{
+    height: 650px;
+    width: 2000px;
+}

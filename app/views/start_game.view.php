@@ -2,7 +2,7 @@
 
 <body class="p-3 mb-2 bg-secondary text-white">
 <div class="container position-relative">
-    <img src="pictures/checkers.jpg" class="mt-5 img-thumbnail" alt="checkers">
+    <img src="pictures/checkers.jpg" class="mt-5 img-thumbnail rounded image" alt="checkers">
     <div class="justify-content-center align-items-center"
          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
         <form class="mx-auto" method="POST" name="players">

@@ -1,4 +1,5 @@
 <?php require base_path('views/_partials/header.php') ?>
+<?php require base_path('views/_partials/nav.php') ?>
     <body>
 <div class="container mt-5">
     <form method="POST" class="form d-flex justify-content-center d-none" autocomplete="off">
@@ -41,9 +42,6 @@
 
                 </div>
 
-            </div>
-            <div class="d-flex justify-content-end mt-5">
-                <a href="/end" class="btn btn-danger mt-2">Finish game</a>
             </div>
         </div>
         <div class="col-md-6">
