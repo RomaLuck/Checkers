@@ -38,11 +38,12 @@
                             $i++;
                         } ?>
                     </table>
-                    <div class="row justify-content-center">
-                        <a href="/end" class="btn btn-danger mt-2">Finish game</a>
-                    </div>
 
                 </div>
+
+            </div>
+            <div class="d-flex justify-content-end mt-5">
+                <a href="/end" class="btn btn-danger mt-2">Finish game</a>
             </div>
         </div>
         <div class="col-md-6">

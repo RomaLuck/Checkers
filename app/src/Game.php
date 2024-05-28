@@ -78,9 +78,11 @@ class Game
             $_SESSION['desk'] = $this->desk;
         } else {
             $this->logger->error('Something went wrong. Follow the rules!');
+            return;
         }
         if ($this->isGameOver()) {
             $this->logger->info('GAME OVER');
+            return;
         }
         $_SESSION['queue'] = $this->queue * -1;
     }

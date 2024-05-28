@@ -52,8 +52,10 @@ function handleTableClick() {
 }
 
 function rotateTable() {
-    const table = document.getElementById('chess-board');
+    const table = document.getElementById('table-responsive');
     const queueParam = document.getElementById('queue');
+
+    table.style.transition = 'transform 0.5s ease-in-out';
 
     if (queueParam.innerText.trim() === '1') {
         table.style.transform = 'rotate(-90deg)';
