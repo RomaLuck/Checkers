@@ -54,7 +54,7 @@ class Rules
             return true;
         }
 
-        $this->logger->error('Cell is not available');
+        $this->logger->warning('Cell is not available');
         return false;
     }
 
@@ -69,7 +69,7 @@ class Rules
             return true;
         }
 
-        $this->logger->error('The direction is wrong');
+        $this->logger->warning('The direction is wrong');
         return false;
     }
 
@@ -80,7 +80,7 @@ class Rules
             return true;
         }
 
-        $this->logger->error('You do not have ability to reach this cell');
+        $this->logger->warning('You do not have ability to reach this cell');
         return false;
     }
 
@@ -91,7 +91,7 @@ class Rules
             return true;
         }
 
-        $this->logger->error('You do not have an ability to reach this cell');
+        $this->logger->warning('You do not have an ability to reach this cell');
         return false;
     }
 

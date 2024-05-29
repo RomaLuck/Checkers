@@ -53,7 +53,7 @@ class Game
             $cellTo = $this->transformInputData($to);
             $player = $this->initPlayer($cellFrom);
         } catch (RuntimeException $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->warning($e->getMessage());
             return;
         }
 
@@ -69,22 +69,37 @@ class Game
             $this->clearCells($figuresForBeat);
             $this->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
             $this->logger->info("{$player->getName()} : [$from] => [$to]");
-
-            $_SESSION['desk'] = $this->desk;
         } elseif ($this->rules->checkForMove($cellFrom, $cellTo)) {
             $this->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
             $this->logger->info("{$player->getName()} : [$from] => [$to]");
-
-            $_SESSION['desk'] = $this->desk;
         } else {
-            $this->logger->error('Something went wrong. Follow the rules!');
             return;
         }
         if ($this->isGameOver()) {
             $this->logger->info('GAME OVER');
             return;
         }
+
+        $this->updateFigures();
+        $_SESSION['desk'] = $this->desk;
         $_SESSION['queue'] = $this->queue * -1;
+    }
+
+    public function updateFigures(): void
+    {
+        $whiteChecker = current(array_intersect(White::WHITE_NUMBERS, Checker::CHECKER_NUMBERS));
+        $blackChecker = current(array_intersect(Black::BLACK_NUMBERS, Checker::CHECKER_NUMBERS));
+        $whiteKing = current(array_intersect(White::WHITE_NUMBERS, King::KING_NUMBERS));
+        $blackKing = current(array_intersect(Black::BLACK_NUMBERS, King::KING_NUMBERS));
+
+        foreach ($this->desk as $rowKey => $row) {
+            if ($row[0] === $blackChecker) {
+                $this->desk[$rowKey][0] = $blackKing;
+            }
+            if ($row[7] === $whiteChecker) {
+                $this->desk[$rowKey][7] = $whiteKing;
+            }
+        }
     }
 
     public function initPlayer(array $from): TeamPlayerInterface

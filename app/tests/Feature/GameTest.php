@@ -63,7 +63,7 @@ test('false direction', function () {
 
     $logContent = LogReader::read(1);
 
-    expect($logContent[0])->toContain('Something went wrong. Follow the rules!');
+    expect($logContent[0])->toContain('The direction is wrong');
 });
 
 test('false step opportunity', function () {
@@ -75,5 +75,5 @@ test('false step opportunity', function () {
 
     $logContent = LogReader::read(1);
 
-    expect($logContent[0])->toContain('Something went wrong. Follow the rules!');
+    expect($logContent[0])->toContain('You do not have ability to reach this cell');
 });
