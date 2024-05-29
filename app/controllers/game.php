@@ -10,7 +10,14 @@ $black = new Black($_SESSION['black']);
 $game = new Game($white, $black);
 $queue = $game->getQueue();
 
-$logs = LogReader::read(10);
+$rawLogs = LogReader::read(10);
+
+$logs = [];
+foreach ($rawLogs as $rawLog) {
+    if (preg_match('!^\[checkers] \[(?<logLevel>\w+)] (?<message>.+)!iu', $rawLog, $rawLogMatch)) {
+        $logs[] = $rawLogMatch;
+    }
+}
 
 view('game.view.php', [
     'logs' => $logs,
