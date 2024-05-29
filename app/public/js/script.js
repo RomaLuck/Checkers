@@ -4,11 +4,23 @@ function assignPiecesToCells() {
     for (let i = 0; i < tablePieces.length; i++) {
         const piece = document.createElement('div');
         const cellValue = parseInt(tablePieces[i].innerText, 10);
-        if (cellValue === 1) {
-            piece.className = "white-piece";
-        } else if (cellValue === 2) {
-            piece.className = "black-piece";
+        switch (cellValue) {
+            case 1:
+                piece.className = "white-checker";
+                break;
+            case 2:
+                piece.className = "black-checker";
+                break;
+            case 3:
+                piece.className = "white-king";
+                break;
+            case 4:
+                piece.className = "black-king";
+                break;
+            case -1:
+                piece.className = "clean-cell";
         }
+
         tablePieces[i].innerText = '';
         tablePieces[i].appendChild(piece);
     }
@@ -54,14 +66,21 @@ function handleTableClick() {
 function rotateTable() {
     const table = document.getElementById('table-responsive');
     const queueParam = document.getElementById('queue');
+    let letters = document.querySelectorAll("table th");
 
     table.style.transition = 'transform 0.5s ease-in-out';
 
     if (queueParam.innerText.trim() === '1') {
         table.style.transform = 'rotate(-90deg)';
+        letters.forEach((letter) => {
+            letter.style.transform = 'rotate(90deg)';
+        });
     }
     if (queueParam.innerText.trim() === '-1') {
         table.style.transform = 'rotate(90deg)';
+        letters.forEach((letter) => {
+            letter.style.transform = 'rotate(-90deg)';
+        });
     }
 }
 
