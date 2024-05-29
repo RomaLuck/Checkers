@@ -18,38 +18,46 @@
     </form>
 </div>
 
-<div class="container">
+<div class="container p-5 border shadow">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-12 col-xl-6">
             <div class="d-flex justify-content-center">
                 <div class="table-responsive text-center" id="table-responsive">
                     <table class="chess-board" id="chess-board">
                         <?php
                         $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-                        $i = 0;
-                        foreach ($game->getDesk() as $deskRow) {
+                        $numbers = [1, 2, 3, 4, 5, 6, 7, 8];
+                        $i = 0; ?>
+                        <tr>
+                            <?php foreach ($numbers as $number) { ?>
+                                <th><?= $number ?></th>
+                            <?php } ?>
+                        </tr>
+
+                        <?php foreach ($game->getDesk() as $deskRow) {
                             $j = 1;
                             ?>
                             <tr>
                                 <?php foreach ($deskRow as $cell) { ?>
                                     <td id="<?= $letters[$i] . $j++ ?>"><?= $cell ?></td>
                                 <?php } ?>
+                                <th>
+                                    <?= $letters[$i] ?>
+                                </th>
                             </tr>
                             <?php
                             $i++;
                         } ?>
                     </table>
-
                 </div>
-
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-12 col-xl-6">
             <h2 class="text-center">Game Log</h2>
             <div class="d-flex justify-content-center">
                 <ul id="game-log">
                     <?php foreach ($logs as $log) { ?>
-                        <li><?= $log ?></li>
+                        <li class="text-<?= strtolower($log['logLevel'])?>"><?= $log['message'] ?></li>
                     <?php } ?>
                 </ul>
             </div>
