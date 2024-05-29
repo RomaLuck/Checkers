@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Src\Team;
 
 use Src\Figure\FigureInterface;
@@ -8,6 +10,7 @@ class White implements TeamPlayerInterface
 {
     public const WHITE_NUMBERS = [1, 3];
     public const DIRECTION_WHITE = 1;
+    public const TRANSFORMATION_CELL_WHITE = 7;
 
     private string $name;
     private FigureInterface $figure;

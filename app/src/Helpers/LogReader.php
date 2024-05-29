@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Src\Helpers;
 
 use Symfony\Component\Finder\Finder;
@@ -23,7 +25,7 @@ class LogReader
         }
 
         $maxLines = count($logs);
-        if ($maxLines < $linesNum) {
+        if ($maxLines !== null && $maxLines < $linesNum) {
             $linesNum = $maxLines;
         }
 

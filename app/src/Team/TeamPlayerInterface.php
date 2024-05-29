@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Src\Team;
 
 use Src\Figure\FigureInterface;
