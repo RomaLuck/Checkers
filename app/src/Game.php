@@ -17,6 +17,7 @@ final class Game
 {
     public const WHITE_QUEUE = 1;
     public const UPDATE_QUEUE = -1;
+
     private CheckerDesk $desk;
     private LoggerInterface $logger;
     private Rules $rules;
@@ -25,7 +26,7 @@ final class Game
 
     public function __construct(PlayerInterface $white, PlayerInterface $black)
     {
-        $deskData = $_SESSION['desk'] ?? CheckerDesk::initStartDesk();
+        $deskData = $_SESSION['desk'] ?? CheckerDesk::START_DESK;
         $this->desk = new CheckerDesk($deskData);
         $this->queue = $_SESSION['queue'] ?? self::WHITE_QUEUE;
         $this->logger = LoggerFactory::getLogger('checkers');
@@ -76,22 +77,36 @@ final class Game
         $this->getRules()->setPlayer($player);
         $this->getRules()->setDesk($this->getDesk()->getDeskData());
 
-        $figuresForBeat = $this->getRules()->findFiguresForBeat($cellFrom, $cellTo);
-        if (count($figuresForBeat) > 0 && $this->getRules()->checkForBeat($cellFrom, $cellTo)) {
-            $this->getDesk()->clearCells($figuresForBeat);
-            $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
-            $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
-        } elseif ($this->getRules()->checkForMove($cellFrom, $cellTo)) {
-            $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
-            $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
-        } else {
-            return;
-        }
-        if ($this->isGameOver()) {
-            $this->getLogger()->info('GAME OVER');
+        if (!$this->isValidMove($cellFrom, $cellTo)) {
             return;
         }
 
+        $this->updateGameState($cellFrom, $cellTo, $selectedTeamNumber, $player);
+        $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
+
+        if ($this->isGameOver()) {
+            $this->getLogger()->info('GAME OVER');
+        }
+    }
+
+    private function isValidMove(array $cellFrom, array $cellTo): bool
+    {
+        $figuresForBeat = $this->getRules()->findFiguresForBeat($cellFrom, $cellTo);
+        if (count($figuresForBeat) > 0 && $this->getRules()->checkForBeat($cellFrom, $cellTo)) {
+            $this->getDesk()->clearCells($figuresForBeat);
+            return true;
+        }
+
+        if ($this->getRules()->checkForMove($cellFrom, $cellTo)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function updateGameState(array $cellFrom, array $cellTo, int $selectedTeamNumber): void
+    {
+        $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
         $this->getDesk()->updateFigures();
         $_SESSION['desk'] = $this->getDesk()->getDeskData();
         $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;

@@ -10,7 +10,7 @@ beforeEach(function () {
     $this->white = new White('Roma');
     $this->black = new Black('Olena');
     $this->game = new Game($this->white, $this->black);
-    $_SESSION['desk'] = CheckerDesk::initStartDesk();
+    $_SESSION['desk'] = CheckerDesk::START_DESK;
 });
 
 afterEach(function () {

@@ -11,6 +11,17 @@ use Src\Team\White;
 
 final class CheckerDesk
 {
+    public const START_DESK = [
+        [1, -1, 1, -1, 0, -1, 2, -1],
+        [-1, 1, -1, 0, -1, 2, -1, 2],
+        [1, -1, 1, -1, 0, -1, 2, -1],
+        [-1, 1, -1, 0, -1, 2, -1, 2],
+        [1, -1, 1, -1, 0, -1, 2, -1],
+        [-1, 1, -1, 0, -1, 2, -1, 2],
+        [1, -1, 1, -1, 0, -1, 2, -1],
+        [-1, 1, -1, 0, -1, 2, -1, 2],
+    ];
+
     private array $deskData;
 
     public function __construct(array $deskData)
@@ -21,20 +32,6 @@ final class CheckerDesk
     public function getDeskData(): array
     {
         return $this->deskData;
-    }
-
-    public static function initStartDesk(): array
-    {
-        return [
-            [1, -1, 1, -1, 0, -1, 2, -1],
-            [-1, 1, -1, 0, -1, 2, -1, 2],
-            [1, -1, 1, -1, 0, -1, 2, -1],
-            [-1, 1, -1, 0, -1, 2, -1, 2],
-            [1, -1, 1, -1, 0, -1, 2, -1],
-            [-1, 1, -1, 0, -1, 2, -1, 2],
-            [1, -1, 1, -1, 0, -1, 2, -1],
-            [-1, 1, -1, 0, -1, 2, -1, 2],
-        ];
     }
 
     /**
