@@ -1,4 +1,8 @@
-<?php require base_path('views/_partials/header.php') ?>
+<?php
+
+declare(strict_types=1);
+
+require base_path('views/_partials/header.php') ?>
 <?php require base_path('views/_partials/nav.php') ?>
     <body>
 <div class="container mt-5">
@@ -26,11 +30,11 @@
                     <table class="chess-board" id="chess-board">
                         <?php
                         $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-                        $numbers = [1, 2, 3, 4, 5, 6, 7, 8];
-                        $i = 0; ?>
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8];
+$i = 0; ?>
                         <tr>
                             <?php foreach ($numbers as $number) { ?>
-                                <th><?= $number ?></th>
+                                <th><?php echo $number ?></th>
                             <?php } ?>
                         </tr>
 
@@ -39,10 +43,10 @@
                             ?>
                             <tr>
                                 <?php foreach ($deskRow as $cell) { ?>
-                                    <td id="<?= $letters[$i] . $j++ ?>"><?= $cell ?></td>
+                                    <td id="<?php echo $letters[$i] . $j++ ?>"><?php echo $cell ?></td>
                                 <?php } ?>
                                 <th>
-                                    <?= $letters[$i] ?>
+                                    <?php echo $letters[$i] ?>
                                 </th>
                             </tr>
                             <?php
@@ -57,14 +61,14 @@
             <div class="d-flex justify-content-center">
                 <ul id="game-log">
                     <?php foreach ($logs as $log) { ?>
-                        <li class="text-<?= strtolower($log['logLevel'])?>"><?= $log['message'] ?></li>
+                        <li class="text-<?php echo strtolower($log['logLevel'])?>"><?php echo $log['message'] ?></li>
                     <?php } ?>
                 </ul>
             </div>
         </div>
     </div>
 </div>
-<div id="queue" class="d-none"><?= $queue ?></div>
+<div id="queue" class="d-none"><?php echo $queue ?></div>
 <script src="js/script.js"></script>
 
 <?php require base_path('views/_partials/footer.php') ?>

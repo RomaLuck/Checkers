@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Src\Team;
 
 use RuntimeException;
 
-class PlayerDetector
+final class PlayerDetector
 {
     public function __construct(
         private PlayerInterface $white,
         private PlayerInterface $black
-    ){
+    ) {
     }
 
     public function detect(int $teamNumber): PlayerInterface

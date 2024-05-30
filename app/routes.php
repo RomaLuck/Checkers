@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 $router->get('/', 'index.php');
 $router->post('/', 'start.php');
 $router->get('/game', 'game.php');

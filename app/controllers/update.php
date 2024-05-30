@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Src\Game;
 use Src\Team\Black;
 use Src\Team\White;

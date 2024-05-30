@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Helpers;
 
-class Router
+final class Router
 {
     protected array $routes = [];
 
@@ -29,12 +29,10 @@ class Router
         return $this->add('POST', $uri, $controller);
     }
 
-
     public function route($uri, $method)
     {
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-
                 return require base_path('controllers/' . $route['controller']);
             }
         }

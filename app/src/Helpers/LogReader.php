@@ -41,9 +41,6 @@ class LogReader
         }
     }
 
-    /**
-     * @return Finder
-     */
     public static function getLogFiles(): Finder
     {
         $finder = new Finder();

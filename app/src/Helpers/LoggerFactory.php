@@ -10,7 +10,7 @@ use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
-class LoggerFactory
+final class LoggerFactory
 {
     public static string $logFile = __DIR__ . '/../../logs/app.log';
     private static string $textFormat = "[%channel%] [%level_name%] [%datetime%]: %message% \n";

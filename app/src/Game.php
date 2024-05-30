@@ -80,10 +80,10 @@ final class Game
         if (count($figuresForBeat) > 0 && $this->getRules()->checkForBeat($cellFrom, $cellTo)) {
             $this->getDesk()->clearCells($figuresForBeat);
             $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
-            $this->getLogger()->info("{$player->getName()} : [$from] => [$to]");
+            $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
         } elseif ($this->getRules()->checkForMove($cellFrom, $cellTo)) {
             $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
-            $this->getLogger()->info("{$player->getName()} : [$from] => [$to]");
+            $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
         } else {
             return;
         }
@@ -97,6 +97,9 @@ final class Game
         $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;
     }
 
+    /**
+     * @return array<int>
+     */
     public function transformInputData(string $cell): array
     {
         if (preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {

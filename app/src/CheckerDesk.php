@@ -38,7 +38,7 @@ final class CheckerDesk
     }
 
     /**
-     * @param int[] $cellFrom
+     * @param array<int> $cellFrom
      */
     public function getSelectedTeamNumber(array $cellFrom): int
     {
@@ -46,7 +46,7 @@ final class CheckerDesk
     }
 
     /**
-     * @param array[] $figuresForBeat
+     * @param array<array> $figuresForBeat
      */
     public function clearCells(array $figuresForBeat): void
     {
@@ -56,8 +56,8 @@ final class CheckerDesk
     }
 
     /**
-     * @param int[] $cellFrom
-     * @param int[] $cellTo
+     * @param array<int> $cellFrom
+     * @param array<int> $cellTo
      */
     public function updateDesk(array $cellFrom, array $cellTo, int $selectedTeamNumber): void
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 function view($path, $attributes = []): void
 {
     extract($attributes);
@@ -10,7 +12,7 @@ function view($path, $attributes = []): void
 function redirect($path): void
 {
     header("Location: {$path}");
-    exit();
+    exit;
 }
 
 function base_path($path): string

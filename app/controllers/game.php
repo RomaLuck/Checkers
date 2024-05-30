@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Src\Game;
 use Src\Helpers\LogReader;
 use Src\Team\Black;
@@ -22,5 +24,5 @@ foreach ($rawLogs as $rawLog) {
 view('game.view.php', [
     'logs' => $logs,
     'game' => $game,
-    'queue' => $queue
+    'queue' => $queue,
 ]);

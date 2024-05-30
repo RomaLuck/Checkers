@@ -12,15 +12,15 @@ use Src\Team\White;
 final class Rules
 {
     /**
-     * @var array[]
+     * @var array<array>
      */
     private array $desk;
     /**
-     * @var int[]
+     * @var array<int>
      */
     private array $from;
     /**
-     * @var int[]
+     * @var array<int>
      */
     private array $to;
     private LoggerInterface $logger;
@@ -32,8 +32,8 @@ final class Rules
     }
 
     /**
-     * @param int[] $from
-     * @param int[] $to
+     * @param array<int> $from
+     * @param array<int> $to
      */
     public function checkForMove(array $from, array $to): bool
     {
@@ -46,8 +46,8 @@ final class Rules
     }
 
     /**
-     * @param int[] $from
-     * @param int[] $to
+     * @param array<int> $from
+     * @param array<int> $to
      */
     public function checkForBeat(array $from, array $to): bool
     {
@@ -59,7 +59,7 @@ final class Rules
     }
 
     /**
-     * @param array[] $desk
+     * @param array<array> $desk
      */
     public function setDesk(array $desk): void
     {
@@ -72,8 +72,8 @@ final class Rules
     }
 
     /**
-     * @param int[] $from
-     * @param int[] $to
+     * @param array<int> $from
+     * @param array<int> $to
      */
     public function findFiguresForBeat(array $from, array $to): array
     {
@@ -107,7 +107,7 @@ final class Rules
     {
         $playerDirection = $this->player->getDirection();
         $playerFigureDirections = $this->player->getFigure()->getAvailableDirections();
-        $availableDirections = array_map(function ($playerFigureDirection) use ($playerDirection) {
+        $availableDirections = array_map(static function ($playerFigureDirection) use ($playerDirection) {
             return $playerFigureDirection * $playerDirection;
         }, $playerFigureDirections);
         if (in_array($this->defineDirection(), $availableDirections)) {
