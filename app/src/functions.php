@@ -1,6 +1,6 @@
 <?php
 
-function view($path, $attributes = [])
+function view($path, $attributes = []): void
 {
     extract($attributes);
 
@@ -13,7 +13,7 @@ function redirect($path)
     exit();
 }
 
-function base_path($path)
+function base_path($path): string
 {
     return BASE_PATH . $path;
 }

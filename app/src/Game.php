@@ -7,14 +7,15 @@ namespace Src;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Src\Figure\Checker;
-use Src\Figure\FigureInterface;
+use Src\Figure\FigureFactory;
 use Src\Figure\King;
 use Src\Helpers\LoggerFactory;
 use Src\Team\Black;
-use Src\Team\TeamPlayerInterface;
+use Src\Team\PlayerDetector;
+use Src\Team\PlayerInterface;
 use Src\Team\White;
 
-class Game
+final class Game
 {
     public const WHITE_QUEUE = 1;
     public const UPDATE_QUEUE = -1;
@@ -25,28 +26,16 @@ class Game
     private array $desk;
     private LoggerInterface $logger;
     private Rules $rules;
-    private TeamPlayerInterface $white;
-    private TeamPlayerInterface $black;
     private int $queue;
+    private PlayerDetector $playerDetector;
 
-    public function __construct(TeamPlayerInterface $white, TeamPlayerInterface $black)
+    public function __construct(PlayerInterface $white, PlayerInterface $black)
     {
-        if (isset($_SESSION['desk'])) {
-            $this->desk = $_SESSION['desk'];
-        } else {
-            $this->desk = CheckerDesk::initDesk();
-        }
-
-        if (isset($_SESSION['queue'])) {
-            $this->queue = $_SESSION['queue'];
-        } else {
-            $this->queue = self::WHITE_QUEUE;
-        }
-
+        $this->desk = $_SESSION['desk'] ?? CheckerDesk::initDesk();
+        $this->queue = $_SESSION['queue'] ?? self::WHITE_QUEUE;
         $this->logger = LoggerFactory::getLogger('checkers');
         $this->rules = new Rules($this->getLogger());
-        $this->white = $white;
-        $this->black = $black;
+        $this->playerDetector = new PlayerDetector($white, $black);
     }
 
     public function run(string $from, string $to): void
@@ -54,21 +43,21 @@ class Game
         try {
             $cellFrom = $this->transformInputData($from);
             $cellTo = $this->transformInputData($to);
-            $player = $this->initPlayer($cellFrom);
         } catch (RuntimeException $e) {
             $this->getLogger()->warning($e->getMessage());
             return;
         }
 
         $selectedTeamNumber = $this->getSelectedTeamNumber($cellFrom);
-        $figure = $this->initFigure($selectedTeamNumber);
+        $player = $this->getPlayerDetector()->detect($selectedTeamNumber);
+        $figure = (new FigureFactory($selectedTeamNumber))->create();
 
         $player->setFigure($figure);
         $this->getRules()->setPlayer($player);
         $this->getRules()->setDesk($this->getDesk());
 
         $figuresForBeat = $this->getRules()->findFiguresForBeat($cellFrom, $cellTo);
-        if ($this->getRules()->checkForBeat($cellFrom, $cellTo) && count($figuresForBeat) > 0) {
+        if (count($figuresForBeat) > 0 && $this->getRules()->checkForBeat($cellFrom, $cellTo)) {
             $this->clearCells($figuresForBeat);
             $this->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
             $this->getLogger()->info("{$player->getName()} : [$from] => [$to]");
@@ -88,6 +77,31 @@ class Game
         $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;
     }
 
+    public function getDesk(): array
+    {
+        return $this->desk;
+    }
+
+    public function getQueue(): int
+    {
+        return $this->queue;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    public function getRules(): Rules
+    {
+        return $this->rules;
+    }
+
+    public function getPlayerDetector(): PlayerDetector
+    {
+        return $this->playerDetector;
+    }
+
     public function transformInputData(string $cell): array
     {
         if (preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
@@ -103,36 +117,17 @@ class Game
         throw new RuntimeException('Cell is incorrect');
     }
 
-    public function initPlayer(array $from): TeamPlayerInterface
-    {
-        $selectedTeamNumber = $this->getSelectedTeamNumber($from);
-        if ($selectedTeamNumber > 0) {
-            if (in_array($selectedTeamNumber, White::WHITE_NUMBERS, true)) {
-                return $this->white;
-            }
-            if (in_array($selectedTeamNumber, Black::BLACK_NUMBERS, true)) {
-                return $this->black;
-            }
-        }
-        throw new RuntimeException('Can not find player on this cell');
-    }
-
-    private function getSelectedTeamNumber(array $cellFrom): mixed
+    /**
+     * @param int[] $cellFrom
+     */
+    private function getSelectedTeamNumber(array $cellFrom): int
     {
         return $this->desk[$cellFrom[0]][$cellFrom[1]];
     }
 
-    private function initFigure(int $selectedTeamNumber): FigureInterface
-    {
-        if (in_array($selectedTeamNumber, Checker::CHECKER_NUMBERS)) {
-            return new Checker();
-        }
-        if (in_array($selectedTeamNumber, King::KING_NUMBERS)) {
-            return new King();
-        }
-        throw new RuntimeException('Figure is not selected');
-    }
-
+    /**
+     * @param array[] $figuresForBeat
+     */
     private function clearCells(array $figuresForBeat): void
     {
         foreach ($figuresForBeat as $cell) {
@@ -158,6 +153,10 @@ class Game
         return $whiteCheckers === 0 || $blackCheckers === 0;
     }
 
+    /**
+     * @param int[] $cellFrom
+     * @param int[] $cellTo
+     */
     private function updateDesk(array $cellFrom, array $cellTo, int $selectedTeamNumber): void
     {
         $this->desk[$cellFrom[0]][$cellFrom[1]] = 0;
@@ -179,25 +178,5 @@ class Game
                 $this->desk[$rowKey][White::TRANSFORMATION_CELL_WHITE] = $whiteKing;
             }
         }
-    }
-
-    public function getDesk(): array
-    {
-        return $this->desk;
-    }
-
-    public function getQueue(): int
-    {
-        return $this->queue;
-    }
-
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    public function getRules(): Rules
-    {
-        return $this->rules;
     }
 }

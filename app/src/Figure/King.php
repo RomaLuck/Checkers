@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Figure;
 
-class King implements FigureInterface
+final class King implements FigureInterface
 {
     public const KING_NUMBERS = [3, 4];
     public const KING_DIRECTIONS = [1, -1];

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Src;
 
-class CheckerDesk
+final class CheckerDesk
 {
     public static function initDesk(): array
     {

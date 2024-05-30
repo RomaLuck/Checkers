@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Src\Figure;
 
-class Checker implements FigureInterface
+final class Checker implements FigureInterface
 {
     public const CHECKER_NUMBERS = [1, 2];
     public const CHECKER_DIRECTIONS = [1];

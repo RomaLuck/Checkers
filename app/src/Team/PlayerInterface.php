@@ -6,7 +6,7 @@ namespace Src\Team;
 
 use Src\Figure\FigureInterface;
 
-interface TeamPlayerInterface
+interface PlayerInterface
 {
     public function getName();
 

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Src;
 
 use Psr\Log\LoggerInterface;
-use Src\Team\TeamPlayerInterface;
+use Src\Team\PlayerInterface;
 
-class Rules
+final class Rules
 {
     private array $desk;
     private array $from;
     private array $to;
     private LoggerInterface $logger;
-    private TeamPlayerInterface $player;
+    private PlayerInterface $player;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -44,9 +44,26 @@ class Rules
         $this->desk = $desk;
     }
 
-    public function setPlayer(TeamPlayerInterface $player): void
+    public function setPlayer(PlayerInterface $player): void
     {
         $this->player = $player;
+    }
+
+    public function findFiguresForBeat(array $from, array $to): array
+    {
+        $figuresCells = [];
+        $letters = [$from[0], $to[0]];
+        $numbers = [$from[1], $to[1]];
+
+        for ($i = min($letters) + 1; $i < max($letters); $i++) {
+            for ($j = min($numbers) + 1; $j < max($numbers); $j++) {
+                if ($this->desk[$i][$j] > 0) {
+                    $figuresCells[] = [$i, $j];
+                }
+            }
+        }
+
+        return $figuresCells;
     }
 
     private function isAvailableCell(): bool
@@ -110,22 +127,5 @@ class Rules
     private function defineStep(): int
     {
         return $this->to[1] - $this->from[1];
-    }
-
-    public function findFiguresForBeat(array $from, array $to): array
-    {
-        $figuresCells = [];
-        $letters = [$from[0], $to[0]];
-        $numbers = [$from[1], $to[1]];
-
-        for ($i = min($letters) + 1; $i < max($letters); $i++) {
-            for ($j = min($numbers) + 1; $j < max($numbers); $j++) {
-                if ($this->desk[$i][$j] > 0) {
-                    $figuresCells[] = [$i, $j];
-                }
-            }
-        }
-
-        return $figuresCells;
     }
 }

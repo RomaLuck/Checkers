@@ -4,7 +4,7 @@ use Src\CheckerDesk;
 use Src\Game;
 use Src\Helpers\LogReader;
 use Src\Team\Black;
-use Src\Team\TeamPlayerInterface;
+use Src\Team\PlayerInterface;
 use Src\Team\White;
 
 beforeEach(function () {
@@ -32,18 +32,6 @@ test('transform(unavailable exception)', function () {
 test('transform(incorrect exception)', function () {
     $this->game->transformInputData('10');
 })->throws(RuntimeException::class, 'Cell is incorrect');
-
-test('init player', function () {
-    $cell = $this->game->transformInputData('a3');
-    $player = $this->game->initPlayer($cell);
-
-    expect($player)->toBeInstanceOf(TeamPlayerInterface::class);
-});
-
-test('init player(exception)', function () {
-    $cell = $this->game->transformInputData('a4');
-    $this->game->initPlayer($cell);
-})->throws(RuntimeException::class, 'Can not find player on this cell');
 
 test('run', function () {
     $this->game->run('a3', 'b4');

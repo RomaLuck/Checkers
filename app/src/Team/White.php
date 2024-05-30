@@ -6,7 +6,7 @@ namespace Src\Team;
 
 use Src\Figure\FigureInterface;
 
-class White implements TeamPlayerInterface
+final class White implements PlayerInterface
 {
     public const WHITE_NUMBERS = [1, 3];
     public const DIRECTION_WHITE = 1;

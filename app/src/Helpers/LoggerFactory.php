@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 class LoggerFactory
 {
     private static string $textFormat = "[%channel%] [%level_name%] [%datetime%]: %message% \n";
-    private static string $dateFormat = "Y-m-d H:i:s";
+    private static string $dateFormat = 'Y-m-d H:i:s';
     public static string $logFile = __DIR__ . '/../../logs/app.log';
 
     public static function getLogger($loggerName): LoggerInterface
