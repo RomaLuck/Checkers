@@ -34,7 +34,7 @@
                             <?php } ?>
                         </tr>
 
-                        <?php foreach ($game->getDesk() as $deskRow) {
+                        <?php foreach ($game->getDesk()->getDeskData() as $deskRow) {
                             $j = 1;
                             ?>
                             <tr>

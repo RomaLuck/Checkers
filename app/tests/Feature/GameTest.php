@@ -4,15 +4,13 @@ use Src\CheckerDesk;
 use Src\Game;
 use Src\Helpers\LogReader;
 use Src\Team\Black;
-use Src\Team\PlayerInterface;
 use Src\Team\White;
 
 beforeEach(function () {
     $this->white = new White('Roma');
     $this->black = new Black('Olena');
     $this->game = new Game($this->white, $this->black);
-    $this->desk = CheckerDesk::initDesk();
-    $_SESSION['desk'] = $this->desk;
+    $_SESSION['desk'] = CheckerDesk::initStartDesk();
 });
 
 afterEach(function () {
@@ -36,7 +34,7 @@ test('transform(incorrect exception)', function () {
 test('run', function () {
     $this->game->run('a3', 'b4');
 
-    $updatedDesk = $this->game->getDesk();
+    $updatedDesk = $this->game->getDesk()->getDeskData();
     expect($updatedDesk[0][2])->toBe(0)
         ->and($updatedDesk[1][3])->toBe(1);
 });
@@ -45,7 +43,8 @@ test('false direction', function () {
     $this->game->run('a3', 'b4');
     $this->game->run('b4', 'a3');
 
-    $updatedDesk = $this->game->getDesk();
+    $updatedDesk = $this->game->getDesk()->getDeskData();
+
     expect($updatedDesk[0][2])->toBe(0)
         ->and($updatedDesk[1][3])->toBe(1);
 
@@ -57,7 +56,7 @@ test('false direction', function () {
 test('false step opportunity', function () {
     $this->game->run('a3', 'c5');
 
-    $updatedDesk = $this->game->getDesk();
+    $updatedDesk = $this->game->getDesk()->getDeskData();
     expect($updatedDesk[0][2])->toBe(1)
         ->and($updatedDesk[2][4])->toBe(0);
 
