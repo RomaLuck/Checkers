@@ -8,7 +8,7 @@ use Src\Figure\FigureInterface;
 
 interface PlayerInterface
 {
-    public function getName();
+    public function getName(): string;
 
     public function getTeamNumbers(): array;
 

@@ -8,7 +8,7 @@ class Router
 {
     protected array $routes = [];
 
-    public function add($method, $uri, $controller)
+    public function add($method, $uri, $controller): static
     {
         $this->routes[] = [
             'uri' => $uri,
@@ -19,12 +19,12 @@ class Router
         return $this;
     }
 
-    public function get($uri, $controller)
+    public function get($uri, $controller): static
     {
         return $this->add('GET', $uri, $controller);
     }
 
-    public function post($uri, $controller)
+    public function post($uri, $controller): static
     {
         return $this->add('POST', $uri, $controller);
     }

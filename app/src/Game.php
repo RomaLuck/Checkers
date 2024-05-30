@@ -38,6 +38,31 @@ final class Game
         $this->playerDetector = new PlayerDetector($white, $black);
     }
 
+    public function getDesk(): array
+    {
+        return $this->desk;
+    }
+
+    public function getQueue(): int
+    {
+        return $this->queue;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    public function getRules(): Rules
+    {
+        return $this->rules;
+    }
+
+    public function getPlayerDetector(): PlayerDetector
+    {
+        return $this->playerDetector;
+    }
+
     public function run(string $from, string $to): void
     {
         try {
@@ -75,31 +100,6 @@ final class Game
         $this->updateFigures();
         $_SESSION['desk'] = $this->getDesk();
         $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;
-    }
-
-    public function getDesk(): array
-    {
-        return $this->desk;
-    }
-
-    public function getQueue(): int
-    {
-        return $this->queue;
-    }
-
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    public function getRules(): Rules
-    {
-        return $this->rules;
-    }
-
-    public function getPlayerDetector(): PlayerDetector
-    {
-        return $this->playerDetector;
     }
 
     public function transformInputData(string $cell): array

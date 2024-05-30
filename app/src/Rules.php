@@ -5,12 +5,23 @@ declare(strict_types=1);
 namespace Src;
 
 use Psr\Log\LoggerInterface;
+use Src\Team\Black;
 use Src\Team\PlayerInterface;
+use Src\Team\White;
 
 final class Rules
 {
+    /**
+     * @var array[]
+     */
     private array $desk;
+    /**
+     * @var int[]
+     */
     private array $from;
+    /**
+     * @var int[]
+     */
     private array $to;
     private LoggerInterface $logger;
     private PlayerInterface $player;
@@ -20,6 +31,10 @@ final class Rules
         $this->logger = $logger;
     }
 
+    /**
+     * @param int[] $from
+     * @param int[] $to
+     */
     public function checkForMove(array $from, array $to): bool
     {
         $this->from = $from;
@@ -30,6 +45,10 @@ final class Rules
             && $this->isOpportunityForMove();
     }
 
+    /**
+     * @param int[] $from
+     * @param int[] $to
+     */
     public function checkForBeat(array $from, array $to): bool
     {
         $this->from = $from;
@@ -39,6 +58,9 @@ final class Rules
             && $this->isOpportunityForBeat();
     }
 
+    /**
+     * @param array[] $desk
+     */
     public function setDesk(array $desk): void
     {
         $this->desk = $desk;
@@ -49,6 +71,10 @@ final class Rules
         $this->player = $player;
     }
 
+    /**
+     * @param int[] $from
+     * @param int[] $to
+     */
     public function findFiguresForBeat(array $from, array $to): array
     {
         $figuresCells = [];
@@ -118,10 +144,10 @@ final class Rules
     {
         $step = $this->defineStep();
         if ($step > 0) {
-            return 1;
+            return White::DIRECTION_WHITE;
         }
 
-        return -1;
+        return Black::DIRECTION_BLACK;
     }
 
     private function defineStep(): int

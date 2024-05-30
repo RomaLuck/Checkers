@@ -7,7 +7,7 @@ function view($path, $attributes = []): void
     require base_path('views/' . $path);
 }
 
-function redirect($path)
+function redirect($path): void
 {
     header("Location: {$path}");
     exit();
