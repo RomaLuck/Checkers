@@ -117,34 +117,38 @@ final class Game
      */
     public function transformInputData(string $cell): array
     {
-        if (preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
-            $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        if (!preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
+            throw new RuntimeException('Cell is incorrect');
+        }
 
-            foreach ($letters as $key => $letter) {
-                if ($letter === $splitCell['letter'] && $splitCell['number'] > 0 && $splitCell['number'] <= 8) {
-                    return [$key, $splitCell['number'] - 1];
-                }
-            }
+        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        $key = array_search($splitCell['letter'], $letters, true);
+
+        if ($key === false || $splitCell['number'] <= 0 || $splitCell['number'] > 8) {
             throw new RuntimeException('Cell is unavailable');
         }
-        throw new RuntimeException('Cell is incorrect');
+
+        return [$key, $splitCell['number'] - 1];
     }
 
     private function isGameOver(): bool
     {
-        $whiteCheckers = 0;
-        $blackCheckers = 0;
+        return $this->countFigures(White::WHITE_NUMBERS) === 0
+            || $this->countFigures(Black::BLACK_NUMBERS) === 0;
+    }
+
+    private function countFigures(array $figureNumbers): int
+    {
+        $count = 0;
 
         foreach ($this->getDesk()->getDeskData() as $row) {
             foreach ($row as $cell) {
-                if (in_array($cell, White::WHITE_NUMBERS, true)) {
-                    $whiteCheckers++;
-                } elseif (in_array($cell, Black::BLACK_NUMBERS, true)) {
-                    $blackCheckers++;
+                if (in_array($cell, $figureNumbers, true)) {
+                    $count++;
                 }
             }
         }
 
-        return $whiteCheckers === 0 || $blackCheckers === 0;
+        return $count;
     }
 }
