@@ -7,8 +7,9 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use Src\Repository\UserRepository;
 
-#[Entity]
+#[Entity(repositoryClass: UserRepository::class)]
 #[Table(name: 'users')]
 class User
 {
@@ -19,6 +20,9 @@ class User
 
     #[Column(type: 'string')]
     private string $username;
+
+    #[Column(type: 'string')]
+    private string $password;
 
     public function setId(int $id): void
     {
@@ -38,5 +42,15 @@ class User
     public function getUsername(): string
     {
         return $this->username;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
     }
 }

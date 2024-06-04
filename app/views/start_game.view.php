@@ -39,19 +39,3 @@ require base_path('views/_partials/header.php') ?>
 
 <?php require base_path('views/_partials/footer.php') ?>
 <script src="js/startForm.js"></script>
-<script>
-    let conn = new WebSocket('ws://localhost:8080');
-
-    conn.onopen = function (e) {
-        console.log("Connection established!");
-    };
-
-    conn.onmessage = function (e) {
-        // console.log(e.data);
-    //    let content = {
-    //        name: <?php //= $_SESSION['name'] ?? '' ?>//;
-    //        color: <?php //= $_SESSION['color'] ?? '' ?>
-    //    }
-    //    conn.send(JSON.stringify(content));
-    //}
-</script>

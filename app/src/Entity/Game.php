@@ -8,8 +8,9 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use Src\Repository\GameRepository;
 
-#[Entity]
+#[Entity(repositoryClass: GameRepository::class)]
 #[Table(name: 'games')]
 class Game
 {
