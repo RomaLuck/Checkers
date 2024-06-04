@@ -9,7 +9,7 @@ use Doctrine\ORM\ORMSetup;
 
 class EntityManagerFactory
 {
-    public const PATH = 'src/Entity';
+    public const PATH = __DIR__ . '/../Entity';
 
     public static function create(): EntityManagerInterface
     {
