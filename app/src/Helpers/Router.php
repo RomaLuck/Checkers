@@ -4,46 +4,37 @@ declare(strict_types=1);
 
 namespace Src\Helpers;
 
-final class Router
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+
+class Router
 {
-    protected array $routes = [];
-
-    public function add($method, $uri, $controller): static
-    {
-        $this->routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'method' => $method,
-        ];
-
-        return $this;
+    public function __construct(
+        private UrlMatcher $matcher,
+        private ControllerResolver $controllerResolver,
+        private ArgumentResolver $argumentResolver,
+    ) {
     }
 
-    public function get($uri, $controller): static
+    public function handle(Request $request): Response
     {
-        return $this->add('GET', $uri, $controller);
-    }
+        $this->matcher->getContext()->fromRequest($request);
 
-    public function post($uri, $controller): static
-    {
-        return $this->add('POST', $uri, $controller);
-    }
+        try {
+            $request->attributes->add($this->matcher->match($request->getPathInfo()));
 
-    public function route($uri, $method)
-    {
-        foreach ($this->routes as $route) {
-            if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-                return require base_path('controllers/' . $route['controller']);
-            }
+            $controller = $this->controllerResolver->getController($request);
+            $arguments = $this->argumentResolver->getArguments($request, $controller);
+
+            return call_user_func_array($controller, $arguments);
+        } catch (ResourceNotFoundException $exception) {
+            return new Response('Not Found', 404);
+        } catch (\Exception $exception) {
+            return new Response('An error occurred', 500);
         }
-
-        return $this->abort();
-    }
-
-    protected function abort($code = 404)
-    {
-        http_response_code($code);
-
-        return require base_path("views/{$code}.php");
     }
 }

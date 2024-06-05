@@ -5,16 +5,27 @@ declare(strict_types=1);
 session_start();
 
 use Src\Helpers\Router;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
 
 const BASE_PATH = __DIR__ . '/../';
 
 require BASE_PATH . 'vendor/autoload.php';
 require BASE_PATH . 'src/functions.php';
 
-$router = new Router();
-require BASE_PATH . 'routes.php';
+$request = Request::createFromGlobals();
+$routes = include BASE_PATH . 'routes.php';
 
-$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-$method = $_SERVER['REQUEST_METHOD'];
+$context = new RequestContext();
+$matcher = new UrlMatcher($routes, $context);
 
-$router->route($uri, $method);
+$controllerResolver = new ControllerResolver();
+$argumentResolver = new ArgumentResolver();
+
+$framework = new Router($matcher, $controllerResolver, $argumentResolver);
+$response = $framework->handle($request);
+
+$response->send();
