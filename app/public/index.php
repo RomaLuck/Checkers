@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-session_start();
-
 use Src\Helpers\Router;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -16,7 +15,11 @@ const BASE_PATH = __DIR__ . '/../';
 require BASE_PATH . 'vendor/autoload.php';
 require BASE_PATH . 'src/functions.php';
 
+$session = new Session;
+$session->start();
+
 $request = Request::createFromGlobals();
+$request->setSession($session);
 $routes = include BASE_PATH . 'routes.php';
 
 $context = new RequestContext();
