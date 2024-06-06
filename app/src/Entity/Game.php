@@ -30,6 +30,14 @@ class Game
     #[Column(type: 'string')]
     private string $table;
 
+    #[Column(type: 'string')]
+    private string $room_id;
+
+    public function __construct()
+    {
+        $this->setRoomId();
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -76,5 +84,15 @@ class Game
     public function setBlackTeamUser(?User $black_team_user): void
     {
         $this->black_team_user = $black_team_user;
+    }
+
+    public function getRoomId(): string
+    {
+        return $this->room_id;
+    }
+
+    public function setRoomId(): void
+    {
+        $this->room_id = md5((new \DateTime())->getTimestamp());
     }
 }
