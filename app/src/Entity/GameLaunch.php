@@ -8,11 +8,11 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
-use Src\Repository\GameRepository;
+use Src\Repository\GameLaunchRepository;
 
-#[Entity(repositoryClass: GameRepository::class)]
+#[Entity(repositoryClass: GameLaunchRepository::class)]
 #[Table(name: 'games')]
-class Game
+class GameLaunch
 {
     #[Id]
     #[Column(type: 'integer')]
