@@ -34,6 +34,10 @@ $route = new Route('/game', ['_controller' => [new GameController(), 'game']]);
 $route->setMethods(['GET']);
 $routes->add('game_view', $route);
 
+$route = new Route('/create', ['_controller' => [new GameController(), 'create']]);
+$route->setMethods(['POST']);
+$routes->add('game_create', $route);
+
 $route = new Route('/game', ['_controller' => [new GameController(), 'update']]);
 $route->setMethods(['POST']);
 $routes->add('game_update', $route);
