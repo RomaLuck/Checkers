@@ -2,9 +2,8 @@
 
 namespace Src\Repository;
 
+use Doctrine\ORM\EntityRepository;
 use Src\Entity\Game;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Game|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,10 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Game[] findAll()
  * @method Game[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GameRepository extends ServiceEntityRepository
+class GameRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Game::class);
-    }
 }

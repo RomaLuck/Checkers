@@ -94,5 +94,7 @@ require base_path('views/_partials/header.php') ?>
             </div>
         </div>
         <!-- Pills content -->
+    </div>
+</div>
 
-        <?php require base_path('views/_partials/footer.php') ?>
+<?php require base_path('views/_partials/footer.php') ?>
