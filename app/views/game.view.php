@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require base_path('views/_partials/header.php') ?>
 <?php require base_path('views/_partials/nav.php') ?>
-    <body>
+
 <div class="container mt-5">
     <form method="POST" class="form d-flex justify-content-center d-none" autocomplete="off">
         <div class="col-md-4">

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 require base_path('views/_partials/header.php') ?>
 
-<body class="p-3 mb-2text-white">
 <div class="container">
     <div class="justify-content-center align-items-center p-5 shadow"
          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">

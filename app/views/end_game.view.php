@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 require base_path('views/_partials/header.php') ?>
 
-<body class="p-3 mb-2 bg-secondary text-white">
 <div class="container">
     <div class="position-absolute bottom-50 end-50">
         <div class="col-5">

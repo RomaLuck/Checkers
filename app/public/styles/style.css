@@ -67,11 +67,6 @@
     opacity: 0.8;
 }
 
-img{
-    height: 70px;
-    width: 70px;
-}
-
 .selected {
     border: 2px solid red;
 }

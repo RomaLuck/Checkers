@@ -3,37 +3,93 @@
 declare(strict_types=1);
 
 require base_path('views/_partials/header.php') ?>
+<?php require base_path('views/_partials/nav.php') ?>
 
-<body class="p-3 mb-2text-white">
 <div class="container">
     <div class="justify-content-center align-items-center p-5 shadow"
          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <form action="" method="post">
-            <div class="form-group mt-md-2">
-                <label for="name"></label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Player name" required>
-                <div class="mt-2">
-                    <button type="button" class="btn btn-light" id="whiteButton">
+        <div class="">
+            <div class="card" style="border-radius: 15px;">
+                <div class="card-body p-4">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                                 alt="Generic placeholder image" class="img-fluid"
+                                 style="width: 120px; border-radius: 10px;"/>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-1"><?= $username ?></h5>
+                            <p class="mb-2 pb-1">
+                                Senior
+                            </p>
+                            <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
+                                <div>
+                                    <p class="small text-muted mb-1">
+                                        Wins
+                                    </p>
+                                    <p class="mb-0">41</p>
+                                </div>
+                                <div class="px-3">
+                                    <p class="small text-muted mb-1">
+                                        Losses
+                                    </p>
+                                    <p class="mb-0">976</p>
+                                </div>
+                                <div>
+                                    <p class="small text-muted mb-1">
+                                        Rating
+                                    </p>
+                                    <p class="mb-0">8.5</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="post" action="/create">
+                <div class="mt-2 d-flex">
+                    <button type="button" class="btn btn-light shadow" id="whiteButton">
                         <input class="form-check-input" type="radio" name="white" id="whiteRadio"
                                hidden="hidden">
-                        <img src="pictures/white.png" alt="white">
+                        <img class="w-25" src="pictures/white.png" alt="white">
                         <label class="form-check-label" for="whiteRadio">
-                            White
+
                         </label>
                     </button>
-                    <button type="button" class="btn btn-light" id="blackButton">
+                    <button type="button" class="btn btn-light shadow" id="blackButton">
                         <input class="form-check-input" type="radio" name="black" id="blackRadio"
                                hidden="hidden">
-                        <img src="pictures/black.png" alt="black">
+                        <img class="w-25" src="pictures/black.png" alt="black">
                         <label class="form-check-label" for="blackRadio">
-                            Black
+
                         </label>
                     </button>
                     <p class="text-danger small text-center mt-3" id="alerts"></p>
                 </div>
-            </div>
-            <button type="submit" class="btn btn-primary mt-md-2 float-end" id="save">Save</button>
-        </form>
+                <button type="submit" class="btn btn-danger mt-md-2 float-end" id="save">Create new game</button>
+            </form>
+        </div>
+        <div class="mt-5">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Link</th>
+                    <th>White</th>
+                    <th>Black</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($gameList as $game) { ?>
+                    <tr>
+                        <td><?= $baseUrl . 'game?room=' . $game->getRoomId() ?></td>
+                        <td><?= $game->getWhiteTeamUser() ?></td>
+                        <td><?= $game->getBlackTeamUser() ?></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
