@@ -16,10 +16,6 @@ class RegistrationForm
     )]
     public string $username;
 
-    #[Assert\NotBlank(message: "Email is required")]
-    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
-    public string $email;
-
     #[Assert\NotBlank(message: "Password is required")]
     #[Assert\Length(
         min: 8,
@@ -36,7 +32,6 @@ class RegistrationForm
     public function __construct(Request $request)
     {
         $this->username = $request->request->getString('username');
-        $this->email = $request->request->getString('email');
         $this->password = $request->request->getString('password');
         $this->repeatPassword = $request->request->getString('repeat-password');
     }
@@ -44,11 +39,6 @@ class RegistrationForm
     public function getUsername(): string
     {
         return $this->username;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
     }
 
     public function getPassword(): string

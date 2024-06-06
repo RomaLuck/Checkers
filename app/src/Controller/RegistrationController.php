@@ -2,7 +2,9 @@
 
 namespace Src\Controller;
 
+use Src\Entity\User;
 use Src\Form\RegistrationForm;
+use Src\Helpers\EntityManagerFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +36,14 @@ class RegistrationController extends BaseController
 
             return new RedirectResponse('/registration');
         }
+
+        $user = new User();
+        $user->setUsername($form->getUsername());
+        $user->setPassword(password_hash($form->getPassword(), PASSWORD_BCRYPT));
+
+        $entityManager = EntityManagerFactory::create();
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         return new RedirectResponse('/login');
     }

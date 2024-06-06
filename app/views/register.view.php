@@ -59,15 +59,6 @@ require base_path('views/_partials/header.php') ?>
                         <?php } ?>
                     </div>
 
-                    <!-- Email input -->
-                    <div data-mdb-input-init class="form-outline mb-4">
-                        <input type="email" name="email" id="registerEmail" class="form-control"/>
-                        <label class="form-label" for="registerEmail">Email</label>
-                        <?php foreach ($session->getFlashBag()->get('email') as $emailMessage) { ?>
-                            <div class="small text-danger"><?= $emailMessage ?></div>
-                        <?php } ?>
-                    </div>
-
                     <!-- Password input -->
                     <div data-mdb-input-init class="form-outline mb-4">
                         <input type="password" name="password" id="registerPassword" class="form-control"/>
