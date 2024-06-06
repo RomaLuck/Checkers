@@ -27,8 +27,8 @@ class GameLaunch
     #[ORM\JoinColumn(name: 'black_user_id', referencedColumnName: 'id')]
     private ?User $black_team_user;
 
-    #[Column(type: 'string')]
-    private string $table;
+    #[Column(type: 'json')]
+    private array $table_data;
 
     #[Column(type: 'string')]
     private string $room_id;
@@ -48,22 +48,14 @@ class GameLaunch
         $this->id = $id;
     }
 
-    /**
-     * @return array<array>
-     * @throws \JsonException
-     */
-    public function getTable(): array
+    public function getTableData(): array
     {
-        return json_decode($this->table, true, 512, JSON_THROW_ON_ERROR);
+        return $this->table_data;
     }
 
-    /**
-     * @param array<array> $table
-     * @throws \JsonException
-     */
-    public function setTable(array $table): void
+    public function setTableData(array $table_data): void
     {
-        $this->table = json_encode($table, JSON_THROW_ON_ERROR);
+        $this->table_data = $table_data;
     }
 
     public function getWhiteTeamUser(): ?User
