@@ -75,6 +75,9 @@ class GameController extends BaseController
             return new RedirectResponse('/');
         }
 
+        $session = $request->getSession();
+        $session->set('room', $roomId);
+
         $entityManager = EntityManagerFactory::create();
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         $game = new Game($gameLaunch, $entityManager);
@@ -84,7 +87,11 @@ class GameController extends BaseController
 
         $logs = [];
         foreach ($rawLogs as $rawLog) {
-            if (preg_match('!^\[checkers] \[(?<logLevel>\w+)] (?<message>.+)!iu', $rawLog, $rawLogMatch)) {
+            if (preg_match(
+                '!^\[checkers] \[(?<logLevel>\w+)] (?<message>.+)!iu',
+                $rawLog,
+                $rawLogMatch
+            )) {
                 $logs[] = $rawLogMatch;
             }
         }
@@ -97,9 +104,11 @@ class GameController extends BaseController
 
     public function update(Request $request): Response
     {
-        $roomId = $request->query->get('roomId');
+        $session = $request->getSession();
+
         $entityManager = EntityManagerFactory::create();
-        $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
+        $gameLaunch = $entityManager->getRepository(GameLaunch::class)
+            ->findOneBy(['room_id' => $session->get('room')]);
         $game = new Game($gameLaunch, $entityManager);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {

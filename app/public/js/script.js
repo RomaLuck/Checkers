@@ -43,7 +43,7 @@ function handleTableClick() {
                 form2: form2.value
             }));
 
-            fetch('/game', {
+            fetch('/update', {
                 method: 'POST',
                 body: formData
             })
