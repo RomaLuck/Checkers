@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Src;
+namespace Src\Game;
 
 use Psr\Log\LoggerInterface;
-use Src\Team\Black;
-use Src\Team\PlayerInterface;
-use Src\Team\White;
+use Src\Game\Team\Black;
+use Src\Game\Team\PlayerInterface;
+use Src\Game\Team\White;
 
 final class Rules
 {

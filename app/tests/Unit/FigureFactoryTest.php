@@ -1,8 +1,8 @@
 <?php
 
-use Src\Figure\Checker;
-use Src\Figure\FigureFactory;
-use Src\Figure\King;
+use Src\Game\Figure\Checker;
+use Src\Game\Figure\FigureFactory;
+use Src\Game\Figure\King;
 
 test('figure factory', function () {
     $factory = new FigureFactory(1);

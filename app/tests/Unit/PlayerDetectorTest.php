@@ -1,9 +1,9 @@
 <?php
 
-use Src\Team\Black;
-use Src\Team\PlayerDetector;
-use Src\Team\PlayerInterface;
-use Src\Team\White;
+use Src\Game\Team\Black;
+use Src\Game\Team\PlayerDetector;
+use Src\Game\Team\PlayerInterface;
+use Src\Game\Team\White;
 
 test('player detector', function () {
     $white = new White('Roman');

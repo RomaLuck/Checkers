@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Src;
+namespace Src\Game;
 
-use Src\Figure\Checker;
-use Src\Figure\King;
-use Src\Team\Black;
-use Src\Team\White;
+use Src\Game\Figure\Checker;
+use Src\Game\Figure\King;
+use Src\Game\Team\Black;
+use Src\Game\Team\White;
 
 final class CheckerDesk
 {

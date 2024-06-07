@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Src;
+namespace Src\Game;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Src\Entity\GameLaunch;
-use Src\Figure\FigureFactory;
+use Src\Game\Figure\FigureFactory;
+use Src\Game\Team\Black;
+use Src\Game\Team\PlayerDetector;
+use Src\Game\Team\White;
 use Src\Helpers\LoggerFactory;
-use Src\Team\Black;
-use Src\Team\PlayerDetector;
-use Src\Team\White;
 
 final class Game
 {

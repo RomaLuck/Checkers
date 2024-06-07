@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src\Figure;
+namespace Src\Game\Figure;
 
 use RuntimeException;
 

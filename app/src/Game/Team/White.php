@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Src\Team;
+namespace Src\Game\Team;
 
-use Src\Figure\FigureInterface;
+use Src\Game\Figure\FigureInterface;
 
-final class Black implements PlayerInterface
+final class White implements PlayerInterface
 {
-    public const BLACK_NUMBERS = [2, 4];
-    public const DIRECTION_BLACK = -1;
-    public const TRANSFORMATION_CELL_BLACK = 0;
+    public const WHITE_NUMBERS = [1, 3];
+    public const DIRECTION_WHITE = 1;
+    public const TRANSFORMATION_CELL_WHITE = 7;
 
     private string $name;
     private FigureInterface $figure;
@@ -27,12 +27,12 @@ final class Black implements PlayerInterface
 
     public function getTeamNumbers(): array
     {
-        return self::BLACK_NUMBERS;
+        return self::WHITE_NUMBERS;
     }
 
     public function getDirection(): int
     {
-        return self::DIRECTION_BLACK;
+        return self::DIRECTION_WHITE;
     }
 
     public function setFigure(FigureInterface $figure): void

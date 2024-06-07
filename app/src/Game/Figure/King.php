@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src\Figure;
+namespace Src\Game\Figure;
 
 final class King implements FigureInterface
 {

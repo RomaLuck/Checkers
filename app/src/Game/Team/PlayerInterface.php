@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Src\Team;
+namespace Src\Game\Team;
 
-use Src\Figure\FigureInterface;
+use Src\Game\Figure\FigureInterface;
 
 interface PlayerInterface
 {

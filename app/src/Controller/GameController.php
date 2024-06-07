@@ -2,10 +2,10 @@
 
 namespace Src\Controller;
 
-use Src\CheckerDesk;
 use Src\Entity\GameLaunch;
 use Src\Entity\User;
-use Src\Game;
+use Src\Game\CheckerDesk;
+use Src\Game\Game;
 use Src\Helpers\EntityManagerFactory;
 use Src\Helpers\LogReader;
 use Symfony\Component\HttpFoundation\RedirectResponse;

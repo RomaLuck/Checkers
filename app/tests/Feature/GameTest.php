@@ -1,10 +1,10 @@
 <?php
 
-use Src\CheckerDesk;
-use Src\Game;
+use Src\Game\CheckerDesk;
+use Src\Game\Game;
+use Src\Game\Team\Black;
+use Src\Game\Team\White;
 use Src\Helpers\LogReader;
-use Src\Team\Black;
-use Src\Team\White;
 
 beforeEach(function () {
     $this->white = new White('Roma');
