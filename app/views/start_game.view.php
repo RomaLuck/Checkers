@@ -49,7 +49,7 @@ require base_path('views/_partials/header.php') ?>
             <form method="post" action="/create">
                 <div class="mt-2 d-flex">
                     <button type="button" class="btn btn-light shadow" id="whiteButton">
-                        <input class="form-check-input" type="radio" name="white" id="whiteRadio"
+                        <input class="form-check-input" type="radio" name="player" value="white" id="whiteRadio"
                                hidden="hidden">
                         <img class="w-25" src="pictures/white.png" alt="white">
                         <label class="form-check-label" for="whiteRadio">
@@ -57,7 +57,7 @@ require base_path('views/_partials/header.php') ?>
                         </label>
                     </button>
                     <button type="button" class="btn btn-light shadow" id="blackButton">
-                        <input class="form-check-input" type="radio" name="black" id="blackRadio"
+                        <input class="form-check-input" type="radio" name="player" value="black" id="blackRadio"
                                hidden="hidden">
                         <img class="w-25" src="pictures/black.png" alt="black">
                         <label class="form-check-label" for="blackRadio">
@@ -81,9 +81,9 @@ require base_path('views/_partials/header.php') ?>
                 <tbody>
                 <?php foreach ($gameList as $game) { ?>
                     <tr>
-                        <td><?= $baseUrl . 'game?room=' . $game->getRoomId() ?></td>
-                        <td><?= $game->getWhiteTeamUser() ?></td>
-                        <td><?= $game->getBlackTeamUser() ?></td>
+                        <td><a href="<?= $baseUrl . 'game?room=' . $game->getRoomId() ?>">Link</a></td>
+                        <td><?= $game->getWhiteTeamUser() ? $game->getWhiteTeamUser()->getUsername() : '' ?></td>
+                        <td><?= $game->getBlackTeamUser() ? $game->getBlackTeamUser()->getUsername() : '' ?></td>
                     </tr>
                 <?php } ?>
                 </tbody>

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Src;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Src\Entity\GameLaunch;
 use Src\Figure\FigureFactory;
 use Src\Helpers\LoggerFactory;
 use Src\Team\Black;
 use Src\Team\PlayerDetector;
-use Src\Team\PlayerInterface;
 use Src\Team\White;
 
 final class Game
@@ -23,15 +24,22 @@ final class Game
     private Rules $rules;
     private PlayerDetector $playerDetector;
     private int $queue;
+    private GameLaunch $gameLaunch;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(PlayerInterface $white, PlayerInterface $black)
+    public function __construct(GameLaunch $gameLaunch, EntityManagerInterface $entityManager)
     {
-        $deskData = $_SESSION['desk'] ?? CheckerDesk::START_DESK;
-        $this->desk = new CheckerDesk($deskData);
+        $whiteUserName = $gameLaunch->getWhiteTeamUser() ? $gameLaunch->getWhiteTeamUser()->getUsername() : '';
+        $blackUserName = $gameLaunch->getBlackTeamUser() ? $gameLaunch->getBlackTeamUser()->getUsername() : '';
+        $white = new White($whiteUserName);
+        $black = new Black($blackUserName);
+        $this->desk = new CheckerDesk($gameLaunch->getTableData());
         $this->queue = $_SESSION['queue'] ?? self::WHITE_QUEUE;
         $this->logger = LoggerFactory::getLogger('checkers');
         $this->rules = new Rules($this->getLogger());
         $this->playerDetector = new PlayerDetector($white, $black);
+        $this->gameLaunch = $gameLaunch;
+        $this->entityManager = $entityManager;
     }
 
     public function getDesk(): CheckerDesk
@@ -108,8 +116,10 @@ final class Game
     {
         $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
         $this->getDesk()->updateFigures();
-        $_SESSION['desk'] = $this->getDesk()->getDeskData();
+        $this->gameLaunch->setTableData($this->getDesk()->getDeskData());
         $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;
+//        $this->entityManager->persist($this->gameLaunch);
+        $this->entityManager->flush();
     }
 
     /**
