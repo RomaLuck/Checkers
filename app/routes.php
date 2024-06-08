@@ -38,6 +38,10 @@ $route = new Route('/create', ['_controller' => [new GameController(), 'create']
 $route->setMethods(['POST']);
 $routes->add('game_create', $route);
 
+$route = new Route('/join', ['_controller' => [new GameController(), 'join']]);
+$route->setMethods(['POST']);
+$routes->add('join_to_game', $route);
+
 $route = new Route('/update', ['_controller' => [new GameController(), 'update']]);
 $route->setMethods(['POST']);
 $routes->add('game_update', $route);

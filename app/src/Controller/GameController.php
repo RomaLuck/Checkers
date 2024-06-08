@@ -19,6 +19,9 @@ class GameController extends BaseController
     {
         $session = $request->getSession();
         $userId = $session->get('user');
+        if (!$userId) {
+            return new RedirectResponse('/login');
+        }
 
         $entityManager = EntityManagerFactory::create();
 
@@ -28,6 +31,7 @@ class GameController extends BaseController
         }
 
         $gameList = $entityManager->getRepository(GameLaunch::class)->findAll();
+
         return $this->render('/start_game.view.php', [
             'username' => $user->getUsername(),
             'gameList' => $gameList,
@@ -44,6 +48,9 @@ class GameController extends BaseController
         $entityManager = EntityManagerFactory::create();
 
         $user = $entityManager->find(User::class, $userId);
+        if (!$user) {
+            return new RedirectResponse('/login');
+        }
 
         $color = $request->request->get('player');
         if (!$color) {
@@ -68,6 +75,40 @@ class GameController extends BaseController
         return new RedirectResponse('/game?' . $query);
     }
 
+    public function join(Request $request): Response
+    {
+        $entityManager = EntityManagerFactory::create();
+
+        $session = $request->getSession();
+        $userId = $session->get('user');
+        $user = $entityManager->find(User::class, $userId);
+        if (!$user) {
+            return new RedirectResponse('/login');
+        }
+
+        $color = $request->request->get('player');
+        $roomId = $request->request->get('room');
+        if (!$color || !$roomId) {
+            return new RedirectResponse('/');
+        }
+
+        $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
+        if (!$gameLaunch) {
+            return new RedirectResponse('/');
+        }
+
+        if ($color === 'white') {
+            $gameLaunch->setWhiteTeamUser($user);
+        } elseif ($color === 'black') {
+            $gameLaunch->setBlackTeamUser($user);
+        }
+
+        $entityManager->flush();
+
+        $query = http_build_query(['room' => $roomId]);
+        return new RedirectResponse('/game?' . $query);
+    }
+
     public function game(Request $request): Response
     {
         $roomId = s($request->getRequestUri())->match('!room=(\w+)!iu')[1];
@@ -80,6 +121,10 @@ class GameController extends BaseController
 
         $entityManager = EntityManagerFactory::create();
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
+        if (!$gameLaunch) {
+            return new RedirectResponse('/');
+        }
+
         $game = new Game($gameLaunch, $entityManager);
         $queue = $game->getQueue();
 
@@ -109,6 +154,10 @@ class GameController extends BaseController
         $entityManager = EntityManagerFactory::create();
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)
             ->findOneBy(['room_id' => $session->get('room')]);
+        if (!$gameLaunch) {
+            return new RedirectResponse('/');
+        }
+
         $game = new Game($gameLaunch, $entityManager);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
@@ -124,8 +173,11 @@ class GameController extends BaseController
         return new RedirectResponse('/game');
     }
 
-    public function end(): Response
+    public function end(Request $request): Response
     {
+        $session = $request->getSession();
+        $session->clear();
+
         LogReader::deleteLogFiles();
 
         return $this->render('/end_game.view.php');

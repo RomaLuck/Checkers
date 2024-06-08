@@ -118,7 +118,6 @@ final class Game
         $this->getDesk()->updateFigures();
         $this->gameLaunch->setTableData($this->getDesk()->getDeskData());
         $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;
-//        $this->entityManager->persist($this->gameLaunch);
         $this->entityManager->flush();
     }
 
