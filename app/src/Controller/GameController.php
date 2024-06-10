@@ -6,6 +6,8 @@ use Src\Entity\GameLaunch;
 use Src\Entity\User;
 use Src\Game\CheckerDesk;
 use Src\Game\Game;
+use Src\Game\Team\Black;
+use Src\Game\Team\White;
 use Src\Helpers\EntityManagerFactory;
 use Src\Helpers\LogReader;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +27,6 @@ class GameController extends BaseController
         }
 
         $entityManager = EntityManagerFactory::create();
-
         $user = $entityManager->find(User::class, $userId);
         if (!$user) {
             return new RedirectResponse('/login');
@@ -47,7 +48,6 @@ class GameController extends BaseController
         $userId = $session->get('user');
 
         $entityManager = EntityManagerFactory::create();
-
         $user = $entityManager->find(User::class, $userId);
         if (!$user) {
             return new RedirectResponse('/login');
@@ -78,10 +78,10 @@ class GameController extends BaseController
 
     public function join(Request $request): Response
     {
-        $entityManager = EntityManagerFactory::create();
-
         $session = $request->getSession();
         $userId = $session->get('user');
+
+        $entityManager = EntityManagerFactory::create();
         $user = $entityManager->find(User::class, $userId);
         if (!$user) {
             return new RedirectResponse('/login');
@@ -98,9 +98,9 @@ class GameController extends BaseController
             return new RedirectResponse('/');
         }
 
-        if ($color === 'white') {
+        if ($color === 'white' && !$gameLaunch->getWhiteTeamUser()) {
             $gameLaunch->setWhiteTeamUser($user);
-        } elseif ($color === 'black') {
+        } elseif ($color === 'black' && !$gameLaunch->getBlackTeamUser()) {
             $gameLaunch->setBlackTeamUser($user);
         }
 
@@ -112,13 +112,12 @@ class GameController extends BaseController
 
     public function game(Request $request): Response
     {
+        $session = $request->getSession();
+
         $roomId = s($request->getRequestUri())->match('!room=(\w+)!iu')[1];
         if (!$roomId) {
             return new RedirectResponse('/');
         }
-
-        $session = $request->getSession();
-        $session->set('room', $roomId);
 
         $entityManager = EntityManagerFactory::create();
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
@@ -126,23 +125,33 @@ class GameController extends BaseController
             return new RedirectResponse('/');
         }
 
-        $game = new Game($gameLaunch, $entityManager);
-
-        $rawLogs = LogReader::read(10);
-
-        $logs = [];
-        foreach ($rawLogs as $rawLog) {
-            if (preg_match(
-                '!^\[checkers] \[(?<logLevel>\w+)] (?<message>.+)!iu',
-                $rawLog,
-                $rawLogMatch
-            )) {
-                $logs[] = $rawLogMatch;
-            }
+        $userId = $session->get('user');
+        $user = $entityManager->find(User::class, $userId);
+        if (!$user) {
+            return new RedirectResponse('/login');
         }
+
+        $userColor = null;
+        $username = $user->getUsername();
+        $whiteUserName = $gameLaunch->getWhiteTeamUser() ? $gameLaunch->getWhiteTeamUser()->getUsername() : '';
+        $blackUserName = $gameLaunch->getBlackTeamUser() ? $gameLaunch->getBlackTeamUser()->getUsername() : '';
+        if ($username === $whiteUserName) {
+            $userColor = 'white';
+        }
+        if ($username === $blackUserName) {
+            $userColor = 'black';
+        }
+        if (!$userColor) {
+            return new RedirectResponse('/');
+        }
+
+        $session->set('room', $roomId);
+        $session->set('whiteUserName', $whiteUserName);
+        $session->set('blackUserName', $blackUserName);
+
+
         return $this->render('/game.view.php', [
-            'logs' => $logs,
-            'game' => $game,
+            'color' => $userColor
         ]);
     }
 
@@ -157,7 +166,10 @@ class GameController extends BaseController
             return new RedirectResponse('/');
         }
 
-        $game = new Game($gameLaunch, $entityManager);
+        $white = new White($session->get('whiteUserName'));
+        $black = new Black($session->get('blackUserName'));
+        $desk = new CheckerDesk($gameLaunch->getTableData());
+        $game = new Game($desk, $white, $black);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
             $data = json_decode($_POST['formData'], true);
@@ -165,11 +177,16 @@ class GameController extends BaseController
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $game->run($from, $to);
+                $updatedDesk = $game->run($from, $to);
+                $gameLaunch->setTableData($updatedDesk);
+                $entityManager->flush();
             }
         }
 
-        return new JsonResponse($gameLaunch->getTableData());
+        return new JsonResponse([
+            'table' => $gameLaunch->getTableData(),
+            'log' => LogReader::getLastLogs(10)
+        ]);
     }
 
     public function end(Request $request): Response

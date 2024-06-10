@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Src\Game;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Src\Entity\GameLaunch;
 use Src\Game\Figure\FigureFactory;
 use Src\Game\Team\Black;
 use Src\Game\Team\PlayerDetector;
@@ -20,19 +18,13 @@ final class Game
     private LoggerInterface $logger;
     private Rules $rules;
     private PlayerDetector $playerDetector;
-    private GameLaunch $gameLaunch;
-    private EntityManagerInterface $entityManager;
 
-    public function __construct(GameLaunch $gameLaunch, EntityManagerInterface $entityManager)
+    public function __construct(CheckerDesk $checkerDesk, White $white, Black $black)
     {
-        $whiteUserName = $gameLaunch->getWhiteTeamUser() ? $gameLaunch->getWhiteTeamUser()->getUsername() : '';
-        $blackUserName = $gameLaunch->getBlackTeamUser() ? $gameLaunch->getBlackTeamUser()->getUsername() : '';
-        $this->playerDetector = new PlayerDetector(new White($whiteUserName), new Black($blackUserName));
-        $this->desk = new CheckerDesk($gameLaunch->getTableData());
+        $this->desk = $checkerDesk;
+        $this->playerDetector = new PlayerDetector($white, $black);
         $this->logger = LoggerFactory::getLogger('checkers');
         $this->rules = new Rules($this->getLogger());
-        $this->gameLaunch = $gameLaunch;
-        $this->entityManager = $entityManager;
     }
 
     public function getDesk(): CheckerDesk
@@ -55,14 +47,17 @@ final class Game
         return $this->playerDetector;
     }
 
-    public function run(string $from, string $to): void
+    /**
+     * @return array<array>
+     */
+    public function run(string $from, string $to): array
     {
         try {
             $cellFrom = $this->transformInputData($from);
             $cellTo = $this->transformInputData($to);
         } catch (RuntimeException $e) {
             $this->getLogger()->warning($e->getMessage());
-            return;
+            return $this->getDesk()->getDeskData();
         }
 
         $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
@@ -74,15 +69,18 @@ final class Game
         $this->getRules()->setDesk($this->getDesk()->getDeskData());
 
         if (!$this->isValidMove($cellFrom, $cellTo)) {
-            return;
+            return $this->getDesk()->getDeskData();
         }
 
-        $this->updateGameState($cellFrom, $cellTo, $selectedTeamNumber, $player);
+        $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
+        $this->getDesk()->updateFigures();
         $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
 
         if ($this->isGameOver()) {
             $this->getLogger()->info('GAME OVER');
         }
+
+        return $this->getDesk()->getDeskData();
     }
 
     private function isValidMove(array $cellFrom, array $cellTo): bool
@@ -98,14 +96,6 @@ final class Game
         }
 
         return false;
-    }
-
-    private function updateGameState(array $cellFrom, array $cellTo, int $selectedTeamNumber): void
-    {
-        $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
-        $this->getDesk()->updateFigures();
-        $this->gameLaunch->setTableData($this->getDesk()->getDeskData());
-        $this->entityManager->flush();
     }
 
     /**

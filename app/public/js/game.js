@@ -137,5 +137,5 @@ function rotateTable() {
     }
 }
 
-setInterval(updateTable, 1000);
+setInterval(updateTable, 2000);
 handleTableClick();
