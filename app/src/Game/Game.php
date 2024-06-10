@@ -16,14 +16,10 @@ use Src\Helpers\LoggerFactory;
 
 final class Game
 {
-    public const WHITE_QUEUE = 1;
-    public const UPDATE_QUEUE = -1;
-
     private CheckerDesk $desk;
     private LoggerInterface $logger;
     private Rules $rules;
     private PlayerDetector $playerDetector;
-    private int $queue;
     private GameLaunch $gameLaunch;
     private EntityManagerInterface $entityManager;
 
@@ -31,13 +27,10 @@ final class Game
     {
         $whiteUserName = $gameLaunch->getWhiteTeamUser() ? $gameLaunch->getWhiteTeamUser()->getUsername() : '';
         $blackUserName = $gameLaunch->getBlackTeamUser() ? $gameLaunch->getBlackTeamUser()->getUsername() : '';
-        $white = new White($whiteUserName);
-        $black = new Black($blackUserName);
+        $this->playerDetector = new PlayerDetector(new White($whiteUserName), new Black($blackUserName));
         $this->desk = new CheckerDesk($gameLaunch->getTableData());
-        $this->queue = $_SESSION['queue'] ?? self::WHITE_QUEUE;
         $this->logger = LoggerFactory::getLogger('checkers');
         $this->rules = new Rules($this->getLogger());
-        $this->playerDetector = new PlayerDetector($white, $black);
         $this->gameLaunch = $gameLaunch;
         $this->entityManager = $entityManager;
     }
@@ -45,11 +38,6 @@ final class Game
     public function getDesk(): CheckerDesk
     {
         return $this->desk;
-    }
-
-    public function getQueue(): int
-    {
-        return $this->queue;
     }
 
     public function getLogger(): LoggerInterface
@@ -117,7 +105,6 @@ final class Game
         $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
         $this->getDesk()->updateFigures();
         $this->gameLaunch->setTableData($this->getDesk()->getDeskData());
-        $_SESSION['queue'] = $this->getQueue() * self::UPDATE_QUEUE;
         $this->entityManager->flush();
     }
 

@@ -8,6 +8,7 @@ use Src\Game\CheckerDesk;
 use Src\Game\Game;
 use Src\Helpers\EntityManagerFactory;
 use Src\Helpers\LogReader;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -126,7 +127,6 @@ class GameController extends BaseController
         }
 
         $game = new Game($gameLaunch, $entityManager);
-        $queue = $game->getQueue();
 
         $rawLogs = LogReader::read(10);
 
@@ -143,7 +143,6 @@ class GameController extends BaseController
         return $this->render('/game.view.php', [
             'logs' => $logs,
             'game' => $game,
-            'queue' => $queue,
         ]);
     }
 
@@ -170,7 +169,7 @@ class GameController extends BaseController
             }
         }
 
-        return new RedirectResponse('/game');
+        return new JsonResponse($gameLaunch->getTableData());
     }
 
     public function end(Request $request): Response

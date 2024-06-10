@@ -43,7 +43,7 @@ $route->setMethods(['POST']);
 $routes->add('join_to_game', $route);
 
 $route = new Route('/update', ['_controller' => [new GameController(), 'update']]);
-$route->setMethods(['POST']);
+$route->setMethods(['POST', 'GET']);
 $routes->add('game_update', $route);
 
 $route = new Route('/end', ['_controller' => [new GameController(), 'end']]);

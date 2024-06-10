@@ -27,32 +27,7 @@ require base_path('views/_partials/header.php') ?>
         <div class="col-12 col-xl-6">
             <div class="d-flex justify-content-center">
                 <div class="table-responsive text-center" id="table-responsive">
-                    <table class="chess-board" id="chess-board">
-                        <?php
-                        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-$numbers = [1, 2, 3, 4, 5, 6, 7, 8];
-$i = 0; ?>
-                        <tr>
-                            <?php foreach ($numbers as $number) { ?>
-                                <th><?php echo $number ?></th>
-                            <?php } ?>
-                        </tr>
 
-                        <?php foreach ($game->getDesk()->getDeskData() as $deskRow) {
-                            $j = 1;
-                            ?>
-                            <tr>
-                                <?php foreach ($deskRow as $cell) { ?>
-                                    <td id="<?php echo $letters[$i] . $j++ ?>"><?php echo $cell ?></td>
-                                <?php } ?>
-                                <th>
-                                    <?php echo $letters[$i] ?>
-                                </th>
-                            </tr>
-                            <?php
-                            $i++;
-                        } ?>
-                    </table>
                 </div>
             </div>
         </div>
