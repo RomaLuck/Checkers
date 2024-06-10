@@ -8,7 +8,7 @@ use Symfony\Component\Finder\Finder;
 
 class LogReader
 {
-    public static function read(int $linesNum): array
+    public static function getLastLogs(int $linesNum): array
     {
         $logs = [];
 
@@ -18,8 +18,12 @@ class LogReader
             $splitContent = explode("\n", $logFile->getContents());
 
             foreach ($splitContent as $item) {
-                if ($item !== '') {
-                    $logs[] = $item;
+                if ($item !== '' && preg_match(
+                        '!^\[checkers] \[(?<logLevel>\w+)] (?<message>.+)!iu',
+                        $item,
+                        $rawLogMatch
+                    )) {
+                    $logs[] = $rawLogMatch;
                 }
             }
         }

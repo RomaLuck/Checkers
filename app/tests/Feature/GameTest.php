@@ -48,7 +48,7 @@ test('false direction', function () {
     expect($updatedDesk[0][2])->toBe(0)
         ->and($updatedDesk[1][3])->toBe(1);
 
-    $logContent = LogReader::read(1);
+    $logContent = LogReader::getLastLogs(1);
 
     expect($logContent[0])->toContain('The direction is wrong');
 });
@@ -60,7 +60,7 @@ test('false step opportunity', function () {
     expect($updatedDesk[0][2])->toBe(1)
         ->and($updatedDesk[2][4])->toBe(0);
 
-    $logContent = LogReader::read(1);
+    $logContent = LogReader::getLastLogs(1);
 
     expect($logContent[0])->toContain('You do not have ability to reach this cell');
 });
