@@ -51,10 +51,10 @@ function updateTable() {
         return response.json();
     })
         .then(data => {
-            console.log(data);
-            const dataArray = Object.values(data)
             const chessBoardContainer = document.getElementById('table-responsive');
-            chessBoardContainer.innerHTML = createChessBoard(dataArray);
+            chessBoardContainer.innerHTML = createChessBoard(data.table);
+            showLog(data.log)
+            rotateTable();
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -104,20 +104,32 @@ function createChessBoard(deskData) {
     return tableHTML;
 }
 
+function showLog(logs) {
+    const logsContainer = document.getElementById('game-log');
+
+    logsContainer.innerHTML = '';
+    for (let log of logs) {
+        let logElement = document.createElement('li');
+        logElement.classList.add('text-' + log.logLevel.toLowerCase());
+        logElement.innerText = log.message;
+        logsContainer.appendChild(logElement);
+    }
+}
+
 function rotateTable() {
     const table = document.getElementById('table-responsive');
-    const queueParam = document.getElementById('queue');
     let letters = document.querySelectorAll("table th");
+    let color = document.getElementById('color');
 
-    table.style.transition = 'transform 0.5s ease-in-out';
+    // table.style.transition = 'transform 0.5s ease-in-out';
 
-    if (queueParam.innerText.trim() === '1') {
+    if (color.innerText.trim() === 'white') {
         table.style.transform = 'rotate(-90deg)';
         letters.forEach((letter) => {
             letter.style.transform = 'rotate(90deg)';
         });
     }
-    if (queueParam.innerText.trim() === '-1') {
+    if (color.innerText.trim() === 'black') {
         table.style.transform = 'rotate(90deg)';
         letters.forEach((letter) => {
             letter.style.transform = 'rotate(-90deg)';
@@ -127,4 +139,3 @@ function rotateTable() {
 
 setInterval(updateTable, 1000);
 handleTableClick();
-// rotateTable();

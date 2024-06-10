@@ -34,16 +34,12 @@ require base_path('views/_partials/header.php') ?>
         <div class="col-12 col-xl-6">
             <h2 class="text-center">Game Log</h2>
             <div class="d-flex justify-content-center">
-                <ul id="game-log">
-                    <?php foreach ($logs as $log) { ?>
-                        <li class="text-<?php echo strtolower($log['logLevel'])?>"><?php echo $log['message'] ?></li>
-                    <?php } ?>
-                </ul>
+                <ul id="game-log"></ul>
             </div>
         </div>
     </div>
 </div>
-<div id="queue" class="d-none"><?php echo $queue ?></div>
-<script src="js/script.js"></script>
+<div id="color" hidden="hidden"><?= $color ?></div>
+<script src="js/game.js"></script>
 
 <?php require base_path('views/_partials/footer.php') ?>
