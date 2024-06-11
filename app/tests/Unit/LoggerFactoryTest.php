@@ -1,8 +1,9 @@
 <?php
 
 use Psr\Log\LoggerInterface;
+use Src\Entity\Log;
+use Src\Helpers\EntityManagerFactory;
 use Src\Helpers\LoggerFactory;
-use Src\Helpers\LogReader;
 
 test('logger interface', function () {
     $logger = LoggerFactory::getLogger('test');
@@ -10,13 +11,12 @@ test('logger interface', function () {
     expect($logger)->toBeInstanceOf(LoggerInterface::class);
 });
 
-test('logger message file', function () {
+test('logger message', function () {
     $logger = LoggerFactory::getLogger('test');
     $logger->info('Test log message');
 
-    $logContent = LogReader::getLastLogs(1);
+    $logs = EntityManagerFactory::create()->getRepository(Log::class)->findBy(['channel' => 'test']);
+    $lastLog = $logs[array_key_last($logs)];
 
-    expect($logContent[0])->toContain('Test log message');
-
-    LogReader::deleteLogFiles();
+    expect($lastLog->getMessage())->toContain('Test log message');
 });

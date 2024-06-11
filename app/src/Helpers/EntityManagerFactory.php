@@ -6,6 +6,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMSetup;
+use Symfony\Component\Dotenv\Dotenv;
 
 class EntityManagerFactory
 {
@@ -13,6 +14,9 @@ class EntityManagerFactory
 
     public static function create(): EntityManagerInterface
     {
+        $dotenv = new Dotenv();
+        $dotenv->load(__DIR__ . '/../../.env');
+
         $dbData = parse_url($_ENV['DOCTRINE_URL']);
         parse_str($dbData['query'], $queryData);
 

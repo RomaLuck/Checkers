@@ -5,24 +5,26 @@ declare(strict_types=1);
 namespace Src\Helpers;
 
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 final class LoggerFactory
 {
-    public static string $logFile = __DIR__ . '/../../logs/app.log';
-    private static string $textFormat = "[%channel%] [%level_name%] [%datetime%]: %message% \n";
-    private static string $dateFormat = 'Y-m-d H:i:s';
-
     public static function getLogger($loggerName): LoggerInterface
     {
+        $textFormat = "[%channel%] [%level_name%] [%datetime%]: %message%\n";
+        $dateFormat = "Y-m-d H:i:s";
+
         $logger = new Logger($loggerName);
 
-        $fileHandler = new RotatingFileHandler(self::$logFile, 7, Level::Debug);
-        $fileHandler->setFormatter(new LineFormatter(self::$textFormat, self::$dateFormat));
-        $logger->pushHandler($fileHandler);
+        $consoleHandler = new StreamHandler('php://stdout', Level::Debug);
+        $consoleHandler->setFormatter(new LineFormatter($textFormat, $dateFormat));
+        $logger->pushHandler($consoleHandler);
+
+        $dbHandler = new DbMessageHandler();
+        $logger->pushHandler($dbHandler);
 
         return $logger;
     }
