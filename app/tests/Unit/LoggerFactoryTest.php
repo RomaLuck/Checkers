@@ -15,8 +15,7 @@ test('logger message', function () {
     $logger = LoggerFactory::getLogger('test');
     $logger->info('Test log message');
 
-    $logs = EntityManagerFactory::create()->getRepository(Log::class)->findBy(['channel' => 'test']);
-    $lastLog = $logs[array_key_last($logs)];
+    $lastLog = EntityManagerFactory::create()->getRepository(Log::class)->findOneBy(['channel' => 'test'], ['id' => 'DESC']);
 
     expect($lastLog->getMessage())->toContain('Test log message');
 });

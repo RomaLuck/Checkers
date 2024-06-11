@@ -1,20 +1,16 @@
 <?php
 
+use Src\Entity\Log;
 use Src\Game\CheckerDesk;
 use Src\Game\Game;
 use Src\Game\Team\Black;
 use Src\Game\Team\White;
-use Src\Helpers\LogReader;
+use Src\Helpers\EntityManagerFactory;
 
 beforeEach(function () {
     $this->white = new White('Roma');
     $this->black = new Black('Olena');
-    $this->game = new Game($this->white, $this->black);
-    $_SESSION['desk'] = CheckerDesk::START_DESK;
-});
-
-afterEach(function () {
-    $_SESSION['desk'] = null;
+    $this->game = new Game(new CheckerDesk(CheckerDesk::START_DESK), $this->white, $this->black);
 });
 
 test('transform', function () {
@@ -48,9 +44,9 @@ test('false direction', function () {
     expect($updatedDesk[0][2])->toBe(0)
         ->and($updatedDesk[1][3])->toBe(1);
 
-    $logContent = LogReader::getLastLogs(1);
+    $logContent = EntityManagerFactory::create()->getRepository(Log::class)->findOneBy(['channel' => 'checkers'], ['id' => 'DESC']);
 
-    expect($logContent[0])->toContain('The direction is wrong');
+    expect($logContent->getMessage())->toContain('The direction is wrong');
 });
 
 test('false step opportunity', function () {
@@ -60,7 +56,7 @@ test('false step opportunity', function () {
     expect($updatedDesk[0][2])->toBe(1)
         ->and($updatedDesk[2][4])->toBe(0);
 
-    $logContent = LogReader::getLastLogs(1);
+    $logContent = EntityManagerFactory::create()->getRepository(Log::class)->findOneBy(['channel' => 'checkers'], ['id' => 'DESC']);
 
-    expect($logContent[0])->toContain('You do not have ability to reach this cell');
+    expect($logContent->getMessage())->toContain('You do not have ability to reach this cell');
 });
