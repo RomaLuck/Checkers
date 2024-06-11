@@ -34,6 +34,9 @@ class GameLaunch
     #[Column(type: 'string')]
     private string $room_id;
 
+    #[Column(type: 'boolean')]
+    private bool $is_active;
+
     public function __construct()
     {
         $this->setRoomId();
@@ -87,5 +90,15 @@ class GameLaunch
     public function setRoomId(): void
     {
         $this->room_id = md5((new \DateTime())->getTimestamp());
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active;
+    }
+
+    public function setIsActive(bool $is_active): void
+    {
+        $this->is_active = $is_active;
     }
 }

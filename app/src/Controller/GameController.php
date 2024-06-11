@@ -68,6 +68,7 @@ class GameController extends BaseController
         }
 
         $game->setTableData(CheckerDesk::START_DESK);
+        $game->setIsActive(true);
 
         $entityManager->persist($game);
         $entityManager->flush();
