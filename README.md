@@ -23,15 +23,16 @@ Currently, it is under development.
 
 ## Current features
 
-## Current works
-
 - Ability to play for two players
 - Ability to play multiple games at the same time
 - Logger
 
-## ToDo
+## Current works
 
 - Tests
+
+## ToDo
+
 - WebSocket
 - Statistics
 
