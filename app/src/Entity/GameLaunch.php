@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 use Src\Repository\GameLaunchRepository;
 
@@ -19,11 +20,11 @@ class GameLaunch
     #[GeneratedValue]
     private int $id;
 
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'games')]
     #[ORM\JoinColumn(name: 'white_user_id', referencedColumnName: 'id')]
     private ?User $white_team_user;
 
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'games')]
     #[ORM\JoinColumn(name: 'black_user_id', referencedColumnName: 'id')]
     private ?User $black_team_user;
 
