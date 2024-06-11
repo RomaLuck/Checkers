@@ -18,7 +18,7 @@ require base_path('views/_partials/header.php') ?>
                                  style="width: 120px; border-radius: 10px;"/>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-1"><?= $username ?></h5>
+                            <h5 id="username" class="mb-1"><?= $username ?></h5>
                             <p class="mb-2 pb-1">
                                 Senior
                             </p>
@@ -80,7 +80,7 @@ require base_path('views/_partials/header.php') ?>
                 </thead>
                 <tbody>
                 <?php foreach ($gameList as $game) { ?>
-                    <tr>
+                    <tr class="game-list">
                         <td><a href="<?= $baseUrl . 'game?room=' . $game->getRoomId() ?>">Link</a></td>
                         <td class="username" room="<?= $game->getRoomId() ?>"
                             id="white"><?= $game->getWhiteTeamUser() ? $game->getWhiteTeamUser()->getUsername() : '' ?></td>
@@ -97,32 +97,3 @@ require base_path('views/_partials/header.php') ?>
 
 <?php require base_path('views/_partials/footer.php') ?>
 <script src="js/startForm.js"></script>
-<script>
-    usernames = document.querySelectorAll('.username');
-    usernames.forEach((username) => {
-        if (username.innerText === '') {
-            let form = document.createElement('form');
-            form.method = 'post';
-            form.action = '/join';
-
-            let usernameInput = document.createElement('input');
-            usernameInput.type = 'hidden';
-            usernameInput.name = 'player';
-            usernameInput.value = username.id;
-            form.appendChild(usernameInput);
-
-            let gameIdInput = document.createElement('input');
-            gameIdInput.type = 'hidden';
-            gameIdInput.name = 'room';
-            gameIdInput.value = username.getAttribute('room');
-            form.appendChild(gameIdInput);
-
-            let button = document.createElement('button');
-            button.type = 'submit';
-            button.className = 'btn btn-primary';
-            button.innerText = 'Join';
-            form.appendChild(button);
-            username.appendChild(form);
-        }
-    });
-</script>
