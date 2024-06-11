@@ -156,6 +156,9 @@ class GameController extends BaseController
         ]);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function update(Request $request): Response
     {
         $session = $request->getSession();
@@ -173,7 +176,7 @@ class GameController extends BaseController
         $game = new Game($desk, $white, $black);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
-            $data = json_decode($_POST['formData'], true);
+            $data = json_decode($_POST['formData'], true, 512, JSON_THROW_ON_ERROR);
             $from = htmlspecialchars($data['form1']);
             $to = htmlspecialchars($data['form2']);
 

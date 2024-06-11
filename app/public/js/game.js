@@ -1,18 +1,18 @@
 function handleTableClick() {
     const tableContainer = document.getElementById('table-responsive');
-    const form1 = document.getElementById("form1");
-    const form2 = document.getElementById("form2");
+    let form1 = '';
+    let form2 = '';
 
     tableContainer.addEventListener("click", function (event) {
-        if (form1.value === "") {
-            form1.value = event.target.id || event.target.parentNode.id;
-        } else if (event.target.id !== form1.value || event.target.parentNode.id !== form1.value) {
-            form2.value = event.target.id || event.target.parentNode.id;
+        if (form1 === '' && event.target.parentNode.id !== '') {
+            form1 = event.target.parentNode.id;
+        } else if (event.target.parentNode.id !== form1 && form2 === '') {
+            form2 = event.target.id;
 
             const formData = new FormData();
             formData.append('formData', JSON.stringify({
-                form1: form1.value,
-                form2: form2.value
+                form1: form1,
+                form2: form2
             }));
 
             fetch('/update', {
@@ -26,8 +26,8 @@ function handleTableClick() {
                     return response.text();
                 })
                 .then(data => {
-                    form1.value = "";
-                    form2.value = "";
+                    form1 = '';
+                    form2 = '';
                     updateTable();
                 })
                 .catch(error => {
@@ -121,8 +121,6 @@ function rotateTable() {
     let letters = document.querySelectorAll("table th");
     let color = document.getElementById('color');
 
-    // table.style.transition = 'transform 0.5s ease-in-out';
-
     if (color.innerText.trim() === 'white') {
         table.style.transform = 'rotate(-90deg)';
         letters.forEach((letter) => {
@@ -137,5 +135,6 @@ function rotateTable() {
     }
 }
 
-setInterval(updateTable, 2000);
+updateTable();
 handleTableClick();
+setInterval(updateTable, 2000);
