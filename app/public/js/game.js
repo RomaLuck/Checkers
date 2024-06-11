@@ -6,6 +6,7 @@ function handleTableClick() {
     tableContainer.addEventListener("click", function (event) {
         if (form1 === '' && event.target.parentNode.id !== '') {
             form1 = event.target.parentNode.id;
+            event.target.parentNode.style.backgroundColor = 'red';
         } else if (event.target.parentNode.id !== form1 && form2 === '') {
             form2 = event.target.id;
 
@@ -43,7 +44,6 @@ function updateTable() {
         headers: {
             'Content-Type': 'application/json',
         },
-
     }).then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -67,7 +67,6 @@ function createChessBoard(deskData) {
 
     let tableHTML = '<table class="chess-board" id="chess-board">';
 
-    // Create numbers row
     tableHTML += '<tr>';
     for (let number of numbers) {
         tableHTML += `<th>${number}</th>`;

@@ -80,13 +80,15 @@ require base_path('views/_partials/header.php') ?>
                 </thead>
                 <tbody>
                 <?php foreach ($gameList as $game) { ?>
-                    <tr class="game-list">
-                        <td><a href="<?= $baseUrl . 'game?room=' . $game->getRoomId() ?>">Link</a></td>
-                        <td class="username" room="<?= $game->getRoomId() ?>"
-                            id="white"><?= $game->getWhiteTeamUser() ? $game->getWhiteTeamUser()->getUsername() : '' ?></td>
-                        <td class="username" room="<?= $game->getRoomId() ?>"
-                            id="black"><?= $game->getBlackTeamUser() ? $game->getBlackTeamUser()->getUsername() : '' ?></td>
-                    </tr>
+                    <?php if ($game->isActive()) { ?>
+                        <tr class="game-list">
+                            <td><a href="<?= $baseUrl . 'game?room=' . $game->getRoomId() ?>">Link</a></td>
+                            <td class="username" room="<?= $game->getRoomId() ?>"
+                                id="white"><?= $game->getWhiteTeamUser() ? $game->getWhiteTeamUser()->getUsername() : '' ?></td>
+                            <td class="username" room="<?= $game->getRoomId() ?>"
+                                id="black"><?= $game->getBlackTeamUser() ? $game->getBlackTeamUser()->getUsername() : '' ?></td>
+                        </tr>
+                    <?php } ?>
                 <?php } ?>
                 </tbody>
             </table>
