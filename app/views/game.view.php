@@ -21,6 +21,7 @@ require base_path('views/_partials/header.php') ?>
             </div>
         </div>
     </div>
+    <a href="/end" class="btn btn-primary float-end">End game</a>
 </div>
 <div id="color" hidden="hidden"><?= $color ?></div>
 <script src="js/game.js"></script>

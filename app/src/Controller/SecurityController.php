@@ -53,5 +53,7 @@ class SecurityController extends BaseController
     {
         $session = $request->getSession();
         $session->clear();
+
+        return new RedirectResponse('/login');
     }
 }

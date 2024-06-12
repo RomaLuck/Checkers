@@ -25,13 +25,13 @@ require base_path('views/_partials/header.php') ?>
                             <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
                                 <div>
                                     <p class="small text-muted mb-1">
-                                        Wins
+                                        Games
                                     </p>
-                                    <p class="mb-0">41</p>
+                                    <p class="mb-0"><?= $gamesCount ?></p>
                                 </div>
                                 <div class="px-3">
                                     <p class="small text-muted mb-1">
-                                        Losses
+                                        Wins
                                     </p>
                                     <p class="mb-0">976</p>
                                 </div>
@@ -70,6 +70,14 @@ require base_path('views/_partials/header.php') ?>
             </form>
         </div>
         <div class="mt-5">
+            <?php foreach ($session->getFlashBag()->all() as $type => $usernameMessages) { ?>
+                <?php foreach ($usernameMessages as $usernameMessage) { ?>
+                    <div class="alert alert-<?= $type ?> alert-dismissible fade show">
+                        <?= $usernameMessage ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php } ?>
+            <?php } ?>
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -82,7 +90,8 @@ require base_path('views/_partials/header.php') ?>
                 <?php foreach ($gameList as $game) { ?>
                     <?php if ($game->isActive()) { ?>
                         <tr class="game-list">
-                            <td><a href="<?= $baseUrl . 'game?room=' . $game->getRoomId() ?>">Link</a></td>
+                            <td><a class="btn btn-secondary" href="<?= $baseUrl . 'game?room=' . $game->getRoomId() ?>">Link</a>
+                            </td>
                             <td class="username" room="<?= $game->getRoomId() ?>"
                                 id="white"><?= $game->getWhiteTeamUser() ? $game->getWhiteTeamUser()->getUsername() : '' ?></td>
                             <td class="username" room="<?= $game->getRoomId() ?>"
