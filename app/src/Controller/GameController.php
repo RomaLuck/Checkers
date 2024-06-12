@@ -2,13 +2,16 @@
 
 namespace Src\Controller;
 
+use Monolog\Logger;
 use Src\Entity\GameLaunch;
+use Src\Entity\Log;
 use Src\Entity\User;
 use Src\Game\CheckerDesk;
 use Src\Game\Game;
 use Src\Game\Team\Black;
 use Src\Game\Team\White;
 use Src\Helpers\EntityManagerFactory;
+use Src\Helpers\LoggerFactory;
 use Src\Helpers\LogReader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -164,8 +167,9 @@ class GameController extends BaseController
         $session = $request->getSession();
 
         $entityManager = EntityManagerFactory::create();
+        $roomId = $session->get('room');
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)
-            ->findOneBy(['room_id' => $session->get('room')]);
+            ->findOneBy(['room_id' => $roomId]);
         if (!$gameLaunch) {
             return new RedirectResponse('/');
         }
@@ -173,7 +177,8 @@ class GameController extends BaseController
         $white = new White($session->get('whiteUserName'));
         $black = new Black($session->get('blackUserName'));
         $desk = new CheckerDesk($gameLaunch->getTableData());
-        $game = new Game($desk, $white, $black);
+        $logger = LoggerFactory::getLogger($roomId);
+        $game = new Game($desk, $white, $black, $logger);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
             $data = json_decode($_POST['formData'], true, 512, JSON_THROW_ON_ERROR);
@@ -187,9 +192,18 @@ class GameController extends BaseController
             }
         }
 
+        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId]);
+        $lastLogs = array_slice($logs, -10);
+        $lastLogs = array_map(
+            fn(Log $log) => [
+                'logLevel' => Logger::toMonologLevel($log->getLevel())->getName(),
+                'message' => $log->getMessage()
+            ], $lastLogs
+        );
+
         return new JsonResponse([
             'table' => $gameLaunch->getTableData(),
-            'log' => LogReader::getLastLogs(10)
+            'log' => $lastLogs
         ]);
     }
 

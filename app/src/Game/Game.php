@@ -19,11 +19,11 @@ final class Game
     private Rules $rules;
     private PlayerDetector $playerDetector;
 
-    public function __construct(CheckerDesk $checkerDesk, White $white, Black $black)
+    public function __construct(CheckerDesk $checkerDesk, White $white, Black $black, LoggerInterface $logger)
     {
         $this->desk = $checkerDesk;
         $this->playerDetector = new PlayerDetector($white, $black);
-        $this->logger = LoggerFactory::getLogger('checkers');
+        $this->logger = $logger;
         $this->rules = new Rules($this->getLogger());
     }
 
