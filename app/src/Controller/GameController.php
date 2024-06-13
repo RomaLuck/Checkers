@@ -152,13 +152,12 @@ class GameController extends BaseController
         }
 
         $userColor = null;
-        $username = $user->getUsername();
-        $whiteUserName = $gameLaunch->getWhiteTeamUser() ? $gameLaunch->getWhiteTeamUser()->getUsername() : '';
-        $blackUserName = $gameLaunch->getBlackTeamUser() ? $gameLaunch->getBlackTeamUser()->getUsername() : '';
-        if ($username === $whiteUserName) {
+        $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
+        if ($user === $whiteTeamUser) {
             $userColor = 'white';
         }
-        if ($username === $blackUserName) {
+        $blackTeamUser = $gameLaunch->getBlackTeamUser();
+        if ($user === $blackTeamUser) {
             $userColor = 'black';
         }
         if (!$userColor) {
@@ -167,9 +166,8 @@ class GameController extends BaseController
         }
 
         $session->set('room', $roomId);
-        $session->set('whiteUserName', $whiteUserName);
-        $session->set('blackUserName', $blackUserName);
-
+        $session->set('whiteUserName', $whiteTeamUser ? $whiteTeamUser->getUsername() : '');
+        $session->set('blackUserName', $blackTeamUser ? $blackTeamUser->getUsername() : '');
 
         return $this->render('/game.view.php', [
             'color' => $userColor
