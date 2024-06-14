@@ -46,28 +46,6 @@ require base_path('views/_partials/header.php') ?>
                     </div>
                 </div>
             </div>
-            <form method="post" action="/create">
-                <div class="mt-2 d-flex">
-                    <button type="button" class="btn btn-light shadow" id="whiteButton">
-                        <input class="form-check-input" type="radio" name="player" value="white" id="whiteRadio"
-                               hidden="hidden">
-                        <img class="w-25" src="pictures/white.png" alt="white">
-                        <label class="form-check-label" for="whiteRadio">
-
-                        </label>
-                    </button>
-                    <button type="button" class="btn btn-light shadow" id="blackButton">
-                        <input class="form-check-input" type="radio" name="player" value="black" id="blackRadio"
-                               hidden="hidden">
-                        <img class="w-25" src="pictures/black.png" alt="black">
-                        <label class="form-check-label" for="blackRadio">
-
-                        </label>
-                    </button>
-                    <p class="text-danger small text-center mt-3" id="alerts"></p>
-                </div>
-                <button type="submit" class="btn btn-danger mt-md-2 float-end" id="save">Create new game</button>
-            </form>
         </div>
         <div class="mt-5">
             <?php foreach ($session->getFlashBag()->all() as $type => $usernameMessages) { ?>
