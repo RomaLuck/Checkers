@@ -1,15 +1,15 @@
 <ul class="nav justify-content-end shadow">
     <li>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-success m-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn btn-outline-success m-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Create game
         </button>
     </li>
     <li class="nav-item">
-        <a href="/" class="btn btn-primary m-2">Game list</a>
+        <a href="/" class="btn btn-outline-primary m-2">Game list</a>
     </li>
     <li class="nav-item">
-        <a href="/logout" class="btn btn-danger m-2">Exit</a>
+        <a href="/logout" class="btn btn-outline-danger m-2">Exit</a>
     </li>
 </ul>
 

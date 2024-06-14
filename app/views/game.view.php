@@ -15,21 +15,29 @@ require base_path('views/_partials/header.php') ?>
                 </div>
             <?php } ?>
         <?php } ?>
-        <div class="col-12 col-xl-6">
+        <div class="col-12 col-xl-8 d-flex flex-column">
             <div class="d-flex justify-content-center">
                 <div class="table-responsive text-center" id="table-responsive">
 
                 </div>
             </div>
         </div>
-        <div class="col-12 col-xl-6">
-            <h2 class="text-center">Game Log</h2>
-            <div class="d-flex justify-content-center">
-                <ul id="game-log"></ul>
+        <div class="col-12 col-xl-4 d-flex flex-column">
+            <div class="flex-grow-1">
+
             </div>
+            <div class="flex-grow-1 border shadow d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-center">
+                    <ul class="list-unstyled" id="game-log"></ul>
+                </div>
+            </div>
+            <div class="flex-grow-1">
+
+            </div>
+
         </div>
     </div>
-    <a href="/end" class="btn btn-primary float-end">Finish game</a>
+    <a href="/end" class="btn btn-danger float-end my-2">Finish game</a>
 </div>
 <div id="color" hidden="hidden"><?= $color ?></div>
 <script src="js/game.js"></script>

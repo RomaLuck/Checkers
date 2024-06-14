@@ -68,6 +68,7 @@ function createChessBoard(deskData) {
     let tableHTML = '<table class="chess-board" id="chess-board">';
 
     tableHTML += '<tr>';
+    tableHTML += '<th>';
     for (let number of numbers) {
         tableHTML += `<th>${number}</th>`;
     }
@@ -75,6 +76,7 @@ function createChessBoard(deskData) {
 
     for (let i = 0; i < deskData.length; i++) {
         tableHTML += '<tr>';
+        tableHTML += `<th>${letters[i]}</th>`;
         for (let j = 0; j < deskData[i].length; j++) {
             let pieceClass = '';
             switch (deskData[i][j]) {
@@ -97,6 +99,13 @@ function createChessBoard(deskData) {
         }
         tableHTML += `<th>${letters[i]}</th></tr>`;
     }
+
+    tableHTML += '<tr>';
+    tableHTML += '<th>';
+    for (let number of numbers) {
+        tableHTML += `<th>${number}</th>`;
+    }
+    tableHTML += '</tr>';
 
     tableHTML += '</table>';
 

@@ -32,7 +32,7 @@ function createJoinForms() {
 
                 let button = document.createElement('button');
                 button.type = 'submit';
-                button.className = 'btn btn-primary';
+                button.className = 'btn btn-outline-success';
                 button.innerText = 'Join';
                 form.appendChild(button);
                 playerName.appendChild(form);

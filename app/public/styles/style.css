@@ -1,6 +1,7 @@
 .table-responsive {
     caret-color: transparent;
     table-layout: auto;
+    overflow: hidden;
 }
 
 .table-responsive th {
