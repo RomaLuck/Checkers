@@ -37,6 +37,10 @@ class GameLaunch
     #[Column(type: 'boolean')]
     private bool $is_active;
 
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'games')]
+    #[ORM\JoinColumn(name: 'winner_id', referencedColumnName: 'id')]
+    private ?User $winner;
+
     public function __construct()
     {
         $this->setRoomId();
@@ -100,5 +104,15 @@ class GameLaunch
     public function setIsActive(bool $is_active): void
     {
         $this->is_active = $is_active;
+    }
+
+    public function getWinner(): ?User
+    {
+        return $this->winner;
+    }
+
+    public function setWinner(?User $winner): void
+    {
+        $this->winner = $winner;
     }
 }

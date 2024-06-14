@@ -33,13 +33,13 @@ require base_path('views/_partials/header.php') ?>
                                     <p class="small text-muted mb-1">
                                         Wins
                                     </p>
-                                    <p class="mb-0">976</p>
+                                    <p class="mb-0"><?= $winsCount ?></p>
                                 </div>
                                 <div>
                                     <p class="small text-muted mb-1">
                                         Rating
                                     </p>
-                                    <p class="mb-0">8.5</p>
+                                    <p class="mb-0"><?= round($winsCount / $gamesCount * 10, 2) ?></p>
                                 </div>
                             </div>
                         </div>

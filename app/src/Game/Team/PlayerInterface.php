@@ -8,6 +8,8 @@ use Src\Game\Figure\FigureInterface;
 
 interface PlayerInterface
 {
+    public function getId(): int;
+
     public function getName(): string;
 
     public function getTeamNumbers(): array;

@@ -14,9 +14,11 @@ final class White implements PlayerInterface
 
     private string $name;
     private FigureInterface $figure;
+    private int $id;
 
-    public function __construct(string $name)
+    public function __construct(int $id, string $name)
     {
+        $this->id = $id;
         $this->name = $name;
     }
 
@@ -43,5 +45,10 @@ final class White implements PlayerInterface
     public function getFigure(): FigureInterface
     {
         return $this->figure;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

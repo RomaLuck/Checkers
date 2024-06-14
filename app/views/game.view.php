@@ -7,6 +7,14 @@ require base_path('views/_partials/header.php') ?>
 
 <div class="container p-5 border shadow">
     <div class="row">
+        <?php foreach ($session->getFlashBag()->all() as $type => $usernameMessages) { ?>
+            <?php foreach ($usernameMessages as $usernameMessage) { ?>
+                <div class="alert alert-<?= $type ?> alert-dismissible fade show">
+                    <?= $usernameMessage ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php } ?>
+        <?php } ?>
         <div class="col-12 col-xl-6">
             <div class="d-flex justify-content-center">
                 <div class="table-responsive text-center" id="table-responsive">
@@ -21,7 +29,7 @@ require base_path('views/_partials/header.php') ?>
             </div>
         </div>
     </div>
-    <a href="/end" class="btn btn-primary float-end">End game</a>
+    <a href="/end" class="btn btn-primary float-end">Finish game</a>
 </div>
 <div id="color" hidden="hidden"><?= $color ?></div>
 <script src="js/game.js"></script>

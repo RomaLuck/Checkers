@@ -2,6 +2,7 @@
 
 namespace Src\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
 use Src\Entity\GameLaunch;
 use Src\Entity\Log;
@@ -38,10 +39,12 @@ class GameController extends BaseController
         $userGames = [];
         foreach ($gameList as $game) {
             if (
-                $game->getWhiteTeamUser()?->getUsername() === $user->getUsername()
-                || $game->getBlackTeamUser()?->getUsername() === $user->getUsername()
+                $game->getWhiteTeamUser() === $user || $game->getBlackTeamUser() === $user
             ) {
-                $userGames[] = $game;
+                $userGames['games'][] = $game;
+            }
+            if ($game->getWinner() === $user) {
+                $userGames['wins'][] = $game;
             }
         }
 
@@ -50,7 +53,8 @@ class GameController extends BaseController
             'gameList' => $gameList,
             'baseUrl' => $request->getUri(),
             'session' => $session,
-            'gamesCount' => count($userGames)
+            'gamesCount' => count($userGames['games'] ?? []),
+            'winsCount' => count($userGames['wins'] ?? [])
         ]);
     }
 
@@ -170,7 +174,8 @@ class GameController extends BaseController
         $session->set('blackUserName', $blackTeamUser ? $blackTeamUser->getUsername() : '');
 
         return $this->render('/game.view.php', [
-            'color' => $userColor
+            'color' => $userColor,
+            'session' => $session
         ]);
     }
 
@@ -188,10 +193,19 @@ class GameController extends BaseController
             return new RedirectResponse('/');
         }
 
-        $white = new White($session->get('whiteUserName'));
-        $black = new Black($session->get('blackUserName'));
-        $desk = new CheckerDesk($gameLaunch->getTableData());
         $logger = LoggerFactory::getLogger($roomId);
+
+        $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
+        $blackTeamUser = $gameLaunch->getBlackTeamUser();
+
+        if (!$whiteTeamUser || !$blackTeamUser) {
+            return new JsonResponse([]);
+        }
+
+        $white = new White($whiteTeamUser->getId(), $whiteTeamUser->getUsername());
+        $black = new Black($blackTeamUser->getId(), $blackTeamUser->getUsername());
+
+        $desk = new CheckerDesk($gameLaunch->getTableData());
         $game = new Game($desk, $white, $black, $logger);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
@@ -206,18 +220,11 @@ class GameController extends BaseController
             }
         }
 
-        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId]);
-        $lastLogs = array_slice($logs, -10);
-        $lastLogs = array_map(
-            fn(Log $log) => [
-                'logLevel' => Logger::toMonologLevel($log->getLevel())->getName(),
-                'message' => $log->getMessage()
-            ], $lastLogs
-        );
+        $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
 
         return new JsonResponse([
             'table' => $gameLaunch->getTableData(),
-            'log' => $lastLogs
+            'log' => $this->getLastLogs($entityManager, $roomId),
         ]);
     }
 
@@ -232,9 +239,29 @@ class GameController extends BaseController
             return new RedirectResponse('/');
         }
 
+        $winnerId = $session->get('advantagePlayer');
+        $winner = $entityManager->getRepository(User::class)->findOneBy(['id' => $winnerId]);
+        if ($winner) {
+            $gameLaunch->setWinner($winner);
+        }
         $gameLaunch->setIsActive(false);
         $entityManager->flush();
 
         return $this->render('/end_game.view.php');
+    }
+
+    /**
+     * @return array<array>
+     */
+    public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
+    {
+        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId]);
+        $lastLogs = array_slice($logs, -10);
+        return array_map(
+            fn(Log $log) => [
+                'logLevel' => Logger::toMonologLevel($log->getLevel())->getName(),
+                'message' => $log->getMessage()
+            ], $lastLogs
+        );
     }
 }

@@ -9,21 +9,24 @@ use RuntimeException;
 use Src\Game\Figure\FigureFactory;
 use Src\Game\Team\Black;
 use Src\Game\Team\PlayerDetector;
+use Src\Game\Team\PlayerInterface;
 use Src\Game\Team\White;
-use Src\Helpers\LoggerFactory;
 
 final class Game
 {
     private CheckerDesk $desk;
-    private LoggerInterface $logger;
     private Rules $rules;
     private PlayerDetector $playerDetector;
 
-    public function __construct(CheckerDesk $checkerDesk, White $white, Black $black, LoggerInterface $logger)
+    public function __construct(
+        CheckerDesk             $checkerDesk,
+        private White           $white,
+        private Black           $black,
+        private LoggerInterface $logger
+    )
     {
         $this->desk = $checkerDesk;
         $this->playerDetector = new PlayerDetector($white, $black);
-        $this->logger = $logger;
         $this->rules = new Rules($this->getLogger());
     }
 
@@ -136,5 +139,13 @@ final class Game
         }
 
         return $count;
+    }
+
+    public function getAdvantagePlayer(): PlayerInterface
+    {
+        return $this->countFigures(White::WHITE_NUMBERS)
+        > $this->countFigures(Black::BLACK_NUMBERS)
+            ? $this->white
+            : $this->black;
     }
 }
