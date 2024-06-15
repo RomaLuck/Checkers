@@ -1,0 +1,11 @@
+/.env
+/.env.local
+/var/
+/logs/
+/vendor/
+.idea
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
