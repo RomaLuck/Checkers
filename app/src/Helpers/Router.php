@@ -4,35 +4,53 @@ declare(strict_types=1);
 
 namespace Src\Helpers;
 
+use Src\Middleware\AuthMiddlewareDetection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
 
 class Router
 {
-    public function __construct(
-        private UrlMatcher $matcher,
-        private ControllerResolver $controllerResolver,
-        private ArgumentResolver $argumentResolver,
-    ) {
+    private array $routes = [];
+
+    public function add(string $method, string $path, array $controller): self
+    {
+        $this->routes[] = [
+            'path' => $path,
+            'method' => strtoupper($method),
+            'controller' => $controller,
+            'middleware' => null
+        ];
+
+        return $this;
     }
 
-    public function handle(Request $request): Response
+    public function middleware($key): static
     {
-        $this->matcher->getContext()->fromRequest($request);
+        $this->routes[array_key_last($this->routes)]['middleware'] = $key;
 
-        try {
-            $request->attributes->add($this->matcher->match($request->getPathInfo()));
+        return $this;
+    }
 
-            $controller = $this->controllerResolver->getController($request);
-            $arguments = $this->argumentResolver->getArguments($request, $controller);
+    public function dispatch(Request $request): Response
+    {
+        $method = $_POST['_method'] ?? $_SERVER['REQUEST_METHOD'];
+        $path = parse_url($_SERVER['REQUEST_URI'])['path'];
 
-            return call_user_func_array($controller, $arguments);
-        } catch (ResourceNotFoundException $exception) {
-            return new Response('Not Found', 404);
+        foreach ($this->routes as $route) {
+            if ($route['method'] === $method && $route['path'] === $path) {
+                if ($route['middleware'] !== null) {
+                    $middleware = AuthMiddlewareDetection::from($route['middleware'])->detect();
+                    $response = $middleware->handle($request);
+                    if ($response !== null) {
+                        return $response;
+                    }
+                }
+
+                [$class, $function] = $route['controller'];
+
+                return (new $class)->{$function}($request);
+            }
         }
+        return new Response('page not found');
     }
 }

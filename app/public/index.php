@@ -6,10 +6,6 @@ use Src\Helpers\Router;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
 
 const BASE_PATH = __DIR__ . '/../';
 
@@ -24,15 +20,9 @@ $session->start();
 
 $request = Request::createFromGlobals();
 $request->setSession($session);
-$routes = include BASE_PATH . 'routes.php';
 
-$context = new RequestContext();
-$matcher = new UrlMatcher($routes, $context);
+$router = new Router();
 
-$controllerResolver = new ControllerResolver();
-$argumentResolver = new ArgumentResolver();
+require_once BASE_PATH . "routes.php";
 
-$framework = new Router($matcher, $controllerResolver, $argumentResolver);
-$response = $framework->handle($request);
-
-$response->send();
+$router->dispatch($request)->send();
