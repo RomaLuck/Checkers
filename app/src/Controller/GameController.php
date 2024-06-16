@@ -1,38 +1,33 @@
 <?php
 
-namespace Src\Controller;
+namespace App\Controller;
 
+use App\Entity\GameLaunch;
+use App\Entity\Log;
+use App\Entity\User;
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
-use Src\Entity\GameLaunch;
-use Src\Entity\Log;
-use Src\Entity\User;
-use Src\Helpers\EntityManagerFactory;
-use Src\Helpers\LoggerFactory;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use function Symfony\Component\String\s;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class GameController extends BaseController
+#[IsGranted('ROLE_USER')]
+class GameController extends AbstractController
 {
-    public function index(Request $request): Response
+    #[Route('/', name: 'app_game_list', methods: ['GET'])]
+    public function index(Request $request, Session $session, EntityManagerInterface $entityManager): Response
     {
-        $session = $request->getSession();
-        $userId = $session->get('user');
-        if (!$userId) {
-            return new RedirectResponse('/login');
-        }
-
-        $entityManager = EntityManagerFactory::create();
-        $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $userId]);
+        $user = $entityManager->getRepository(User::class)->find($this->getUser());
         if (!$user) {
-            return new RedirectResponse('/login');
+            return $this->redirectToRoute('app_login');
         }
 
         $gameList = $entityManager->getRepository(GameLaunch::class)->findAll();
@@ -48,7 +43,7 @@ class GameController extends BaseController
             }
         }
 
-        return $this->render('/start_game.view.php', [
+        return $this->render('game/index.html.twig', [
             'username' => $user->getUsername(),
             'gameList' => $gameList,
             'baseUrl' => $request->getUri(),
@@ -58,22 +53,18 @@ class GameController extends BaseController
         ]);
     }
 
-    public function create(Request $request): Response
+    #[Route('/create', name: 'app_game_create', methods: ['POST'])]
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $session = $request->getSession();
-        $flashes = $session->getFlashBag();
-        $userId = $session->get('user');
-
-        $entityManager = EntityManagerFactory::create();
-        $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $userId]);
+        $user = $entityManager->getRepository(User::class)->find($this->getUser());
         if (!$user) {
-            return new RedirectResponse('/login');
+            return $this->redirectToRoute('app_login');
         }
 
         $color = $request->request->get('player');
         if (!$color) {
-            $flashes->add('danger', 'Color is not set');
-            return new RedirectResponse('/');
+            $this->addFlash('danger', 'Color is not set');
+            return $this->redirectToRoute('app_game_list');
         }
 
         $game = new GameLaunch();
@@ -90,33 +81,28 @@ class GameController extends BaseController
         $entityManager->flush();
 
         $query = http_build_query(['room' => $game->getRoomId()]);
-        return new RedirectResponse('/game?' . $query);
+        return $this->redirect('/game?' . $query);
     }
 
-    public function join(Request $request): Response
+    #[Route('/join', name: 'app_game_join', methods: ['POST'])]
+    public function join(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $session = $request->getSession();
-        $flashes = $session->getFlashBag();
-
-        $userId = $session->get('user');
-
-        $entityManager = EntityManagerFactory::create();
-        $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $userId]);
+        $user = $entityManager->getRepository(User::class)->find($this->getUser());
         if (!$user) {
-            return new RedirectResponse('/login');
+            return $this->redirectToRoute('app_login');
         }
 
         $color = $request->request->get('player');
         $roomId = $request->request->get('room');
         if (!$color || !$roomId) {
-            $flashes->add('danger', 'Color not set');
-            return new RedirectResponse('/');
+            $this->addFlash('danger', 'Color not set');
+            return $this->redirectToRoute('app_game_list');
         }
 
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         if (!$gameLaunch) {
-            $flashes->add('danger', 'Game not found');
-            return new RedirectResponse('/');
+            $this->addFlash('danger', 'Game not found');
+            return $this->redirectToRoute('app_game_list');
         }
 
         if ($color === 'white' && !$gameLaunch->getWhiteTeamUser()) {
@@ -128,31 +114,28 @@ class GameController extends BaseController
         $entityManager->flush();
 
         $query = http_build_query(['room' => $roomId]);
-        return new RedirectResponse('/game?' . $query);
+        return $this->redirect('/game?' . $query);
     }
 
-    public function game(Request $request): Response
+    #[Route('/game', name: 'app_game', methods: ['GET'])]
+    public function game(Request $request, EntityManagerInterface $entityManager, Session $session): Response
     {
-        $session = $request->getSession();
-        $flashes = $session->getFlashBag();
-
-        $roomId = s($request->getRequestUri())->match('!room=(\w+)!iu')[1];
+        dd($request);
+        $roomId = $request->query->get('room');
         if (!$roomId) {
-            $flashes->add('danger', 'Room not found');
-            return new RedirectResponse('/');
+            $this->addFlash('danger', 'Room not found');
+            return $this->redirectToRoute('app_game_list');
         }
 
-        $entityManager = EntityManagerFactory::create();
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         if (!$gameLaunch) {
-            $flashes->add('danger', 'Game not found');
-            return new RedirectResponse('/');
+            $this->addFlash('danger', 'Game not found');
+            return $this->redirectToRoute('app_game_list');
         }
 
-        $userId = $session->get('user');
-        $user = $entityManager->getRepository(User::class)->findOneBy(['id' => $userId]);
+        $user = $entityManager->getRepository(User::class)->find($this->getUser());
         if (!$user) {
-            return new RedirectResponse('/login');
+            return $this->redirectToRoute('app_login');
         }
 
         $userColor = null;
@@ -165,8 +148,8 @@ class GameController extends BaseController
             $userColor = 'black';
         }
         if (!$userColor) {
-            $flashes->add('danger', 'This room is occupied');
-            return new RedirectResponse('/');
+            $this->addFlash('danger', 'This room is occupied');
+            return $this->redirectToRoute('app_game_list');
         }
 
         $session->set('room', $roomId);
@@ -179,27 +162,20 @@ class GameController extends BaseController
         ]);
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function update(Request $request): Response
+    #[Route('/update', name: 'app_game_update', methods: ['GET', 'POST'])]
+    public function update(Request $request, Session $session, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {
-        $session = $request->getSession();
-
-        $entityManager = EntityManagerFactory::create();
         $roomId = $session->get('room');
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         if (!$gameLaunch) {
-            return new RedirectResponse('/');
+            return $this->redirectToRoute('app_game_list');
         }
-
-        $logger = LoggerFactory::getLogger($roomId);
 
         $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
         $blackTeamUser = $gameLaunch->getBlackTeamUser();
 
         if (!$whiteTeamUser || !$blackTeamUser) {
-            return new JsonResponse([]);
+            return $this->json([]);
         }
 
         $white = new White($whiteTeamUser->getId(), $whiteTeamUser->getUsername());
@@ -208,8 +184,8 @@ class GameController extends BaseController
         $desk = new CheckerDesk($gameLaunch->getTableData());
         $game = new Game($desk, $white, $black, $logger);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['formData'])) {
-            $data = json_decode($_POST['formData'], true, 512, JSON_THROW_ON_ERROR);
+        if ($request->isMethod('POST') && $request->request->has('formData')) {
+            $data = json_decode($request->request->get('formData'), true, 512, JSON_THROW_ON_ERROR);
             $from = htmlspecialchars($data['form1']);
             $to = htmlspecialchars($data['form2']);
 
@@ -222,21 +198,18 @@ class GameController extends BaseController
 
         $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
 
-        return new JsonResponse([
+        return $this->json([
             'table' => $gameLaunch->getTableData(),
             'log' => $this->getLastLogs($entityManager, $roomId),
         ]);
     }
 
-    public function end(Request $request): Response
+    public function end(Session $session, EntityManagerInterface $entityManager): Response
     {
-        $session = $request->getSession();
-
-        $entityManager = EntityManagerFactory::create();
         $roomId = $session->get('room');
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         if (!$gameLaunch) {
-            return new RedirectResponse('/');
+            return $this->redirectToRoute('app_game_list');
         }
 
         $winnerId = $session->get('advantagePlayer');
