@@ -47,7 +47,6 @@ class GameController extends AbstractController
             'username' => $user->getUsername(),
             'gameList' => $gameList,
             'baseUrl' => $request->getUri(),
-            'session' => $session,
             'gamesCount' => count($userGames['games'] ?? []),
             'winsCount' => count($userGames['wins'] ?? [])
         ]);
@@ -117,17 +116,10 @@ class GameController extends AbstractController
         return $this->redirect('/game?' . $query);
     }
 
-    #[Route('/game', name: 'app_game', methods: ['GET'])]
-    public function game(Request $request, EntityManagerInterface $entityManager, Session $session): Response
+    #[Route('/game/{room}', name: 'app_game', methods: ['GET'])]
+    public function game(EntityManagerInterface $entityManager, Session $session, string $room): Response
     {
-        dd($request);
-        $roomId = $request->query->get('room');
-        if (!$roomId) {
-            $this->addFlash('danger', 'Room not found');
-            return $this->redirectToRoute('app_game_list');
-        }
-
-        $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
+        $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $room]);
         if (!$gameLaunch) {
             $this->addFlash('danger', 'Game not found');
             return $this->redirectToRoute('app_game_list');
@@ -152,13 +144,12 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $session->set('room', $roomId);
+        $session->set('room', $room);
         $session->set('whiteUserName', $whiteTeamUser ? $whiteTeamUser->getUsername() : '');
         $session->set('blackUserName', $blackTeamUser ? $blackTeamUser->getUsername() : '');
 
-        return $this->render('/game.view.php', [
+        return $this->render('game/game.html.twig', [
             'color' => $userColor,
-            'session' => $session
         ]);
     }
 
@@ -182,6 +173,8 @@ class GameController extends AbstractController
         $black = new Black($blackTeamUser->getId(), $blackTeamUser->getUsername());
 
         $desk = new CheckerDesk($gameLaunch->getTableData());
+
+        $logger = $logger->withName($roomId);
         $game = new Game($desk, $white, $black, $logger);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
@@ -220,7 +213,7 @@ class GameController extends AbstractController
         $gameLaunch->setIsActive(false);
         $entityManager->flush();
 
-        return $this->render('/end_game.view.php');
+        return $this->render('game/end-game.html.twig');
     }
 
     /**
