@@ -23,14 +23,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class GameController extends AbstractController
 {
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
-    public function index(Request $request, Session $session, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $user = $entityManager->getRepository(User::class)->find($this->getUser());
+        $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
-        $gameList = $entityManager->getRepository(GameLaunch::class)->findAll();
+        $gameList = $entityManager->getRepository(GameLaunch::class)->findBy(['is_active' => true]);
         $userGames = [];
         foreach ($gameList as $game) {
             if (
@@ -55,17 +55,13 @@ class GameController extends AbstractController
     #[Route('/create', name: 'app_game_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $user = $entityManager->getRepository(User::class)->find($this->getUser());
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $color = $request->request->get('player');
         if (!$color) {
             $this->addFlash('danger', 'Color is not set');
             return $this->redirectToRoute('app_game_list');
         }
 
+        $user = $this->getUser();
         $game = new GameLaunch();
         if ($color === 'white') {
             $game->setWhiteTeamUser($user);
@@ -79,18 +75,12 @@ class GameController extends AbstractController
         $entityManager->persist($game);
         $entityManager->flush();
 
-        $query = http_build_query(['room' => $game->getRoomId()]);
-        return $this->redirect('/game?' . $query);
+        return $this->redirectToRoute('app_game', ['room' => $game->getRoomId()]);
     }
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
     public function join(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $user = $entityManager->getRepository(User::class)->find($this->getUser());
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $color = $request->request->get('player');
         $roomId = $request->request->get('room');
         if (!$color || !$roomId) {
@@ -104,6 +94,7 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
+        $user = $this->getUser();
         if ($color === 'white' && !$gameLaunch->getWhiteTeamUser()) {
             $gameLaunch->setWhiteTeamUser($user);
         } elseif ($color === 'black' && !$gameLaunch->getBlackTeamUser()) {
@@ -112,8 +103,7 @@ class GameController extends AbstractController
 
         $entityManager->flush();
 
-        $query = http_build_query(['room' => $roomId]);
-        return $this->redirect('/game?' . $query);
+        return $this->redirectToRoute('app_game', ['room' => $roomId]);
     }
 
     #[Route('/game/{room}', name: 'app_game', methods: ['GET'])]
@@ -125,12 +115,8 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $user = $entityManager->getRepository(User::class)->find($this->getUser());
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $userColor = null;
+        $user = $this->getUser();
         $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
         if ($user === $whiteTeamUser) {
             $userColor = 'white';
@@ -197,6 +183,7 @@ class GameController extends AbstractController
         ]);
     }
 
+    #[Route('/end', name: 'app_game_end', methods: ['GET'])]
     public function end(Session $session, EntityManagerInterface $entityManager): Response
     {
         $roomId = $session->get('room');
