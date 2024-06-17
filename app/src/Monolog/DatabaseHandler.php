@@ -2,11 +2,11 @@
 
 namespace App\Monolog;
 
+use App\Entity\Log;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\LogRecord;
-use Src\Entity\Log;
 
 class DatabaseHandler extends AbstractProcessingHandler
 {
