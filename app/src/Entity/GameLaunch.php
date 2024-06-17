@@ -22,13 +22,17 @@ class GameLaunch
     #[GeneratedValue]
     private int $id;
 
-    #[ManyToOne(targetEntity: User::class, inversedBy: 'games')]
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'whiteTeamGames')]
     #[ORM\JoinColumn(name: 'white_user_id', referencedColumnName: 'id')]
     private ?User $white_team_user;
 
-    #[ManyToOne(targetEntity: User::class, inversedBy: 'games')]
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'blackTeamGames')]
     #[ORM\JoinColumn(name: 'black_user_id', referencedColumnName: 'id')]
     private ?User $black_team_user;
+
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'wonGames')]
+    #[ORM\JoinColumn(name: 'winner_id', referencedColumnName: 'id')]
+    private ?User $winner;
 
     #[Column(type: 'json')]
     private array $table_data;
@@ -38,10 +42,6 @@ class GameLaunch
 
     #[Column(type: 'boolean')]
     private bool $is_active;
-
-    #[ManyToOne(targetEntity: User::class, inversedBy: 'games')]
-    #[ORM\JoinColumn(name: 'winner_id', referencedColumnName: 'id')]
-    private ?User $winner;
 
     public function __construct()
     {

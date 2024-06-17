@@ -31,24 +31,15 @@ class GameController extends AbstractController
         }
 
         $gameList = $entityManager->getRepository(GameLaunch::class)->findBy(['is_active' => true]);
-        $userGames = [];
-        foreach ($gameList as $game) {
-            if (
-                $game->getWhiteTeamUser() === $user || $game->getBlackTeamUser() === $user
-            ) {
-                $userGames['games'][] = $game;
-            }
-            if ($game->getWinner() === $user) {
-                $userGames['wins'][] = $game;
-            }
-        }
+        $gamesCount = $user->getWhiteTeamGames()->count() + $user->getBlackTeamGames()->count();
+        $winsCount = $user->getWonGames()->count();
 
         return $this->render('game/index.html.twig', [
             'username' => $user->getUsername(),
             'gameList' => $gameList,
             'baseUrl' => $request->getUri(),
-            'gamesCount' => count($userGames['games'] ?? []),
-            'winsCount' => count($userGames['wins'] ?? [])
+            'gamesCount' => $gamesCount,
+            'winsCount' => $winsCount
         ]);
     }
 
@@ -208,13 +199,13 @@ class GameController extends AbstractController
      */
     public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
     {
-        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId]);
-        $lastLogs = array_slice($logs, -10);
+        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId], limit: 10);
+
         return array_map(
             fn(Log $log) => [
                 'logLevel' => Logger::toMonologLevel($log->getLevel())->getName(),
                 'message' => $log->getMessage()
-            ], $lastLogs
+            ], $logs
         );
     }
 }

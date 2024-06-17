@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
@@ -52,12 +51,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Column]
     private array $roles = [];
 
-    #[OneToMany(targetEntity: GameLaunch::class, mappedBy: 'id')]
-    private Collection $games;
+    #[OneToMany(targetEntity: GameLaunch::class, mappedBy: 'white_team_user')]
+    private Collection $whiteTeamGames;
+
+    #[OneToMany(targetEntity: GameLaunch::class, mappedBy: 'black_team_user')]
+    private Collection $blackTeamGames;
+
+    #[OneToMany(targetEntity: GameLaunch::class, mappedBy: 'winner')]
+    private Collection $wonGames;
 
     public function __construct()
     {
-        $this->games = new ArrayCollection();
         $this->roles[] = 'ROLE_USER';
     }
 
@@ -91,11 +95,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
     }
 
-    public function getGames(): Collection
-    {
-        return $this->games;
-    }
-
     /**
      * A visual identifier that represents this user.
      *
@@ -124,6 +123,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getWhiteTeamGames(): Collection
+    {
+        return $this->whiteTeamGames;
+    }
+
+    public function setWhiteTeamGames(Collection $whiteTeamGames): void
+    {
+        $this->whiteTeamGames = $whiteTeamGames;
+    }
+
+    public function getBlackTeamGames(): Collection
+    {
+        return $this->blackTeamGames;
+    }
+
+    public function setBlackTeamGames(Collection $blackTeamGames): void
+    {
+        $this->blackTeamGames = $blackTeamGames;
+    }
+
+    public function getWonGames(): Collection
+    {
+        return $this->wonGames;
+    }
+
+    public function setWonGames(Collection $wonGames): void
+    {
+        $this->wonGames = $wonGames;
+    }
+
 
     /**
      * @see UserInterface
