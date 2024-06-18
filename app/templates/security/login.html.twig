@@ -50,13 +50,13 @@
 
                         <!-- Email input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control">
+                            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" required>
                             <label class="form-label" for="loginName">Email or username</label>
                         </div>
 
                         <!-- Password input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="password" id="password" name="_password" class="form-control">
+                            <input type="password" id="password" name="_password" class="form-control" required>
                             <label class="form-label" for="loginPassword">Password</label>
                         </div>
 
@@ -70,7 +70,7 @@
 
 
                         {% if error %}
-                            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            <div class="text-danger small">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                         {% endif %}
                     </form>
                 </div>
