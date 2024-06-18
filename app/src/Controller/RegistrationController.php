@@ -10,13 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-//    #[IsCsrfTokenValid('register', tokenKey: 'token')]
     public function register(
         Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
@@ -26,6 +24,12 @@ class RegistrationController extends AbstractController
     ): Response
     {
         if ($request->isMethod('POST')) {
+            $submittedToken = $request->getPayload()->get('_csrf_token');
+            if (!$this->isCsrfTokenValid('register', $submittedToken)) {
+                $this->addFlash('error', 'Token is invalid');
+                return $this->redirectToRoute('app_register');
+            }
+
             $user = new User();
             $user->setUsername($request->request->get('username'));
             $user->setPassword(
@@ -47,8 +51,6 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
-            // do anything else you need here, like send an email
 
             return $security->login($user, 'form_login', 'main');
         }
