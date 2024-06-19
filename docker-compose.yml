@@ -26,9 +26,10 @@ services:
 
   db:
     container_name: db
-    image: mysql:8.0.33
+    image: &db-image mysql:8.0.33
     platform: linux/x86_64
     command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -41,8 +42,24 @@ services:
     networks:
       - my_network
 
+  db_test:
+    container_name: db_test
+    image: *db-image
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_name_test
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    volumes:
+      - mysql_data_test:/var/lib/mysql
+    networks:
+      - my_network
+
 volumes:
   mysql_data:
+  mysql_data_test:
 
 networks:
   my_network:

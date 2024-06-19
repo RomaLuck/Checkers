@@ -30,22 +30,22 @@ final class Game
         $this->rules = new Rules($this->getLogger());
     }
 
-    public function getDesk(): CheckerDesk
+    private function getDesk(): CheckerDesk
     {
         return $this->desk;
     }
 
-    public function getLogger(): LoggerInterface
+    private function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
 
-    public function getRules(): Rules
+    private function getRules(): Rules
     {
         return $this->rules;
     }
 
-    public function getPlayerDetector(): PlayerDetector
+    private function getPlayerDetector(): PlayerDetector
     {
         return $this->playerDetector;
     }
@@ -104,7 +104,7 @@ final class Game
     /**
      * @return array<int>
      */
-    public function transformInputData(string $cell): array
+    private function transformInputData(string $cell): array
     {
         if (!preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
             throw new RuntimeException('Cell is incorrect');
