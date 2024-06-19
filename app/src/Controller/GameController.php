@@ -7,10 +7,10 @@ use App\Entity\Log;
 use App\Entity\User;
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
+use App\Service\Game\GameService;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use Doctrine\ORM\EntityManagerInterface;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +22,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class GameController extends AbstractController
 {
+    public function __construct(private readonly GameService $gameService)
+    {
+    }
+
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -44,27 +48,20 @@ class GameController extends AbstractController
     }
 
     #[Route('/create', name: 'app_game_create', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $color = $request->request->get('player');
-        if (!$color) {
+        if (!in_array($color, ['white', 'black'])) {
             $this->addFlash('danger', 'Color is not set');
             return $this->redirectToRoute('app_game_list');
         }
 
-        $user = $this->getUser();
-        $game = new GameLaunch();
-        if ($color === 'white') {
-            $game->setWhiteTeamUser($user);
-        } elseif ($color === 'black') {
-            $game->setBlackTeamUser($user);
-        }
-
-        $game->setTableData(CheckerDesk::START_DESK);
-        $game->setIsActive(true);
-
-        $entityManager->persist($game);
-        $entityManager->flush();
+        $game = $this->gameService->createGameLaunch($user, $color);
 
         return $this->redirectToRoute('app_game', ['room' => $game->getRoomId()]);
     }
@@ -72,9 +69,14 @@ class GameController extends AbstractController
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
     public function join(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $color = $request->request->get('player');
         $roomId = $request->request->get('room');
-        if (!$color || !$roomId) {
+        if (!$roomId || !in_array($color, ['white', 'black'])) {
             $this->addFlash('danger', 'Color not set');
             return $this->redirectToRoute('app_game_list');
         }
@@ -85,14 +87,7 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $user = $this->getUser();
-        if ($color === 'white' && !$gameLaunch->getWhiteTeamUser()) {
-            $gameLaunch->setWhiteTeamUser($user);
-        } elseif ($color === 'black' && !$gameLaunch->getBlackTeamUser()) {
-            $gameLaunch->setBlackTeamUser($user);
-        }
-
-        $entityManager->flush();
+        $this->gameService->joinToGame($gameLaunch, $user, $color);
 
         return $this->redirectToRoute('app_game', ['room' => $roomId]);
     }
@@ -106,24 +101,13 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $userColor = null;
-        $user = $this->getUser();
-        $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
-        if ($user === $whiteTeamUser) {
-            $userColor = 'white';
-        }
-        $blackTeamUser = $gameLaunch->getBlackTeamUser();
-        if ($user === $blackTeamUser) {
-            $userColor = 'black';
-        }
+        $userColor = $this->gameService->getUserColor($gameLaunch, $this->getUser());
         if (!$userColor) {
             $this->addFlash('danger', 'This room is occupied');
             return $this->redirectToRoute('app_game_list');
         }
 
         $session->set('room', $room);
-        $session->set('whiteUserName', $whiteTeamUser ? $whiteTeamUser->getUsername() : '');
-        $session->set('blackUserName', $blackTeamUser ? $blackTeamUser->getUsername() : '');
 
         return $this->render('game/game.html.twig', [
             'color' => $userColor,
@@ -199,12 +183,12 @@ class GameController extends AbstractController
      */
     public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
     {
-        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId], limit: 10);
+        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId], orderBy: ['id' => 'DESC'], limit: 10);
 
         return array_map(
             fn(Log $log) => [
-                'logLevel' => Logger::toMonologLevel($log->getLevel())->getName(),
-                'message' => $log->getMessage()
+                'message' => $log->getMessage(),
+                'time' => $log->getTime()->format('d/m/y H:i:s')
             ], $logs
         );
     }

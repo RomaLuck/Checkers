@@ -118,8 +118,15 @@ function showLog(logs) {
     logsContainer.innerHTML = '';
     for (let log of logs) {
         let logElement = document.createElement('li');
-        logElement.classList.add('text-' + log.logLevel.toLowerCase());
-        logElement.innerText = log.message;
+
+        let logTime = document.createElement('span');
+        logTime.innerText = '[' + log.time + '] ';
+        logElement.appendChild(logTime);
+
+        let logMessage = document.createElement('span');
+        logMessage.innerText = log.message;
+        logElement.appendChild(logMessage);
+
         logsContainer.appendChild(logElement);
     }
 }

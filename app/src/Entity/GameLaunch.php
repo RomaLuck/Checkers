@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Entity(repositoryClass: GameLaunchRepository::class)]
 #[Table(name: 'games')]
@@ -73,7 +74,7 @@ class GameLaunch
         return $this->white_team_user;
     }
 
-    public function setWhiteTeamUser(?User $white_team_user): void
+    public function setWhiteTeamUser(?UserInterface $white_team_user): void
     {
         $this->white_team_user = $white_team_user;
     }
@@ -83,7 +84,7 @@ class GameLaunch
         return $this->black_team_user;
     }
 
-    public function setBlackTeamUser(?User $black_team_user): void
+    public function setBlackTeamUser(?UserInterface $black_team_user): void
     {
         $this->black_team_user = $black_team_user;
     }
