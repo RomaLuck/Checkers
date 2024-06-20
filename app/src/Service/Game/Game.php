@@ -30,7 +30,7 @@ final class Game
         $this->rules = new Rules($this->getLogger());
     }
 
-    private function getDesk(): CheckerDesk
+    public function getDesk(): CheckerDesk
     {
         return $this->desk;
     }
@@ -102,7 +102,7 @@ final class Game
     }
 
     /**
-     * @return array<int>
+     * @return array<int,int>
      */
     private function transformInputData(string $cell): array
     {

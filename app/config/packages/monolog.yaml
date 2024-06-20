@@ -24,7 +24,7 @@ when@dev:
                 channels: ["!event", "!doctrine", "!console"]
             db:
                 type: service
-                id: App\Monolog\DatabaseHandler
+                id: app.monolog.database.handler
                 level: debug
                 channels: ["!event", "!doctrine", "!console", "!security", "!request"]
 
