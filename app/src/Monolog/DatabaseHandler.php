@@ -8,6 +8,7 @@ use App\Entity\Log;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 use Monolog\LogRecord;
 
 class DatabaseHandler extends AbstractProcessingHandler
@@ -24,7 +25,7 @@ class DatabaseHandler extends AbstractProcessingHandler
     {
         $log = new Log();
         $log->setChannel($record['channel']);
-        $log->setLevel($record['level']);
+        $log->setLevel(Logger::toMonologLevel($record['level'])->getName());
         $log->setMessage($record['message']);
         $log->setTime(DateTime::createFromImmutable($record['datetime']));
 
