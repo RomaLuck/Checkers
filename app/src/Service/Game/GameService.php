@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game;
 
 use App\Entity\GameLaunch;
@@ -8,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class GameService
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
     }
 
