@@ -16,9 +16,9 @@ Currently, it is under development.
 
 ## Tools
 
+- Symfony v7.1.1
 - PHP v8.2
 - Mysql v8.0.33
-- Js (ES6)
 - Bootstrap v5.2.2
 
 ## Current features
@@ -71,5 +71,5 @@ docker exec php ./vendor/bin/doctrine-migrations migrations:migrate
 ## Test
 
 ```
-docker exec php ./vendor/bin/pest
+docker exec php bin/phpunit
 ```
