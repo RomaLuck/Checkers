@@ -47,6 +47,8 @@ class GameLaunch
     public function __construct()
     {
         $this->setRoomId();
+        $this->white_team_user = null;
+        $this->black_team_user = null;
     }
 
     public function getId(): int

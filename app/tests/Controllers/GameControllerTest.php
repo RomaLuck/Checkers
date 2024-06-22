@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class GameControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private ObjectManager $entityManager;
+    private ?ObjectManager $entityManager;
     private UserInterface $user;
 
     public function setUp(): void
@@ -33,6 +33,14 @@ class GameControllerTest extends WebTestCase
 
         $this->client->loginUser($user);
         $this->user = $user;
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->entityManager->close();
+        $this->entityManager = null;
     }
 
     public function testIndex(): void

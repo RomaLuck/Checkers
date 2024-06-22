@@ -8,7 +8,7 @@ use App\Entity\GameLaunch;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class GameService
+final class GameService
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
