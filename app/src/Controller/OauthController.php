@@ -27,4 +27,23 @@ class OauthController extends AbstractController
     {
 
     }
+
+    #[Route('/connect/facebook', name: 'connect_facebook')]
+    public function connectFacebook(ClientRegistry $clientRegistry): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_game_list');
+        }
+        return $clientRegistry
+            ->getClient('facebook')
+            ->redirect([], [
+                'profile', 'email'
+            ]);
+    }
+
+    #[Route('/connect/facebook/check', name: 'connect_facebook_check')]
+    public function connectFacebookCheck(): Response
+    {
+
+    }
 }

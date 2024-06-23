@@ -23,13 +23,13 @@
                     <form action="{{ path('app_login') }}" method="post">
                         <div class="text-center mb-3">
                             <p>Sign in with:</p>
-                            <button type="button" data-mdb-button-init data-mdb-ripple-init
-                                    class="btn btn-link btn-floating mx-1">
+                            <a type="button" data-mdb-button-init data-mdb-ripple-init
+                                    class="btn btn-link btn-floating mx-1" href="{{ path('connect_facebook') }}">
                                 <i class="bi bi-facebook"></i>
-                            </button>
+                            </a>
 
                             <a type="button" data-mdb-button-init data-mdb-ripple-init
-                                    class="btn btn-link btn-floating mx-1" href="{{ path('connect_google') }}">
+                               class="btn btn-link btn-floating mx-1" href="{{ path('connect_google') }}">
                                 <i class="bi bi-google"></i>
                             </a>
 
@@ -48,7 +48,8 @@
 
                         <!-- Email input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" required>
+                            <input type="text" id="username" name="_username" value="{{ last_username }}"
+                                   class="form-control" required>
                             <label class="form-label" for="loginName">Email or username</label>
                         </div>
 

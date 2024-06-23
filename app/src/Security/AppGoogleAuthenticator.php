@@ -35,35 +35,40 @@ class AppGoogleAuthenticator extends OAuth2Authenticator implements Authenticati
 
     public function supports(Request $request): ?bool
     {
-        // continue ONLY if the current ROUTE matches the check ROUTE
-        return $request->attributes->get('_route') === 'connect_google_check';
+        return $this->getClientDetector($request) !== null;
     }
 
     public function authenticate(Request $request): Passport
     {
-        $client = $this->clientRegistry->getClient('google');
+        $client = $this->clientRegistry->getClient($this->getClientDetector($request)->detectClientName());
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var GoogleUser $googleUser */
                 $googleUser = $client->fetchUserFromToken($accessToken);
 
                 $email = $googleUser->getEmail();
 
-                // 1) have they logged in with Facebook before? Easy!
-                $googleUserId = $googleUser->getId();
+                $oauthId = $googleUser->getId();
                 $existingUser = $this->entityManager->getRepository(User::class)
-                    ->findOneBy(['google_id' => $googleUserId]);
+                    ->findOneBy(['oauth_id' => $oauthId]);
                 if ($existingUser) {
                     return $existingUser;
                 }
 
-                $user = new User();
-                $user->setUsername($email);
-                $user->setPassword(password_hash($googleUserId, PASSWORD_BCRYPT));
-                $user->setGoogleId($googleUserId);
-                $this->entityManager->persist($user);
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $email]);
+                if (!$user) {
+                    $newUser = new User();
+                    $newUser->setUsername($email);
+                    $newUser->setPassword(password_hash($oauthId, PASSWORD_BCRYPT));
+                    $newUser->setOauthId($oauthId);
+                    $this->entityManager->persist($newUser);
+                    $this->entityManager->flush();
+
+                    return $user;
+                }
+
+                $user->setOauthId($oauthId);
                 $this->entityManager->flush();
 
                 return $user;
@@ -73,13 +78,9 @@ class AppGoogleAuthenticator extends OAuth2Authenticator implements Authenticati
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // change "app_homepage" to some route in your app
         $targetUrl = $this->router->generate('app_game_list');
 
         return new RedirectResponse($targetUrl);
-
-        // or, on success, let the request continue to be handled by the controller
-        //return null;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
@@ -96,8 +97,13 @@ class AppGoogleAuthenticator extends OAuth2Authenticator implements Authenticati
     public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
-            '/connect/', // might be the site, where users choose their oauth provider
+            '/connect/',
             Response::HTTP_TEMPORARY_REDIRECT
         );
+    }
+
+    private function getClientDetector(Request $request): ?OauthClientDetector
+    {
+        return OauthClientDetector::tryFrom($request->attributes->get('_route'));
     }
 }

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Load environment variables
-export $(grep -v '^#' .env | xargs)
+export $(grep -v '^#' /app/.env.local | xargs)
 
 # Run the tests and capture the exit status
 docker exec php bin/phpunit > tests.txt
