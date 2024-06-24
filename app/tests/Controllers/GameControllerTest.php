@@ -7,6 +7,7 @@ namespace App\Tests\Controllers;
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\CheckerDesk;
+use App\Service\Game\GameStrategyIds;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -49,6 +50,7 @@ class GameControllerTest extends WebTestCase
         $this->assertEquals([], $gameList);
 
         $game = new GameLaunch();
+        $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
 
@@ -69,6 +71,7 @@ class GameControllerTest extends WebTestCase
     public function testJoin(): void
     {
         $game = new GameLaunch();
+        $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
         $game->setWhiteTeamUser($this->user);
@@ -97,6 +100,7 @@ class GameControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $game = new GameLaunch();
+        $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
         $game->setWhiteTeamUser($this->user);

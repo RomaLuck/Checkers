@@ -15,18 +15,19 @@
 <body>
 <ul class="nav justify-content-end shadow">
     {% if app.user %}
-    <li>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-outline-success m-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Create game
-        </button>
-    </li>
-    <li class="nav-item">
-        <a href="/" class="btn btn-outline-primary m-2">Game list</a>
-    </li>
-    <li class="nav-item">
-        <a href="/logout" class="btn btn-outline-danger m-2">Exit</a>
-    </li>
+        <li>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-success m-2" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                Create game
+            </button>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="btn btn-outline-primary m-2">Game list</a>
+        </li>
+        <li class="nav-item">
+            <a href="/logout" class="btn btn-outline-danger m-2">Exit</a>
+        </li>
     {% endif %}
 </ul>
 
@@ -35,27 +36,46 @@
     <div class="modal-dialog">
         <div class="modal-content p-2">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Choose team</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Set the game</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="post" action="/create">
-                <div class="mt-2 d-flex">
-                    <button type="button" class="btn btn-light shadow" id="whiteButton">
-                        <input class="form-check-input" type="radio" name="player" value="white" id="whiteRadio"
-                               hidden="hidden">
-                        <img class="w-25" src="{{ asset('pictures/white.png') }}" alt="white">
-                        <label class="form-check-label" for="whiteRadio">
+                <div class="m-2 d-block">
+                    <div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="strategy" id="computer-strategy"
+                                   value="1">
+                            <label class="form-check-label" for="computer-strategy">
+                                With computer
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="strategy" id="multiplayer-strategy"
+                                   value="2" checked>
+                            <label class="form-check-label" for="multiplayer-strategy">
+                                With other player
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-flex m-2">
+                        <button type="button" class="btn btn-light shadow" id="whiteButton">
+                            <input class="form-check-input" type="radio" name="player" value="white" id="whiteRadio"
+                                   hidden="hidden">
+                            <img class="w-25" src="{{ asset('pictures/white.png') }}" alt="white">
+                            <label class="form-check-label" for="whiteRadio">
 
-                        </label>
-                    </button>
-                    <button type="button" class="btn btn-light shadow" id="blackButton">
-                        <input class="form-check-input" type="radio" name="player" value="black" id="blackRadio"
-                               hidden="hidden">
-                        <img class="w-25" src="{{ asset('pictures/black.png') }}" alt="black">
-                        <label class="form-check-label" for="blackRadio">
+                            </label>
+                        </button>
+                        <button type="button" class="btn btn-light shadow" id="blackButton">
+                            <input class="form-check-input" type="radio" name="player" value="black" id="blackRadio"
+                                   hidden="hidden">
+                            <img class="w-25" src="{{ asset('pictures/black.png') }}" alt="black">
+                            <label class="form-check-label" for="blackRadio">
 
-                        </label>
-                    </button>
+                            </label>
+                        </button>
+                    </div>
+
                     <p class="text-danger small text-center mt-3" id="alerts"></p>
                 </div>
                 <div class="modal-footer row d-flex justify-content-center">

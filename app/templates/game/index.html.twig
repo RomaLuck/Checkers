@@ -67,7 +67,7 @@
                     {% for game in gameList %}
                         {% if(game.isActive()) %}
                             <tr class="game-list">
-                                <td><a class="btn btn-outline-primary"
+                                <td><a class="btn btn-outline-primary" id="link-to-game"
                                        href="{{ path('app_game',{room:game.getRoomId()}) }}">Link</a>
                                 </td>
                                 <td class="username text-break" room="{{ game.getRoomId() }}"

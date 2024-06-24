@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
+use App\Service\Game\GameStrategyIds;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use Doctrine\ORM\EntityManagerInterface;
@@ -62,7 +63,13 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $game = $this->gameService->createGameLaunch($user, $color);
+        $strategyId = (int)$request->request->get('strategy');
+        if (!in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
+            $this->addFlash('danger', 'Type of game is not set');
+            return $this->redirectToRoute('app_game_list');
+        }
+
+        $game = $this->gameService->createGameLaunch($user, $color, $strategyId);
 
         return $this->redirectToRoute('app_game', ['room' => $game->getRoomId()]);
     }
@@ -94,7 +101,7 @@ class GameController extends AbstractController
     }
 
     #[Route('/game/{room}', name: 'app_game', methods: ['GET'])]
-    public function game(EntityManagerInterface $entityManager, Session $session, LoggerInterface $logger, string $room): Response
+    public function game(EntityManagerInterface $entityManager, Session $session, string $room): Response
     {
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $room]);
         if (!$gameLaunch) {
@@ -109,8 +116,6 @@ class GameController extends AbstractController
         }
 
         $session->set('room', $room);
-        $logger = $logger->withName($room);
-        $logger->info('Waiting for other player...');
 
         return $this->render('game/game.html.twig', [
             'color' => $userColor,
@@ -126,6 +131,8 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
+        $logger = $logger->withName($roomId);
+
         $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
         $blackTeamUser = $gameLaunch->getBlackTeamUser();
 
@@ -140,7 +147,6 @@ class GameController extends AbstractController
 
         $desk = new CheckerDesk($gameLaunch->getTableData());
 
-        $logger = $logger->withName($roomId);
         $game = new Game($desk, $white, $black, $logger);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
@@ -188,6 +194,7 @@ class GameController extends AbstractController
      */
     public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
     {
+        #todo перевірити чому не працює в prod середовищі
         $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId], orderBy: ['id' => 'DESC'], limit: 10);
 
         return array_map(

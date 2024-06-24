@@ -26,10 +26,11 @@ Currently, it is under development.
 - Ability to play for two players
 - Ability to play multiple games at the same time
 - Logger
+- Authorization through social networks
 
 ## Current works
 
-- Tests
+- Game with computer
 
 ## ToDo
 

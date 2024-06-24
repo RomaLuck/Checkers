@@ -6,6 +6,7 @@ use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\GameService;
+use App\Service\Game\GameStrategyIds;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -53,6 +54,7 @@ class GameServiceTest extends KernelTestCase
     public function testJoinToGame(): void
     {
         $game = new GameLaunch();
+        $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
 
@@ -70,6 +72,7 @@ class GameServiceTest extends KernelTestCase
     public function testGetUserColor(): void
     {
         $game = new GameLaunch();
+        $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setWhiteTeamUser($this->user);
         $game->setIsActive(true);

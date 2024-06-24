@@ -65,3 +65,8 @@ when@prod:
                 channels: [deprecation]
                 path: php://stderr
                 formatter: monolog.formatter.json
+            db:
+                type: service
+                id: app.monolog.database.handler
+                level: debug
+                channels: [ "!event", "!doctrine", "!console", "!security", "!request" ]

@@ -44,6 +44,9 @@ class GameLaunch
     #[Column(type: 'boolean')]
     private bool $is_active;
 
+    #[ORM\Column(type: 'smallint')]
+    private ?int $strategy_id = null;
+
     public function __construct()
     {
         $this->setRoomId();
@@ -119,5 +122,17 @@ class GameLaunch
     public function setWinner(?User $winner): void
     {
         $this->winner = $winner;
+    }
+
+    public function getStrategyId(): ?int
+    {
+        return $this->strategy_id;
+    }
+
+    public function setStrategyId(int $strategy_id): static
+    {
+        $this->strategy_id = $strategy_id;
+
+        return $this;
     }
 }
