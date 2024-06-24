@@ -17,15 +17,13 @@ class OauthController extends AbstractController
         }
         return $clientRegistry
             ->getClient('google')
-            ->redirect([], [
-                'profile', 'email'
-            ]);
+            ->redirect([]);
     }
 
     #[Route('/connect/google/check', name: 'connect_google_check')]
     public function connectGoogleCheck(): Response
     {
-
+        // The logic is handled by AppOauthAuthenticator
     }
 
     #[Route('/connect/facebook', name: 'connect_facebook')]
@@ -36,15 +34,13 @@ class OauthController extends AbstractController
         }
         return $clientRegistry
             ->getClient('facebook')
-            ->redirect([], [
-                'profile', 'email'
-            ]);
+            ->redirect([]);
     }
 
     #[Route('/connect/facebook/check', name: 'connect_facebook_check')]
     public function connectFacebookCheck(): Response
     {
-
+        // The logic is handled by AppOauthAuthenticator
     }
 
     #[Route('/connect/github', name: 'connect_github')]
@@ -63,6 +59,26 @@ class OauthController extends AbstractController
     #[Route('/connect/github/check', name: 'connect_github_check')]
     public function connectGithubCheck(): Response
     {
+        // The logic is handled by AppOauthAuthenticator
+    }
 
+    #[Route('/connect/microsoft', name: 'connect_microsoft')]
+    public function connectMicrosoft(ClientRegistry $clientRegistry): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_game_list');
+        }
+        return $clientRegistry
+            ->getClient('microsoft')
+            ->redirect(
+                ['wl.basic', 'wl.signin'],
+                ['state' => 'OPTIONAL_CUSTOM_CONFIGURED_STATE']
+            );
+    }
+
+    #[Route('/connect/microsoft/check', name: 'connect_microsoft_check')]
+    public function connectMicrosoftCheck(): Response
+    {
+        // The logic is handled by AppOauthAuthenticator
     }
 }
