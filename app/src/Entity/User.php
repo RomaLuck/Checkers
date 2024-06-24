@@ -61,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $wonGames;
 
     #[Column(length: 255, nullable: true)]
-    private ?string $oauth_id = null;
+    private string|int|null $oauth_id = null;
 
     public function __construct()
     {
@@ -167,12 +167,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getOauthId(): ?string
+    public function getOauthId(): string|int|null
     {
         return $this->oauth_id;
     }
 
-    public function setOauthId(?string $oauth_id): static
+    public function setOauthId(string|int|null $oauth_id): static
     {
         $this->oauth_id = $oauth_id;
 

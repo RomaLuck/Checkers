@@ -19,7 +19,7 @@ security:
             entry_point: App\Security\AppCustomAuthenticator
             custom_authenticators:
                 - App\Security\AppCustomAuthenticator
-                - App\Security\AppGoogleAuthenticator
+                - App\Security\AppOauthAuthenticator
 #            form_login:
 #                login_path: app_login
 #                check_path: app_login

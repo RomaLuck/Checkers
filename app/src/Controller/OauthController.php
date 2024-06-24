@@ -46,4 +46,23 @@ class OauthController extends AbstractController
     {
 
     }
+
+    #[Route('/connect/github', name: 'connect_github')]
+    public function connectGithub(ClientRegistry $clientRegistry): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_game_list');
+        }
+        return $clientRegistry
+            ->getClient('github')
+            ->redirect([
+                'user', 'user:email', 'repo'
+            ]);
+    }
+
+    #[Route('/connect/github/check', name: 'connect_github_check')]
+    public function connectGithubCheck(): Response
+    {
+
+    }
 }
