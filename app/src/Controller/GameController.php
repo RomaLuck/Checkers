@@ -123,15 +123,30 @@ class GameController extends AbstractController
     }
 
     #[Route('/update', name: 'app_game_update', methods: ['GET', 'POST'])]
-    public function update(Request $request, Session $session, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    public function update(
+        Request                $request,
+        Session                $session,
+        EntityManagerInterface $entityManager,
+        LoggerInterface        $logger
+    ): Response
     {
         $roomId = $session->get('room');
+
+        $logger = $logger->withName($roomId);
+
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         if (!$gameLaunch) {
             return $this->redirectToRoute('app_game_list');
         }
 
-        $logger = $logger->withName($roomId);
+        if ($gameLaunch->getStrategyId() === GameStrategyIds::COMPUTER) {
+            $computer = $entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
+            if ($computer) {
+                $gameLaunch->getWhiteTeamUser()
+                    ? $gameLaunch->setBlackTeamUser($computer)
+                    : $gameLaunch->setWhiteTeamUser($computer);
+            }
+        }
 
         $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
         $blackTeamUser = $gameLaunch->getBlackTeamUser();
@@ -150,7 +165,12 @@ class GameController extends AbstractController
         $game = new Game($desk, $white, $black, $logger);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
-            $data = json_decode($request->request->get('formData'), true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode(
+                $request->request->get('formData'),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
             $from = htmlspecialchars($data['form1']);
             $to = htmlspecialchars($data['form2']);
 
@@ -195,7 +215,11 @@ class GameController extends AbstractController
     public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
     {
         #todo перевірити чому не працює в prod середовищі
-        $logs = $entityManager->getRepository(Log::class)->findBy(['channel' => $roomId], orderBy: ['id' => 'DESC'], limit: 10);
+        $logs = $entityManager->getRepository(Log::class)->findBy(
+            ['channel' => $roomId],
+            orderBy: ['id' => 'DESC'],
+            limit: 10
+        );
 
         return array_map(
             fn(Log $log) => [
