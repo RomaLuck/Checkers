@@ -29,7 +29,7 @@ class GameController extends AbstractController
     }
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         if (!$user) {
@@ -94,7 +94,7 @@ class GameController extends AbstractController
     }
 
     #[Route('/game/{room}', name: 'app_game', methods: ['GET'])]
-    public function game(EntityManagerInterface $entityManager, Session $session, string $room): Response
+    public function game(EntityManagerInterface $entityManager, Session $session, LoggerInterface $logger, string $room): Response
     {
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $room]);
         if (!$gameLaunch) {
@@ -109,6 +109,8 @@ class GameController extends AbstractController
         }
 
         $session->set('room', $room);
+        $logger = $logger->withName($room);
+        $logger->info('Waiting for other player...');
 
         return $this->render('game/game.html.twig', [
             'color' => $userColor,
@@ -128,7 +130,9 @@ class GameController extends AbstractController
         $blackTeamUser = $gameLaunch->getBlackTeamUser();
 
         if (!$whiteTeamUser || !$blackTeamUser) {
-            return $this->json([]);
+            return $this->json([
+                'log' => $this->getLastLogs($entityManager, $roomId),
+            ]);
         }
 
         $white = new White($whiteTeamUser->getId(), $whiteTeamUser->getUsername());

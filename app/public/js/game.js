@@ -62,6 +62,10 @@ function updateTable() {
 }
 
 function createChessBoard(deskData) {
+    if (!deskData || deskData.length === 0) {
+        return '';
+    }
+
     const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -113,6 +117,10 @@ function createChessBoard(deskData) {
 }
 
 function showLog(logs) {
+    if (!logs || logs.length === 0) {
+        return '';
+    }
+
     const logsContainer = document.getElementById('game-log');
 
     logsContainer.innerHTML = '';
