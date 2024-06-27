@@ -11,6 +11,7 @@ use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
+use App\Service\Game\Robot;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use Doctrine\ORM\EntityManagerInterface;
@@ -139,12 +140,15 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        if ($gameLaunch->getStrategyId() === GameStrategyIds::COMPUTER) {
+        $strategyId = $gameLaunch->getStrategyId();
+        if ($strategyId === GameStrategyIds::COMPUTER) {
             $computer = $entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
             if ($computer) {
                 $gameLaunch->getWhiteTeamUser()
                     ? $gameLaunch->setBlackTeamUser($computer)
                     : $gameLaunch->setWhiteTeamUser($computer);
+
+                $entityManager->flush();
             }
         }
 
@@ -164,6 +168,11 @@ class GameController extends AbstractController
 
         $game = new Game($desk, $white, $black, $logger);
 
+        if ($strategyId === GameStrategyIds::COMPUTER) {
+            $computerTeam = $computer->getId() === $white ? $white : $black;
+            $robot = new Robot($desk, $computerTeam, $logger);
+        }
+
         if ($request->isMethod('POST') && $request->request->has('formData')) {
             $data = json_decode(
                 $request->request->get('formData'),
@@ -175,7 +184,11 @@ class GameController extends AbstractController
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $updatedDesk = $game->run($from, $to);
+                $updatedDesk = $game->proceed($from, $to);
+                if ($strategyId === GameStrategyIds::COMPUTER) {
+                    $updatedDesk = $robot->run();
+                }
+
                 $gameLaunch->setTableData($updatedDesk);
                 $entityManager->flush();
             }

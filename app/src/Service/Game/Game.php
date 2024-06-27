@@ -14,18 +14,16 @@ use RuntimeException;
 
 final class Game
 {
-    private CheckerDesk $desk;
     private Rules $rules;
     private PlayerDetector $playerDetector;
 
     public function __construct(
-        CheckerDesk             $checkerDesk,
+        private CheckerDesk     $desk,
         private White           $white,
         private Black           $black,
         private LoggerInterface $logger
     )
     {
-        $this->desk = $checkerDesk;
         $this->playerDetector = new PlayerDetector($white, $black);
         $this->rules = new Rules($this->getLogger());
     }
@@ -53,7 +51,7 @@ final class Game
     /**
      * @return array<array>
      */
-    public function run(string $from, string $to): array
+    public function proceed(string $from, string $to): array
     {
         try {
             $cellFrom = $this->transformInputData($from);
