@@ -46,9 +46,14 @@ final class Game
             return $this->getDesk()->getDeskData();
         }
 
-        $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
         $playerDetector = new PlayerDetector($this->white, $this->black);
+        $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
         $player = $playerDetector->detect($selectedTeamNumber);
+        if (!$player) {
+            $this->getLogger()->warning('Can not find player on this cell');
+            return $this->getDesk()->getDeskData();
+        }
+
         $figure = (new FigureFactory($selectedTeamNumber))->create();
 
         $player->setFigure($figure);
@@ -70,9 +75,36 @@ final class Game
         return $this->getDesk()->getDeskData();
     }
 
+    public function isValidRawMove(array $cellFrom, array $cellTo): bool
+    {
+        $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
+        $playerDetector = new PlayerDetector($this->white, $this->black);
+        $player = $playerDetector->detect($selectedTeamNumber);
+        if (!$player) {
+            return false;
+        }
+
+        $figure = (new FigureFactory($selectedTeamNumber))->create();
+
+        $player->setFigure($figure);
+
+        $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
+
+        $figuresForBeat = $this->findFiguresForBeat($cellFrom, $cellTo);
+        if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
+            return true;
+        }
+
+        if ($rules->checkForMove($cellFrom, $cellTo)) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function isValidMove(array $cellFrom, array $cellTo, Rules $rules): bool
     {
-        $figuresForBeat = $rules->findFiguresForBeat($cellFrom, $cellTo);
+        $figuresForBeat = $this->findFiguresForBeat($cellFrom, $cellTo);
         if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
             $this->getDesk()->clearCells($figuresForBeat);
             return true;
@@ -83,6 +115,28 @@ final class Game
         }
 
         return false;
+    }
+
+    /**
+     * @param array<int> $from
+     * @param array<int> $to
+     */
+    public function findFiguresForBeat(array $from, array $to): array
+    {
+        $desk = $this->getDesk()->getDeskData();
+        $figuresCells = [];
+        $letters = [$from[0], $to[0]];
+        $numbers = [$from[1], $to[1]];
+
+        for ($i = min($letters) + 1; $i < max($letters); $i++) {
+            for ($j = min($numbers) + 1; $j < max($numbers); $j++) {
+                if (isset($desk[$i][$j]) && $desk[$i][$j] > 0) {
+                    $figuresCells[] = [$i, $j];
+                }
+            }
+        }
+
+        return $figuresCells;
     }
 
     /**
@@ -104,7 +158,7 @@ final class Game
         return [$key, $splitCell['number'] - 1];
     }
 
-    private function isGameOver(): bool
+    public function isGameOver(): bool
     {
         return $this->countFigures(White::WHITE_NUMBERS) === 0
             || $this->countFigures(Black::BLACK_NUMBERS) === 0;

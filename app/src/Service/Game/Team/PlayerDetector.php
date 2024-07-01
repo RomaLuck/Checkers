@@ -11,10 +11,11 @@ final class PlayerDetector
     public function __construct(
         private PlayerInterface $white,
         private PlayerInterface $black
-    ) {
+    )
+    {
     }
 
-    public function detect(int $teamNumber): PlayerInterface
+    public function detect(int $teamNumber): ?PlayerInterface
     {
         if ($teamNumber > 0) {
             if (in_array($teamNumber, White::WHITE_NUMBERS, true)) {
@@ -24,6 +25,6 @@ final class PlayerDetector
                 return $this->black;
             }
         }
-        throw new RuntimeException('Can not find player on this cell');
+        return null;
     }
 }
