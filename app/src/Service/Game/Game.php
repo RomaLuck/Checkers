@@ -14,9 +14,6 @@ use RuntimeException;
 
 final class Game
 {
-    private Rules $rules;
-    private PlayerDetector $playerDetector;
-
     public function __construct(
         private CheckerDesk     $desk,
         private White           $white,
@@ -24,8 +21,6 @@ final class Game
         private LoggerInterface $logger
     )
     {
-        $this->playerDetector = new PlayerDetector($white, $black);
-        $this->rules = new Rules($this->getLogger());
     }
 
     public function getDesk(): CheckerDesk
@@ -38,20 +33,10 @@ final class Game
         return $this->logger;
     }
 
-    private function getRules(): Rules
-    {
-        return $this->rules;
-    }
-
-    private function getPlayerDetector(): PlayerDetector
-    {
-        return $this->playerDetector;
-    }
-
     /**
      * @return array<array>
      */
-    public function proceed(string $from, string $to): array
+    public function makeMove(string $from, string $to): array
     {
         try {
             $cellFrom = $this->transformInputData($from);
@@ -62,14 +47,15 @@ final class Game
         }
 
         $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
-        $player = $this->getPlayerDetector()->detect($selectedTeamNumber);
+        $playerDetector = new PlayerDetector($this->white, $this->black);
+        $player = $playerDetector->detect($selectedTeamNumber);
         $figure = (new FigureFactory($selectedTeamNumber))->create();
 
         $player->setFigure($figure);
-        $this->getRules()->setPlayer($player);
-        $this->getRules()->setDesk($this->getDesk()->getDeskData());
 
-        if (!$this->isValidMove($cellFrom, $cellTo)) {
+        $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
+
+        if (!$this->isValidMove($cellFrom, $cellTo, $rules)) {
             return $this->getDesk()->getDeskData();
         }
 
@@ -84,15 +70,15 @@ final class Game
         return $this->getDesk()->getDeskData();
     }
 
-    private function isValidMove(array $cellFrom, array $cellTo): bool
+    private function isValidMove(array $cellFrom, array $cellTo, Rules $rules): bool
     {
-        $figuresForBeat = $this->getRules()->findFiguresForBeat($cellFrom, $cellTo);
-        if (count($figuresForBeat) > 0 && $this->getRules()->checkForBeat($cellFrom, $cellTo)) {
+        $figuresForBeat = $rules->findFiguresForBeat($cellFrom, $cellTo);
+        if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
             $this->getDesk()->clearCells($figuresForBeat);
             return true;
         }
 
-        if ($this->getRules()->checkForMove($cellFrom, $cellTo)) {
+        if ($rules->checkForMove($cellFrom, $cellTo)) {
             return true;
         }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Monolog;
+namespace App\Service\Monolog;
 
 use App\Entity\Log;
 use DateTime;

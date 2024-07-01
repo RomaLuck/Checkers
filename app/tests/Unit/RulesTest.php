@@ -27,9 +27,7 @@ class RulesTest extends TestCase
         $player->method('getFigure')->willReturn($figure);
 
         $logger = $this->createMock(LoggerInterface::class);
-        $this->rules = new Rules($logger);
-        $this->rules->setDesk(CheckerDesk::START_DESK);
-        $this->rules->setPlayer($player);
+        $this->rules = new Rules($player, CheckerDesk::START_DESK, $logger);
     }
 
     /**

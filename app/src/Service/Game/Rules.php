@@ -12,10 +12,6 @@ use Psr\Log\LoggerInterface;
 final class Rules
 {
     /**
-     * @var array<array>
-     */
-    private array $desk;
-    /**
      * @var array<int>
      */
     private array $from;
@@ -23,12 +19,12 @@ final class Rules
      * @var array<int>
      */
     private array $to;
-    private LoggerInterface $logger;
-    private PlayerInterface $player;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(
+        private PlayerInterface $player,
+        private array $desk,
+        private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**
@@ -42,7 +38,8 @@ final class Rules
 
         return $this->isAvailableCell()
             && $this->isTrueDirection()
-            && $this->isOpportunityForMove();
+            && $this->isOpportunityForMove()
+            && $this->isOnDesk();
     }
 
     /**
@@ -55,7 +52,8 @@ final class Rules
         $this->to = $to;
 
         return $this->isAvailableCell()
-            && $this->isOpportunityForBeat();
+            && $this->isOpportunityForBeat()
+            && $this->isOnDesk();
     }
 
     /**
@@ -95,7 +93,10 @@ final class Rules
     private function isAvailableCell(): bool
     {
         $to = $this->to;
-        if ($this->desk[$to[0]][$to[1]] === 0) {
+        if (array_key_exists($to[0], $this->desk)
+            && array_key_exists($to[1], $this->desk[$to[0]])
+            && $this->desk[$to[0]][$to[1]] === 0
+        ) {
             return true;
         }
 
@@ -153,5 +154,10 @@ final class Rules
     private function defineStep(): int
     {
         return $this->to[1] - $this->from[1];
+    }
+
+    private function isOnDesk(): bool
+    {
+        return $this->to[0] >= 0 && $this->to[0] < 8 && $this->to[1] >= 0 && $this->to[1] < 8;
     }
 }
