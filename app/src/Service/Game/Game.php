@@ -14,13 +14,22 @@ use RuntimeException;
 
 final class Game
 {
+
     public function __construct(
-        private CheckerDesk     $desk,
-        private White           $white,
-        private Black           $black,
-        private LoggerInterface $logger
+        private CheckerDesk      $desk,
+        private White            $white,
+        private Black            $black,
+        private ?LoggerInterface $logger,
     )
     {
+    }
+
+    public function __clone(): void
+    {
+        $this->desk = clone $this->desk;
+        $this->white = clone $this->white;
+        $this->black = clone $this->black;
+        $this->logger = clone $this->logger;
     }
 
     public function getDesk(): CheckerDesk
@@ -28,7 +37,12 @@ final class Game
         return $this->desk;
     }
 
-    private function getLogger(): LoggerInterface
+    public function setLogger(?LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    private function getLogger(): ?LoggerInterface
     {
         return $this->logger;
     }
@@ -36,77 +50,100 @@ final class Game
     /**
      * @return array<array>
      */
-    public function makeMove(string $from, string $to): array
+    public function makeMove(mixed $cellFrom, mixed $cellTo, bool $transformInput = false): array
+    {
+        if (is_string($cellFrom) && is_string($cellTo) && $transformInput) {
+            [$cellFrom, $cellTo] = $this->transformCellsToArray($cellFrom, $cellTo);
+        }
+
+        $player = $this->detectPlayer($cellFrom);
+        if (!$player) {
+            $this->getLogger()?->warning('Can not find player on this cell');
+            return $this->getDesk()->getDeskData();
+        }
+
+        $this->setPlayerFigure($player, $cellFrom);
+
+        $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
+        if (!$this->isValidMove($cellFrom, $cellTo, $rules)) {
+            return $this->getDesk()->getDeskData();
+        }
+
+        $this->updateData($cellFrom, $cellTo, $player);
+
+        return $this->getDesk()->getDeskData();
+    }
+
+    /**
+     * @return array<array>
+     */
+    private function transformCellsToArray(string $from, string $to): array
     {
         try {
             $cellFrom = $this->transformInputData($from);
             $cellTo = $this->transformInputData($to);
         } catch (RuntimeException $e) {
-            $this->getLogger()->warning($e->getMessage());
-            return $this->getDesk()->getDeskData();
+            $this->getLogger()?->warning($e->getMessage());
+            return [];
         }
 
-        $playerDetector = new PlayerDetector($this->white, $this->black);
-        $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
-        $player = $playerDetector->detect($selectedTeamNumber);
-        if (!$player) {
-            $this->getLogger()->warning('Can not find player on this cell');
-            return $this->getDesk()->getDeskData();
-        }
-
-        $figure = (new FigureFactory($selectedTeamNumber))->create();
-
-        $player->setFigure($figure);
-
-        $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
-
-        if (!$this->isValidMove($cellFrom, $cellTo, $rules)) {
-            return $this->getDesk()->getDeskData();
-        }
-
-        $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
-        $this->getDesk()->updateFigures();
-        $this->getLogger()->info("{$player->getName()} : [{$from}] => [{$to}]");
-
-        if ($this->isGameOver()) {
-            $this->getLogger()->info('GAME OVER');
-        }
-
-        return $this->getDesk()->getDeskData();
+        return [$cellFrom, $cellTo];
     }
 
-    public function isValidRawMove(array $cellFrom, array $cellTo): bool
+    /**
+     * @param array<int,int> $cellFrom
+     */
+    private function detectPlayer(array $cellFrom): ?PlayerInterface
+    {
+        $playerDetector = new PlayerDetector($this->white, $this->black);
+        $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
+
+        return $playerDetector->detect($selectedTeamNumber);
+    }
+
+    /**
+     * @param array<int,int> $cellFrom
+     */
+    private function setPlayerFigure(PlayerInterface $player, array $cellFrom): void
     {
         $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
-        $playerDetector = new PlayerDetector($this->white, $this->black);
-        $player = $playerDetector->detect($selectedTeamNumber);
+        $figure = (new FigureFactory($selectedTeamNumber))->create();
+        $player->setFigure($figure);
+    }
+
+    /**
+     * @param array<int,int> $cellFrom
+     * @param array<int,int> $cellTo
+     */
+    public function isValidPlayerMove(array $cellFrom, array $cellTo): bool
+    {
+        $player = $this->detectPlayer($cellFrom);
         if (!$player) {
+            $this->getLogger()?->warning('Can not find player on this cell');
             return false;
         }
 
-        $figure = (new FigureFactory($selectedTeamNumber))->create();
-
-        $player->setFigure($figure);
+        $this->setPlayerFigure($player, $cellFrom);
 
         $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
-
-        $figuresForBeat = $this->findFiguresForBeat($cellFrom, $cellTo);
-        if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
-            return true;
-        }
-
-        if ($rules->checkForMove($cellFrom, $cellTo)) {
+        if ($this->isValidMove($cellFrom, $cellTo, $rules, false)) {
             return true;
         }
 
         return false;
     }
 
-    private function isValidMove(array $cellFrom, array $cellTo, Rules $rules): bool
+    /**
+     * @param array<int,int> $cellFrom
+     * @param array<int,int> $cellTo
+     */
+    private function isValidMove(array $cellFrom, array $cellTo, Rules $rules, bool $clearCells = true): bool
     {
         $figuresForBeat = $this->findFiguresForBeat($cellFrom, $cellTo);
         if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
-            $this->getDesk()->clearCells($figuresForBeat);
+            if ($clearCells) {
+                $this->getDesk()->clearCells($figuresForBeat);
+            }
             return true;
         }
 
@@ -118,11 +155,12 @@ final class Game
     }
 
     /**
-     * @param array<int> $from
-     * @param array<int> $to
+     * @param array<int,int> $from
+     * @param array<int,int> $to
      */
     public function findFiguresForBeat(array $from, array $to): array
     {
+        #todo виправити баг з видаленням лишніх клітин
         $desk = $this->getDesk()->getDeskData();
         $figuresCells = [];
         $letters = [$from[0], $to[0]];
@@ -140,9 +178,18 @@ final class Game
     }
 
     /**
+     * @param array<int,int> $cell
+     */
+    private function transformCellToString(array $cell): string
+    {
+        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        return $letters[$cell[0]] . $cell[1] + 1;
+    }
+
+    /**
      * @return array<int,int>
      */
-    private function transformInputData(string $cell): array
+    public function transformInputData(string $cell): array
     {
         if (!preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
             throw new RuntimeException('Cell is incorrect');
@@ -164,6 +211,9 @@ final class Game
             || $this->countFigures(Black::BLACK_NUMBERS) === 0;
     }
 
+    /**
+     * @param array<int> $figureNumbers
+     */
     private function countFigures(array $figureNumbers): int
     {
         $count = 0;
@@ -185,5 +235,20 @@ final class Game
         > $this->countFigures(Black::BLACK_NUMBERS)
             ? $this->white
             : $this->black;
+    }
+
+    /**
+     * @param array<int,int> $cellFrom
+     * @param array<int,int> $cellTo
+     */
+    public function updateData(array $cellFrom, array $cellTo, PlayerInterface $player): void
+    {
+        $selectedTeamNumber = $this->getDesk()->getSelectedTeamNumber($cellFrom);
+        $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
+        $this->getDesk()->updateFigures();
+
+        $from = $this->transformCellToString($cellFrom);
+        $to = $this->transformCellToString($cellTo);
+        $this->getLogger()?->info("{$player->getName()} : [{$from}] => [{$to}]");
     }
 }

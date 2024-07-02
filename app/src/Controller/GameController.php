@@ -11,7 +11,7 @@ use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
-use App\Service\Game\Robot;
+use App\Service\Game\Robot\Robot;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use Doctrine\ORM\EntityManagerInterface;
@@ -168,24 +168,16 @@ class GameController extends AbstractController
 
         $game = new Game($desk, $white, $black, $logger);
 
-        if ($strategyId === GameStrategyIds::COMPUTER) {
-            $computerTeam = $computer->getId() === $white ? $white : $black;
-            $robot = new Robot($desk, $computerTeam, $logger);
-        }
-
         if ($request->isMethod('POST') && $request->request->has('formData')) {
-            $data = json_decode(
-                $request->request->get('formData'),
-                true,
-                512,
-                JSON_THROW_ON_ERROR
-            );
+            $data = json_decode($request->request->get('formData'), true);
             $from = htmlspecialchars($data['form1']);
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $updatedDesk = $game->proceed($from, $to);
+                $updatedDesk = $game->makeMove($from, $to, true);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
+                    $computerTeam = $computer->getId() === $white->getId() ? $white : $black;
+                    $robot = new Robot($game, $computerTeam, 10);
                     $updatedDesk = $robot->run();
                 }
 

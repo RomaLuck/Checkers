@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Game;
 
 use App\Service\Game\Rule\IsAvailableCellRule;
-use App\Service\Game\Rule\IsOnDeskRule;
 use App\Service\Game\Rule\IsOpportunityForBeatRule;
 use App\Service\Game\Rule\IsOpportunityForMoveRule;
 use App\Service\Game\Rule\IsTrueDirectionRule;
@@ -18,7 +17,7 @@ final class Rules
     public function __construct(
         private PlayerInterface $player,
         private array           $desk,
-        private LoggerInterface $logger)
+        private ?LoggerInterface $logger)
     {
     }
 
@@ -36,7 +35,7 @@ final class Rules
 
         foreach ($rules as $rule) {
             if (!$rule->check($this->player, $from, $to)) {
-                $this->logger->warning($rule->getMessage());
+                $this->logger?->warning($rule->getMessage());
                 return false;
             }
         }
@@ -57,7 +56,7 @@ final class Rules
 
         foreach ($rules as $rule) {
             if (!$rule->check($this->player, $from, $to)) {
-                $this->logger->warning($rule->getMessage());
+                $this->logger?->warning($rule->getMessage());
                 return false;
             }
         }
