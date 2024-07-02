@@ -13,28 +13,29 @@ class IsTrueDirectionRule implements RuleInterface
 
     public function check(PlayerInterface $player, array $from, array $to): bool
     {
+        if ($this->defineStep($from, $to) === 0) {
+            return false;
+        }
+
         $playerDirection = $player->getDirection();
         $playerFigureDirections = $player->getFigure()->getAvailableDirections();
         $availableDirections = array_map(static function ($playerFigureDirection) use ($playerDirection) {
             return $playerFigureDirection * $playerDirection;
         }, $playerFigureDirections);
 
-        return in_array($this->defineDirection($from, $to), $availableDirections);
+        $direction = $this->defineDirection($from, $to);
+
+        return in_array($direction, $availableDirections);
     }
 
     private function defineDirection(array $from, array $to): int
     {
-        $step = $this->defineStep($from, $to);
-        if ($step > 0) {
-            return White::DIRECTION_WHITE;
-        }
-
-        return Black::DIRECTION_BLACK;
+        return ($to[1] - $from[1]) / abs($to[1] - $from[1]);
     }
 
     private function defineStep(array $from, array $to): int
     {
-        return $to[1] - $from[1];
+        return abs($to[1] - $from[1]);
     }
 
     public function getMessage(): string

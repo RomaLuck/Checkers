@@ -53,7 +53,15 @@ final class Game
     public function makeMove(mixed $cellFrom, mixed $cellTo, bool $transformInput = false): array
     {
         if (is_string($cellFrom) && is_string($cellTo) && $transformInput) {
-            [$cellFrom, $cellTo] = $this->transformCellsToArray($cellFrom, $cellTo);
+            [$cellFrom, $cellTo] = $this->transformInputToArray($cellFrom, $cellTo);
+            if ($cellFrom === [] || $cellTo === []) {
+                return $this->getDesk()->getDeskData();
+            }
+        }
+
+        if (!is_array($cellFrom) || !is_array($cellTo)) {
+            $this->getLogger()?->warning('Cells are not transformed');
+            return $this->getDesk()->getDeskData();
         }
 
         $player = $this->detectPlayer($cellFrom);
@@ -65,7 +73,7 @@ final class Game
         $this->setPlayerFigure($player, $cellFrom);
 
         $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
-        if (!$this->isValidMove($cellFrom, $cellTo, $rules)) {
+        if (!$this->isValidMove($player, $cellFrom, $cellTo, $rules)) {
             return $this->getDesk()->getDeskData();
         }
 
@@ -77,7 +85,7 @@ final class Game
     /**
      * @return array<array>
      */
-    private function transformCellsToArray(string $from, string $to): array
+    private function transformInputToArray(string $from, string $to): array
     {
         try {
             $cellFrom = $this->transformInputData($from);
@@ -126,7 +134,7 @@ final class Game
         $this->setPlayerFigure($player, $cellFrom);
 
         $rules = new Rules($player, $this->getDesk()->getDeskData(), $this->logger);
-        if ($this->isValidMove($cellFrom, $cellTo, $rules, false)) {
+        if ($this->isValidMove($player, $cellFrom, $cellTo, $rules, false)) {
             return true;
         }
 
@@ -137,12 +145,23 @@ final class Game
      * @param array<int,int> $cellFrom
      * @param array<int,int> $cellTo
      */
-    private function isValidMove(array $cellFrom, array $cellTo, Rules $rules, bool $clearCells = true): bool
+    private function isValidMove(
+        PlayerInterface $player,
+        array           $cellFrom,
+        array           $cellTo,
+        Rules           $rules,
+        bool            $clearCells = true
+    ): bool
     {
-        $figuresForBeat = $this->findFiguresForBeat($cellFrom, $cellTo);
+        $figuresForBeat = $this->findFiguresForBeat($player, $cellFrom, $cellTo);
         if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
             if ($clearCells) {
                 $this->getDesk()->clearCells($figuresForBeat);
+
+                $transFormedFiguresForBeat = array_map(fn($figure) => $this->transformCellToString($figure), $figuresForBeat);
+                $this->logger?->warning('--removed: ['
+                    . implode(',', $transFormedFiguresForBeat) .
+                    '] checkers');
             }
             return true;
         }
@@ -158,7 +177,7 @@ final class Game
      * @param array<int,int> $from
      * @param array<int,int> $to
      */
-    public function findFiguresForBeat(array $from, array $to): array
+    public function findFiguresForBeat(PlayerInterface $player, array $from, array $to): array
     {
         #todo виправити баг з видаленням лишніх клітин
         $desk = $this->getDesk()->getDeskData();
@@ -168,7 +187,7 @@ final class Game
 
         for ($i = min($letters) + 1; $i < max($letters); $i++) {
             for ($j = min($numbers) + 1; $j < max($numbers); $j++) {
-                if (isset($desk[$i][$j]) && $desk[$i][$j] > 0) {
+                if (isset($desk[$i][$j]) && $desk[$i][$j] > 0 && !in_array($desk[$i][$j], $player->getTeamNumbers())) {
                     $figuresCells[] = [$i, $j];
                 }
             }
