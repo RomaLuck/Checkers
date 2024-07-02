@@ -179,18 +179,22 @@ final class Game
      */
     public function findFiguresForBeat(PlayerInterface $player, array $from, array $to): array
     {
-        #todo виправити баг з видаленням лишніх клітин
         $desk = $this->getDesk()->getDeskData();
         $figuresCells = [];
-        $letters = [$from[0], $to[0]];
-        $numbers = [$from[1], $to[1]];
+        $directionX = $to[0] - $from[0] > 0 ? 1 : -1;
+        $directionY = $to[1] - $from[1] > 0 ? 1 : -1;
+        $currentX = $from[0] + $directionX;
+        $currentY = $from[1] + $directionY;
 
-        for ($i = min($letters) + 1; $i < max($letters); $i++) {
-            for ($j = min($numbers) + 1; $j < max($numbers); $j++) {
-                if (isset($desk[$i][$j]) && $desk[$i][$j] > 0 && !in_array($desk[$i][$j], $player->getTeamNumbers())) {
-                    $figuresCells[] = [$i, $j];
-                }
+        while ($currentX !== $to[0] && $currentY !== $to[1]) {
+            if (isset($desk[$currentX][$currentY])
+                && $desk[$currentX][$currentY] > 0
+                && !in_array($desk[$currentX][$currentY], $player->getTeamNumbers())
+            ) {
+                $figuresCells[] = [$currentX, $currentY];
             }
+            $currentX += $directionX;
+            $currentY += $directionY;
         }
 
         return $figuresCells;
