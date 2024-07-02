@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Team;
 
-use RuntimeException;
-
 final class PlayerDetector
 {
     public function __construct(
@@ -18,10 +16,10 @@ final class PlayerDetector
     public function detect(int $teamNumber): ?PlayerInterface
     {
         if ($teamNumber > 0) {
-            if (in_array($teamNumber, White::WHITE_NUMBERS, true)) {
+            if (White::isWhiteNumber($teamNumber)) {
                 return $this->white;
             }
-            if (in_array($teamNumber, Black::BLACK_NUMBERS, true)) {
+            if (Black::isBlackNumber($teamNumber)) {
                 return $this->black;
             }
         }

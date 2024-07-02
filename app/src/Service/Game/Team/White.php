@@ -51,4 +51,9 @@ final class White implements PlayerInterface
     {
         return $this->id;
     }
+
+    public static function isWhiteNumber(int $number): bool
+    {
+        return in_array($number, self::WHITE_NUMBERS);
+    }
 }

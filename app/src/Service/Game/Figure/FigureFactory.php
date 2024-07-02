@@ -14,10 +14,10 @@ class FigureFactory
 
     public function create(): FigureInterface
     {
-        if (in_array($this->teamNumber, Checker::CHECKER_NUMBERS)) {
+        if (Checker::isChecker($this->teamNumber)) {
             return new Checker();
         }
-        if (in_array($this->teamNumber, King::KING_NUMBERS)) {
+        if (King::isKing($this->teamNumber)) {
             return new King();
         }
         throw new RuntimeException('Figure is not selected');

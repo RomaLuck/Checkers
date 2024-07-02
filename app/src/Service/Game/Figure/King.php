@@ -30,4 +30,9 @@ final class King implements FigureInterface
     {
         return self::KING_STEP_BEAT;
     }
+
+    public static function isKing(int $number): bool
+    {
+        return in_array($number, self::KING_NUMBERS);
+    }
 }

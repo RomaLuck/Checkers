@@ -30,4 +30,9 @@ final class Checker implements FigureInterface
     {
         return self::CHECKER_STEP_BEAT;
     }
+
+    public static function isChecker(int $number): bool
+    {
+        return in_array($number, self::CHECKER_NUMBERS);
+    }
 }

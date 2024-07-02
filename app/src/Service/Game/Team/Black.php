@@ -51,4 +51,9 @@ final class Black implements PlayerInterface
     {
         return $this->id;
     }
+
+    public static function isBlackNumber(int $number): bool
+    {
+        return in_array($number, self::BLACK_NUMBERS);
+    }
 }
