@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Team;
 
-use RuntimeException;
-
 final class PlayerDetector
 {
     public function __construct(

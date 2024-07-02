@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Rule;
 
-use App\Service\Game\Team\Black;
 use App\Service\Game\Team\PlayerInterface;
-use App\Service\Game\Team\White;
 
 class IsTrueDirectionRule implements RuleInterface
 {
