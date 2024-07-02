@@ -35,8 +35,8 @@ class MinimaxTest extends TestCase
         $player = new Black(2, 'Player');
         $game = new Game($desk, $robot, $player, $this->logger);
         $minimax = new Robot($game, $robot, 10);
-        $result = $minimax->bestMove($game->getDesk()->getDeskData())[1];
+        $result = $minimax->bestMove()[1];
 
-        $this->assertIsArray($result);
+        $this->assertEquals([[2, 2], [0, 4]], $result);
     }
 }
