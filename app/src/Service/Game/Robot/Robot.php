@@ -27,7 +27,9 @@ class Robot
      */
     public function run(): array
     {
-        $bestMove = $this->bestMove()[1];
+        $board = $this->game->getDesk()->getDeskData();
+
+        $bestMove = $this->bestMove($board)[1];
         if (is_array($bestMove)) {
             return $this->originalGame->makeMove($bestMove[0], $bestMove[1]);
         }
@@ -38,10 +40,8 @@ class Robot
     /**
      * @return array<array>
      */
-    public function bestMove($depth = 0, $isMaximizingPlayer = true): array
+    public function bestMove(array $board, $depth = 0, $isMaximizingPlayer = true): array
     {
-        $board = $this->game->getDesk()->getDeskData();
-
         if ($depth === $this->maxDepth || $this->isGameOver()) {
             return [$this->evaluate($board, $this->computerTeam->getTeamNumbers()), null];
         }
@@ -52,7 +52,7 @@ class Robot
             $bestScore = -PHP_INT_MAX;
             foreach ($this->getPossibleMoves($board) as $move) {
                 $this->makeMove($move);
-                $score = $this->bestMove($depth + 1, false)[0];
+                $score = $this->bestMove($board, $depth + 1, false)[0];
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestMove = $move;
@@ -62,7 +62,7 @@ class Robot
             $bestScore = PHP_INT_MAX;
             foreach ($this->getPossibleMoves($board) as $move) {
                 $this->makeMove($move);
-                $score = $this->bestMove($depth + 1, true)[0];
+                $score = $this->bestMove($board, $depth + 1, true)[0];
                 if ($score < $bestScore) {
                     $bestScore = $score;
                     $bestMove = $move;
@@ -128,7 +128,7 @@ class Robot
                     ) {
                         $stepsX = $possibleDestination[0] - $from[0];
                         $stepsY = $possibleDestination[1] - $from[1];
-                        $destinations[] = [$from[0] + $stepsX * 2, $from[0] + $stepsY * 2];
+                        $destinations[] = [$from[0] + $stepsX * 2, $from[1] + $stepsY * 2];
                     }
                 }
 
