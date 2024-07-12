@@ -1,5 +1,6 @@
+const tableContainer = document.getElementById('table-responsive');
+
 function handleTableClick() {
-    const tableContainer = document.getElementById('table-responsive');
     let form1 = '';
     let form2 = '';
 
@@ -29,7 +30,6 @@ function handleTableClick() {
                 .then(data => {
                     form1 = '';
                     form2 = '';
-                    updateTable();
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
@@ -38,30 +38,69 @@ function handleTableClick() {
     });
 }
 
-function updateTable() {
+function loadDefaultData() {
     fetch('/update', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
     })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            const chessBoardContainer = document.getElementById('table-responsive');
-            chessBoardContainer.innerHTML = createChessBoard(data.table);
-            showLog(data.log)
-            rotateTable();
+            publishData(data)
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
         });
 }
 
-function createChessBoard(deskData) {
+function handleUpdates() {
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/discover')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to discover hub URL');
+                }
+                return response;
+            })
+            .then(response => {
+                const hubUrl = response.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
+                const hub = new URL(hubUrl, window.origin);
+                hub.searchParams.append('topic', '/chat');
+                const eventSource = new EventSource(hub);
+                eventSource.onmessage = event => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.table && data.log) {
+                            publishData(data)
+                        }
+                    } catch (e) {
+                        console.error('Error parsing event data:', e);
+                    }
+                };
+                eventSource.onerror = error => {
+                    console.error('EventSource failed:', error);
+                    eventSource.close();
+                };
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    });
+}
+
+function publishData(data) {
+    tableContainer.innerHTML = createBoard(data.table);
+    showLog(data.log)
+    rotateTable(tableContainer);
+}
+
+function createBoard(deskData) {
     if (!deskData || deskData.length === 0) {
         return '';
     }
@@ -139,8 +178,7 @@ function showLog(logs) {
     }
 }
 
-function rotateTable() {
-    const table = document.getElementById('table-responsive');
+function rotateTable(table) {
     let letters = document.querySelectorAll("table th");
     let color = document.getElementById('color');
 
@@ -158,5 +196,6 @@ function rotateTable() {
     }
 }
 
+loadDefaultData();
 handleTableClick();
-setInterval(updateTable, 2000);
+handleUpdates();
