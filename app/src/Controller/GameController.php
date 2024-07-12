@@ -20,6 +20,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Mercure\Discovery;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -128,7 +131,8 @@ class GameController extends AbstractController
         Request                $request,
         Session                $session,
         EntityManagerInterface $entityManager,
-        LoggerInterface        $logger
+        LoggerInterface        $logger,
+        HubInterface           $hub
     ): Response
     {
         $roomId = $session->get('room');
@@ -156,7 +160,9 @@ class GameController extends AbstractController
         $blackTeamUser = $gameLaunch->getBlackTeamUser();
 
         if (!$whiteTeamUser || !$blackTeamUser) {
+            $logger->info('Waiting for second player...');
             return $this->json([
+                'table' => $gameLaunch->getTableData(),
                 'log' => $this->getLastLogs($entityManager, $roomId),
             ]);
         }
@@ -183,10 +189,22 @@ class GameController extends AbstractController
 
                 $gameLaunch->setTableData($updatedDesk);
                 $entityManager->flush();
+
+                $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
+
+                $update = new Update(
+                    '/chat',
+                    json_encode([
+                        'table' => $gameLaunch->getTableData(),
+                        'log' => $this->getLastLogs($entityManager, $roomId),
+                    ])
+                );
+
+                $hub->publish($update);
+
+                return $this->json('Done');
             }
         }
-
-        $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
 
         return $this->json([
             'table' => $gameLaunch->getTableData(),
@@ -232,5 +250,13 @@ class GameController extends AbstractController
                 'time' => $log->getTime()->format('d/m/y H:i:s')
             ], $logs
         );
+    }
+
+    #[Route('/discover', methods: ['GET'])]
+    public function discover(Request $request, Discovery $discovery): Response
+    {
+        $discovery->addLink($request);
+
+        return $this->json('Done');
     }
 }
