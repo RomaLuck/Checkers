@@ -95,10 +95,9 @@ function handleUpdates() {
 }
 
 function publishData(data) {
-    const chessBoardContainer = document.getElementById('table-responsive');
-    chessBoardContainer.innerHTML = createBoard(data.table);
+    tableContainer.innerHTML = createBoard(data.table);
     showLog(data.log)
-    rotateTable();
+    rotateTable(tableContainer);
 }
 
 function createBoard(deskData) {
