@@ -121,10 +121,6 @@ class GameControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
-
-        $this->assertIsArray($responseData);
-        $this->assertArrayHasKey('table', $responseData);
-        $this->assertArrayHasKey('log', $responseData);
+        self::assertEquals('"Done"', $this->client->getResponse()->getContent());
     }
 }

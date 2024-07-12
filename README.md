@@ -20,6 +20,7 @@ Currently, it is under development.
 - PHP v8.2
 - Mysql v8.0.33
 - Bootstrap v5.2.2
+- Mercure
 
 ## Current features
 
@@ -27,6 +28,7 @@ Currently, it is under development.
 - Ability to play multiple games at the same time
 - Logger
 - Authorization through social networks
+- Server-Sent-Events
 
 ## Current works
 
@@ -34,7 +36,6 @@ Currently, it is under development.
 
 ## ToDo
 
-- WebSocket
 - Statistics
 
 ## Setup

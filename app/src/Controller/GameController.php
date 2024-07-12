@@ -192,15 +192,7 @@ class GameController extends AbstractController
 
                 $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
 
-                $update = new Update(
-                    '/chat',
-                    json_encode([
-                        'table' => $gameLaunch->getTableData(),
-                        'log' => $this->getLastLogs($entityManager, $roomId),
-                    ])
-                );
-
-                $hub->publish($update);
+                $this->publishData($gameLaunch, $entityManager, $roomId, $hub);
 
                 return $this->json('Done');
             }
@@ -232,6 +224,14 @@ class GameController extends AbstractController
         return $this->render('game/end-game.html.twig');
     }
 
+    #[Route('/discover', methods: ['GET'])]
+    public function discover(Request $request, Discovery $discovery): Response
+    {
+        $discovery->addLink($request);
+
+        return $this->json('Done');
+    }
+
     /**
      * @return array<array>
      */
@@ -252,11 +252,20 @@ class GameController extends AbstractController
         );
     }
 
-    #[Route('/discover', methods: ['GET'])]
-    public function discover(Request $request, Discovery $discovery): Response
+    public function publishData(
+        GameLaunch             $gameLaunch,
+        EntityManagerInterface $entityManager,
+        string                 $roomId,
+        HubInterface           $hub): void
     {
-        $discovery->addLink($request);
+        $update = new Update(
+            '/chat',
+            json_encode([
+                'table' => $gameLaunch->getTableData(),
+                'log' => $this->getLastLogs($entityManager, $roomId),
+            ])
+        );
 
-        return $this->json('Done');
+        $hub->publish($update);
     }
 }
