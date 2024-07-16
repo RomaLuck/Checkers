@@ -6,7 +6,7 @@ namespace App\Service\Game\Rule;
 
 use App\Service\Game\Team\PlayerInterface;
 
-class IsOpportunityForMoveRule implements RuleInterface
+final class IsOpportunityForMoveRule implements RuleInterface
 {
     public function check(PlayerInterface $player, array $from, array $to): bool
     {

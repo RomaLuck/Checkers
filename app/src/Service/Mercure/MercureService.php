@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 
-class MercureService
+final class MercureService
 {
     public function publishData(
         GameLaunch             $gameLaunch,

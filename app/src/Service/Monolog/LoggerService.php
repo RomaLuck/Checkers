@@ -7,7 +7,7 @@ namespace App\Service\Monolog;
 use App\Entity\Log;
 use Doctrine\ORM\EntityManagerInterface;
 
-class LoggerService
+final class LoggerService
 {
     /**
      * @return array<array>

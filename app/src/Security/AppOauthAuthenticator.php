@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-class AppOauthAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+final class AppOauthAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
 {
     private ClientRegistry $clientRegistry;
     private EntityManagerInterface $entityManager;

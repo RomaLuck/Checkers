@@ -11,7 +11,7 @@ use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Monolog\LogRecord;
 
-class DatabaseHandler extends AbstractProcessingHandler
+final class DatabaseHandler extends AbstractProcessingHandler
 {
     private EntityManagerInterface $entityManager;
 

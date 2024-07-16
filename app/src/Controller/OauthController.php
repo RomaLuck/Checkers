@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class OauthController extends AbstractController
+final class OauthController extends AbstractController
 {
     #[Route('/connect/google', name: 'connect_google')]
     public function connectGoogle(ClientRegistry $clientRegistry): Response

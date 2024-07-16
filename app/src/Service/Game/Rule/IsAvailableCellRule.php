@@ -6,7 +6,7 @@ namespace App\Service\Game\Rule;
 
 use App\Service\Game\Team\PlayerInterface;
 
-class IsAvailableCellRule implements RuleInterface
+final class IsAvailableCellRule implements RuleInterface
 {
     public function __construct(private array $desk)
     {

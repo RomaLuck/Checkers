@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game;
 
-class GameStrategyIds
+final class GameStrategyIds
 {
     public const COMPUTER = 1;
     public const MULTIPLAYER = 2;

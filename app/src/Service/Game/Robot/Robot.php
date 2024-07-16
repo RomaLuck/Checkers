@@ -7,7 +7,7 @@ namespace App\Service\Game\Robot;
 use App\Service\Game\Game;
 use App\Service\Game\Team\PlayerInterface;
 
-class Robot
+final class Robot
 {
     private int $maxDepth;
     private Game $game;

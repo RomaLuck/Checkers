@@ -10,7 +10,7 @@ use App\Service\Game\Game;
 use App\Service\Game\Team\PlayerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class RobotService
+final class RobotService
 {
     private mixed $computer;
 

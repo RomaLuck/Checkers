@@ -6,7 +6,7 @@ namespace App\Service\Game\Rule;
 
 use App\Service\Game\Team\PlayerInterface;
 
-class IsOpportunityForBeatRule implements RuleInterface
+final class IsOpportunityForBeatRule implements RuleInterface
 {
     public function check(PlayerInterface $player, array $from, array $to): bool
     {

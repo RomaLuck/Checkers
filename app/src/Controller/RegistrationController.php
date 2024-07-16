@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class RegistrationController extends AbstractController
+final class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(

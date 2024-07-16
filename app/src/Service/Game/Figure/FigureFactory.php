@@ -6,7 +6,7 @@ namespace App\Service\Game\Figure;
 
 use RuntimeException;
 
-class FigureFactory
+final class FigureFactory
 {
     public function __construct(private int $teamNumber)
     {
