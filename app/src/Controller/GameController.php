@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\GameLaunch;
-use App\Entity\Log;
 use App\Entity\User;
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
-use App\Service\Game\Robot\Robot;
+use App\Service\Game\Robot\RobotService;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
+use App\Service\Mercure\MercureService;
+use App\Service\Monolog\LoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,14 +23,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mercure\Discovery;
 use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
 class GameController extends AbstractController
 {
-    public function __construct(private readonly GameService $gameService)
+    public function __construct(
+        private readonly GameService    $gameService,
+        private readonly LoggerService  $loggerService,
+        private readonly MercureService $mercureService,
+        private readonly RobotService   $robotService
+    )
     {
     }
 
@@ -146,14 +151,7 @@ class GameController extends AbstractController
 
         $strategyId = $gameLaunch->getStrategyId();
         if ($strategyId === GameStrategyIds::COMPUTER) {
-            $computer = $entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
-            if ($computer) {
-                $gameLaunch->getWhiteTeamUser()
-                    ? $gameLaunch->setBlackTeamUser($computer)
-                    : $gameLaunch->setWhiteTeamUser($computer);
-
-                $entityManager->flush();
-            }
+            $this->robotService->assignComputerPlayerToGame($gameLaunch);
         }
 
         $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
@@ -163,7 +161,7 @@ class GameController extends AbstractController
             $logger->info('Waiting for second player...');
             return $this->json([
                 'table' => $gameLaunch->getTableData(),
-                'log' => $this->getLastLogs($entityManager, $roomId),
+                'log' => $this->loggerService->getLastLogs($entityManager, $roomId),
             ]);
         }
 
@@ -182,9 +180,7 @@ class GameController extends AbstractController
             if ($from && $to) {
                 $updatedDesk = $game->makeMove($from, $to, true);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $computerTeam = $computer->getId() === $white->getId() ? $white : $black;
-                    $robot = new Robot($game, $computerTeam, 10);
-                    $updatedDesk = $robot->run();
+                    $updatedDesk = $this->robotService->updateDesk($game, $white, $black);
                 }
 
                 $gameLaunch->setTableData($updatedDesk);
@@ -192,7 +188,7 @@ class GameController extends AbstractController
 
                 $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
 
-                $this->publishData($gameLaunch, $entityManager, $roomId, $hub);
+                $this->mercureService->publishData($gameLaunch, $entityManager, $roomId, $hub, $this->loggerService);
 
                 return $this->json('Done');
             }
@@ -200,7 +196,7 @@ class GameController extends AbstractController
 
         return $this->json([
             'table' => $gameLaunch->getTableData(),
-            'log' => $this->getLastLogs($entityManager, $roomId),
+            'log' => $this->loggerService->getLastLogs($entityManager, $roomId),
         ]);
     }
 
@@ -230,42 +226,5 @@ class GameController extends AbstractController
         $discovery->addLink($request);
 
         return $this->json('Done');
-    }
-
-    /**
-     * @return array<array>
-     */
-    public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
-    {
-        #todo перевірити чому не працює в prod середовищі
-        $logs = $entityManager->getRepository(Log::class)->findBy(
-            ['channel' => $roomId],
-            orderBy: ['id' => 'DESC'],
-            limit: 10
-        );
-
-        return array_map(
-            fn(Log $log) => [
-                'message' => $log->getMessage(),
-                'time' => $log->getTime()->format('d/m/y H:i:s')
-            ], $logs
-        );
-    }
-
-    public function publishData(
-        GameLaunch             $gameLaunch,
-        EntityManagerInterface $entityManager,
-        string                 $roomId,
-        HubInterface           $hub): void
-    {
-        $update = new Update(
-            '/chat',
-            json_encode([
-                'table' => $gameLaunch->getTableData(),
-                'log' => $this->getLastLogs($entityManager, $roomId),
-            ])
-        );
-
-        $hub->publish($update);
     }
 }
