@@ -13,7 +13,7 @@ class GameStrategyIds
     {
         return [
             self::COMPUTER,
-            self::MULTIPLAYER
+            self::MULTIPLAYER,
         ];
     }
 }

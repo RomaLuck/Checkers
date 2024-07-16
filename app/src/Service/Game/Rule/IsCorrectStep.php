@@ -8,7 +8,6 @@ use App\Service\Game\Team\PlayerInterface;
 
 class IsCorrectStep implements RuleInterface
 {
-
     public function check(PlayerInterface $player, array $from, array $to): bool
     {
         return abs($to[0] - $from[0]) === abs($to[1] - $from[1]);

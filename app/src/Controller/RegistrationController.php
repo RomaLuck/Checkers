@@ -24,8 +24,7 @@ class RegistrationController extends AbstractController
         Security                    $security,
         EntityManagerInterface      $entityManager,
         ValidatorInterface          $validator
-    ): Response
-    {
+    ): Response {
         if ($request->isMethod('POST')) {
             $submittedToken = $request->getPayload()->get('_csrf_token');
             if (!$this->isCsrfTokenValid('register', $submittedToken)) {

@@ -23,6 +23,8 @@ class MinimaxTest extends TestCase
         [-1, 1, -1, 0, -1, 2, -1, 2],
     ];
 
+    private $logger;
+
     protected function setUp(): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);

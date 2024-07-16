@@ -14,12 +14,11 @@ use Psr\Log\LoggerInterface;
 
 final class Rules
 {
-
     public function __construct(
         private PlayerInterface  $player,
         private array            $desk,
-        private ?LoggerInterface $logger)
-    {
+        private ?LoggerInterface $logger
+    ) {
     }
 
     /**
@@ -32,7 +31,7 @@ final class Rules
             new IsAvailableCellRule($this->desk),
             new IsTrueDirectionRule(),
             new IsCorrectStep(),
-            new IsOpportunityForMoveRule()
+            new IsOpportunityForMoveRule(),
         ];
 
         foreach ($rules as $rule) {
@@ -54,7 +53,7 @@ final class Rules
         $rules = [
             new IsAvailableCellRule($this->desk),
             new IsCorrectStep(),
-            new IsOpportunityForBeatRule()
+            new IsOpportunityForBeatRule(),
         ];
 
         foreach ($rules as $rule) {
@@ -66,5 +65,4 @@ final class Rules
 
         return true;
     }
-
 }

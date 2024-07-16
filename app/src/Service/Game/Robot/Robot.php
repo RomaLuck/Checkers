@@ -15,8 +15,8 @@ class Robot
     public function __construct(
         private Game            $originalGame,
         private PlayerInterface $computerTeam,
-        int                     $maxDepth)
-    {
+        int                     $maxDepth
+    ) {
         $this->maxDepth = $maxDepth;
         $this->game = clone $this->originalGame;
         $this->game->setLogger(null);
@@ -75,28 +75,6 @@ class Robot
 
     /**
      * @param array<array> $board
-     * @param array<int> $computerTeamNumbers
-     */
-    private function evaluate(array $board, array $computerTeamNumbers): int
-    {
-        $computerCount = 0;
-        $opponentCount = 0;
-
-        foreach ($board as $row) {
-            foreach ($row as $cell) {
-                if (in_array($cell, $computerTeamNumbers)) {
-                    $computerCount++;
-                } elseif ($cell !== 0) {
-                    $opponentCount++;
-                }
-            }
-        }
-
-        return $computerCount - $opponentCount;
-    }
-
-    /**
-     * @param array<array> $board
      * @return array<array>
      */
     public function getPossibleMoves(array $board): array
@@ -120,6 +98,28 @@ class Robot
         }
 
         return $possibleMoves;
+    }
+
+    /**
+     * @param array<array> $board
+     * @param array<int> $computerTeamNumbers
+     */
+    private function evaluate(array $board, array $computerTeamNumbers): int
+    {
+        $computerCount = 0;
+        $opponentCount = 0;
+
+        foreach ($board as $row) {
+            foreach ($row as $cell) {
+                if (in_array($cell, $computerTeamNumbers)) {
+                    $computerCount++;
+                } elseif ($cell !== 0) {
+                    $opponentCount++;
+                }
+            }
+        }
+
+        return $computerCount - $opponentCount;
     }
 
     /**

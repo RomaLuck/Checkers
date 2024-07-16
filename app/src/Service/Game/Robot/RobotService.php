@@ -1,19 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game\Robot;
 
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\Game;
-use App\Service\Game\GameStrategyIds;
 use App\Service\Game\Team\PlayerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RobotService
 {
-    /**
-     * @var User|mixed
-     */
     private mixed $computer;
 
     public function __construct(private readonly EntityManagerInterface $entityManager)
@@ -36,8 +34,7 @@ class RobotService
     {
         $computerTeam = $this->computer->getId() === $white->getId() ? $white : $black;
         $robot = new Robot($game, $computerTeam, 10);
-        
+
         return $robot->run();
     }
-
 }

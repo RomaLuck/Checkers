@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Monolog;
 
 use App\Entity\Log;
@@ -20,10 +22,11 @@ class LoggerService
         );
 
         return array_map(
-            fn(Log $log) => [
+            static fn (Log $log) => [
                 'message' => $log->getMessage(),
-                'time' => $log->getTime()->format('d/m/y H:i:s')
-            ], $logs
+                'time' => $log->getTime()->format('d/m/y H:i:s'),
+            ],
+            $logs
         );
     }
 }

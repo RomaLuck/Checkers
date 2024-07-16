@@ -29,22 +29,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private int $id;
 
     #[Column(type: 'string')]
-    #[NotBlank(message: "Username is required")]
+    #[NotBlank(message: 'Username is required')]
     #[Length(
         min: 8,
         max: 50,
-        minMessage: "Your username must be at least {{ limit }} characters long",
-        maxMessage: "Your username cannot be longer than {{ limit }} characters"
+        minMessage: 'Your username must be at least {{ limit }} characters long',
+        maxMessage: 'Your username cannot be longer than {{ limit }} characters'
     )]
     private string $username;
 
     #[Column(type: 'string')]
-    #[NotBlank(message: "Password is required")]
+    #[NotBlank(message: 'Password is required')]
     #[Length(
         min: 8,
         max: 4096,
-        minMessage: "Your password must be at least {{ limit }} characters long",
-        maxMessage: "Your password cannot be longer than {{ limit }} characters"
+        minMessage: 'Your password must be at least {{ limit }} characters long',
+        maxMessage: 'Your password cannot be longer than {{ limit }} characters'
     )]
     private string $password;
 
@@ -157,7 +157,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->wonGames = $wonGames;
     }
 
-
     /**
      * @see UserInterface
      */
@@ -174,7 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setOauthId(string|int|null $oauth_id): static
     {
-        $this->oauth_id = (string)$oauth_id;
+        $this->oauth_id = (string) $oauth_id;
 
         return $this;
     }

@@ -34,8 +34,7 @@ class GameController extends AbstractController
         private readonly LoggerService  $loggerService,
         private readonly MercureService $mercureService,
         private readonly RobotService   $robotService
-    )
-    {
+    ){
     }
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
@@ -54,7 +53,7 @@ class GameController extends AbstractController
             'username' => $user->getUsername(),
             'gameList' => $gameList,
             'gamesCount' => $gamesCount,
-            'winsCount' => $winsCount
+            'winsCount' => $winsCount,
         ]);
     }
 

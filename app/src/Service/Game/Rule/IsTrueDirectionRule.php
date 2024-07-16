@@ -8,7 +8,6 @@ use App\Service\Game\Team\PlayerInterface;
 
 class IsTrueDirectionRule implements RuleInterface
 {
-
     public function check(PlayerInterface $player, array $from, array $to): bool
     {
         if ($this->defineStep($from, $to) === 0) {
@@ -26,6 +25,11 @@ class IsTrueDirectionRule implements RuleInterface
         return in_array($direction, $availableDirections);
     }
 
+    public function getMessage(): string
+    {
+        return 'The direction is wrong';
+    }
+
     private function defineDirection(array $from, array $to): int
     {
         return ($to[1] - $from[1]) / abs($to[1] - $from[1]);
@@ -34,10 +38,5 @@ class IsTrueDirectionRule implements RuleInterface
     private function defineStep(array $from, array $to): int
     {
         return abs($to[1] - $from[1]);
-    }
-
-    public function getMessage(): string
-    {
-        return 'The direction is wrong';
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Mercure;
 
 use App\Entity\GameLaunch;
@@ -16,8 +18,7 @@ class MercureService
         string                 $roomId,
         HubInterface           $hub,
         LoggerService          $loggerService
-    ): void
-    {
+    ): void {
         $update = new Update(
             '/chat',
             json_encode([

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -52,7 +54,7 @@ class OauthController extends AbstractController
         return $clientRegistry
             ->getClient('github')
             ->redirect([
-                'user', 'user:email', 'repo'
+                'user', 'user:email', 'repo',
             ]);
     }
 
