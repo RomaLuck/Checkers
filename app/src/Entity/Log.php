@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping\Table;
 
 #[Entity(repositoryClass: LogRepository::class)]
 #[Table(name: 'logs')]
-final class Log
+class Log
 {
     #[Id]
     #[Column(type: 'integer')]

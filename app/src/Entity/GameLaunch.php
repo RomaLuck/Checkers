@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Entity(repositoryClass: GameLaunchRepository::class)]
 #[Table(name: 'games')]
-final class GameLaunch
+class GameLaunch
 {
     #[Id]
     #[Column(type: 'integer')]
