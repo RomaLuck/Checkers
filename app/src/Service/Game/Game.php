@@ -10,16 +10,18 @@ use App\Service\Game\Team\PlayerDetector;
 use App\Service\Game\Team\PlayerInterface;
 use App\Service\Game\Team\White;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 
 final class Game
 {
+    private InputTransformer $inputTransformer;
+
     public function __construct(
         private CheckerDesk      $desk,
         private White            $white,
         private Black            $black,
         private ?LoggerInterface $logger,
     ) {
+        $this->inputTransformer = new InputTransformer();
     }
 
     public function __clone(): void
@@ -46,7 +48,7 @@ final class Game
     public function makeMove(mixed $cellFrom, mixed $cellTo, bool $transformInput = false): array
     {
         if (is_string($cellFrom) && is_string($cellTo) && $transformInput) {
-            [$cellFrom, $cellTo] = $this->transformInputToArray($cellFrom, $cellTo);
+            [$cellFrom, $cellTo] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
             if ($cellFrom === [] || $cellTo === []) {
                 return $this->getDesk()->getDeskData();
             }
@@ -124,25 +126,6 @@ final class Game
         return $figuresCells;
     }
 
-    /**
-     * @return array<int,int>
-     */
-    public function transformInputData(string $cell): array
-    {
-        if (!preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
-            throw new RuntimeException('Cell is incorrect');
-        }
-
-        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-        $key = array_search($splitCell['letter'], $letters, true);
-
-        if ($key === false || $splitCell['number'] <= 0 || $splitCell['number'] > 8) {
-            throw new RuntimeException('Cell is unavailable');
-        }
-
-        return [$key, $splitCell['number'] - 1];
-    }
-
     public function isGameOver(): bool
     {
         return $this->countFigures(White::WHITE_NUMBERS) === 0
@@ -167,30 +150,14 @@ final class Game
         $this->getDesk()->updateDesk($cellFrom, $cellTo, $selectedTeamNumber);
         $this->getDesk()->updateFigures();
 
-        $from = $this->transformCellToString($cellFrom);
-        $to = $this->transformCellToString($cellTo);
+        $from = $this->inputTransformer->transformCellToString($cellFrom);
+        $to = $this->inputTransformer->transformCellToString($cellTo);
         $this->getLogger()?->info("{$player->getName()} : [{$from}] => [{$to}]");
     }
 
     private function getLogger(): ?LoggerInterface
     {
         return $this->logger;
-    }
-
-    /**
-     * @return array<array>
-     */
-    private function transformInputToArray(string $from, string $to): array
-    {
-        try {
-            $cellFrom = $this->transformInputData($from);
-            $cellTo = $this->transformInputData($to);
-        } catch (RuntimeException $e) {
-            $this->getLogger()?->warning($e->getMessage());
-            return [];
-        }
-
-        return [$cellFrom, $cellTo];
     }
 
     /**
@@ -230,7 +197,10 @@ final class Game
             if ($clearCells) {
                 $this->getDesk()->clearCells($figuresForBeat);
 
-                $transFormedFiguresForBeat = array_map(fn ($figure) => $this->transformCellToString($figure), $figuresForBeat);
+                $transFormedFiguresForBeat = array_map(
+                    fn ($figure) => $this->inputTransformer->transformCellToString($figure),
+                    $figuresForBeat
+                );
                 $this->logger?->warning('--removed: ['
                     . implode(',', $transFormedFiguresForBeat) .
                     '] checkers');
@@ -243,15 +213,6 @@ final class Game
         }
 
         return false;
-    }
-
-    /**
-     * @param array<int,int> $cell
-     */
-    private function transformCellToString(array $cell): string
-    {
-        $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-        return $letters[$cell[0]] . $cell[1] + 1;
     }
 
     /**
