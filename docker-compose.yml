@@ -16,9 +16,12 @@ services:
     build:
       context: ./
     environment:
-      PHP_IDE_CONFIG: "serverName=${SERVER_NAME}"
+      PHP_IDE_CONFIG: "serverName=checkers"
     volumes:
       - ./app:/app
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    extra_hosts:
+      host.docker.internal: host-gateway
     networks:
       - my_network
 

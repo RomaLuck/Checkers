@@ -16,12 +16,10 @@ RUN docker-php-ext-install pdo pdo_mysql zip xsl gd intl
 
 RUN apk add --update linux-headers
 
-RUN apk --update --no-cache add autoconf g++ make && \
-     pecl install -f pcov && \
-     docker-php-ext-enable pcov && \
-     apk del --purge autoconf g++ make
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
-RUN curl -sL https://getcomposer.org/installer | php -- --install-dir /usr/bin --filename composer
+RUN install-php-extensions xdebug-^3.2.2
+RUN install-php-extensions @composer
 
 WORKDIR /app
 
