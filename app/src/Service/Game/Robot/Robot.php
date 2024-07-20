@@ -9,41 +9,43 @@ use App\Service\Game\Team\PlayerInterface;
 
 final class Robot
 {
-    private int $maxDepth;
-    private Game $game;
-
     public function __construct(
-        private Game            $originalGame,
+        private Game            $game,
         private PlayerInterface $computerTeam,
-        int                     $maxDepth
-    ) {
-        $this->maxDepth = $maxDepth;
-        $this->game = clone $this->originalGame;
+        private int             $maxDepth
+    )
+    {
         $this->game->setLogger(null);
     }
 
     /**
      * @return array<array>
      */
-    public function run(): array
+    public function run(array $originalBoard): array
     {
-        $board = $this->game->getDesk()->getDeskData();
-
-        $bestMove = $this->bestMove($board)[1];
+        $clonedBoard = $originalBoard;
+        $bestMove = $this->bestMove($clonedBoard)[1];
         if (is_array($bestMove)) {
-            return $this->originalGame->makeMove($bestMove[0], $bestMove[1]);
+            return $this->game->makeMove($originalBoard, $bestMove[0], $bestMove[1]);
         }
 
-        return $this->originalGame->getDesk()->getDeskData();
+        return $originalBoard;
     }
 
     /**
+     *  Calculates the best move using the minimax algorithm.
+     *
+     * @param array<array> $board The current state of the game board.
+     * @param int $depth The current depth of recursion.
+     * @param bool $isMaximizingPlayer Indicates if the current move is for the maximizing player.
+     * @return array An array containing the best score and the best move.
      * @return array<array>
      */
-    public function bestMove(array $board, $depth = 0, $isMaximizingPlayer = true): array
+    public function bestMove(array $board, int $depth = 0, bool $isMaximizingPlayer = true): array
     {
-        if ($depth === $this->maxDepth || $this->isGameOver()) {
-            return [$this->evaluate($board, $this->computerTeam->getTeamNumbers()), null];
+        if ($depth === $this->maxDepth || $this->isGameOver($board)) {
+            $evaluate = $this->evaluate($board, $this->computerTeam->getTeamNumbers());
+            return [$evaluate, null];
         }
 
         $bestMove = null;
@@ -51,7 +53,7 @@ final class Robot
         if ($isMaximizingPlayer) {
             $bestScore = -PHP_INT_MAX;
             foreach ($this->getPossibleMoves($board) as $move) {
-                $this->makeMove($move);
+                $board = $this->makeMove($board, $move);
                 $score = $this->bestMove($board, $depth + 1, false)[0];
                 if ($score > $bestScore) {
                     $bestScore = $score;
@@ -61,7 +63,7 @@ final class Robot
         } else {
             $bestScore = PHP_INT_MAX;
             foreach ($this->getPossibleMoves($board) as $move) {
-                $this->makeMove($move);
+                $board = $this->makeMove($board, $move);
                 $score = $this->bestMove($board, $depth + 1, true)[0];
                 if ($score < $bestScore) {
                     $bestScore = $score;
@@ -90,7 +92,7 @@ final class Robot
 
                 $possibleDestinations = $this->getEmptyCells($board);
                 foreach ($possibleDestinations as $destination) {
-                    if ($this->game->isValidPlayerMove($from, $destination)) {
+                    if ($this->game->isValidMove($this->computerTeam, $board, $from, $destination)) {
                         $possibleMoves[] = [$from, $destination];
                     }
                 }
@@ -102,7 +104,7 @@ final class Robot
 
     /**
      * @param array<array> $board
-     * @param array<int> $computerTeamNumbers
+     * @param array<int,int> $computerTeamNumbers
      */
     private function evaluate(array $board, array $computerTeamNumbers): int
     {
@@ -124,16 +126,18 @@ final class Robot
 
     /**
      * @param array<array> $move
+     * @return array<array>
      */
-    private function makeMove(array $move): void
+    public function makeMove(array $board, array $move): array
     {
         [$cellFrom, $cellTo] = $move;
-        $this->game->makeMove($cellFrom, $cellTo);
+
+        return $this->game->makeMove($board, $cellFrom, $cellTo);
     }
 
-    private function isGameOver(): bool
+    private function isGameOver(array $board): bool
     {
-        return $this->game->isGameOver();
+        return $this->game->isGameOver($board);
     }
 
     private function getEmptyCells(array $board): array

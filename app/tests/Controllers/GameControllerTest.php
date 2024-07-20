@@ -7,6 +7,7 @@ namespace App\Tests\Controllers;
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\CheckerDesk;
+use App\Service\Game\CheckerDeskService;
 use App\Service\Game\GameStrategyIds;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;

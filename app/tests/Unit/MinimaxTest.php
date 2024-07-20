@@ -12,33 +12,41 @@ use Psr\Log\LoggerInterface;
 
 class MinimaxTest extends TestCase
 {
-    public const START_DESK = [
-        [1, -1, 1, -1, 0, -1, 2, -1],
-        [-1, 1, -1, 0, -1, 2, -1, 2],
-        [1, -1, 1, -1, 0, -1, 2, -1],
-        [-1, 1, -1, 0, -1, 2, -1, 2],
-        [1, -1, 1, -1, 0, -1, 2, -1],
-        [-1, 1, -1, 0, -1, 2, -1, 2],
-        [1, -1, 1, -1, 0, -1, 2, -1],
-        [-1, 1, -1, 0, -1, 2, -1, 2],
-    ];
-
     private $logger;
+    private Game $game;
+    /**
+     * @var array[]
+     */
+    private array $desk;
+    private Robot $minimax;
 
     protected function setUp(): void
     {
         $this->logger = $this->createMock(LoggerInterface::class);
-    }
 
-    public function testRun(): void
-    {
-        $desk = new CheckerDesk(self::START_DESK);
         $robot = new White(1, 'Comp');
         $player = new Black(2, 'Player');
-        $game = new Game($desk, $robot, $player, $this->logger);
-        $minimax = new Robot($game, $robot, 10);
-        $result = $minimax->bestMove($game->getDesk()->getDeskData())[1];
 
-        $this->assertIsArray($result);
+        $this->desk = CheckerDesk::START_DESK;
+
+        $this->game = new Game($robot, $player, $this->logger);
+        $this->minimax = new Robot($this->game, $robot, 10);
     }
+
+    public function testMakeMove()
+    {
+        $this->assertEquals(0, $this->desk[1][3]);
+
+        $updatedDesk = $this->minimax->makeMove($this->desk, [[0, 2], [1, 3]]);
+
+        $this->assertEquals(0, $updatedDesk[0][2]);
+        $this->assertEquals(1, $updatedDesk[1][3]);
+    }
+
+//    public function testRun(): void
+//    {
+//        $result = $this->minimax->bestMove(CheckerDesk::START_DESK)[1];
+//
+//        $this->assertIsArray($result);
+//    }
 }

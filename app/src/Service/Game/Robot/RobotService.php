@@ -12,29 +12,28 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class RobotService
 {
-    private mixed $computer;
-
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        $this->computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
     }
 
     public function assignComputerPlayerToGame(GameLaunch $gameLaunch): void
     {
-        if ($this->computer) {
+        $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
+        if ($computer) {
             $gameLaunch->getWhiteTeamUser()
-                ? $gameLaunch->setBlackTeamUser($this->computer)
-                : $gameLaunch->setWhiteTeamUser($this->computer);
+                ? $gameLaunch->setBlackTeamUser($computer)
+                : $gameLaunch->setWhiteTeamUser($computer);
 
             $this->entityManager->flush();
         }
     }
 
-    public function updateDesk(Game $game, PlayerInterface $white, PlayerInterface $black): array
+    public function updateDesk(Game $game, PlayerInterface $white, PlayerInterface $black, array $desk): array
     {
-        $computerTeam = $this->computer->getId() === $white->getId() ? $white : $black;
+        $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
+        $computerTeam = $computer->getId() === $white->getId() ? $white : $black;
         $robot = new Robot($game, $computerTeam, 10);
 
-        return $robot->run();
+        return $robot->run($desk);
     }
 }

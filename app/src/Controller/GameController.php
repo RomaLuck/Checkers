@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\GameLaunch;
 use App\Entity\User;
-use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
@@ -34,7 +33,8 @@ final class GameController extends AbstractController
         private readonly LoggerService  $loggerService,
         private readonly MercureService $mercureService,
         private readonly RobotService   $robotService
-    ){
+    )
+    {
     }
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
@@ -167,9 +167,7 @@ final class GameController extends AbstractController
         $white = new White($whiteTeamUser->getId(), $whiteTeamUser->getUsername());
         $black = new Black($blackTeamUser->getId(), $blackTeamUser->getUsername());
 
-        $desk = new CheckerDesk($gameLaunch->getTableData());
-
-        $game = new Game($desk, $white, $black, $logger);
+        $game = new Game($white, $black, $logger);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
             $data = json_decode($request->request->get('formData'), true);
@@ -177,15 +175,15 @@ final class GameController extends AbstractController
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $updatedDesk = $game->makeMove($from, $to, true);
+                $updatedDesk = $game->makeMove($gameLaunch->getTableData(), $from, $to, true);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $updatedDesk = $this->robotService->updateDesk($game, $white, $black);
+                    $updatedDesk = $this->robotService->updateDesk($game, $white, $black, $updatedDesk);
                 }
 
                 $gameLaunch->setTableData($updatedDesk);
                 $entityManager->flush();
 
-                $session->set('advantagePlayer', $game->getAdvantagePlayer()->getId());
+                $session->set('advantagePlayer', $game->getAdvantagePlayer($updatedDesk)->getId());
 
                 $this->mercureService->publishData($gameLaunch, $entityManager, $roomId, $hub, $this->loggerService);
 
