@@ -34,21 +34,8 @@ final class Game
     /**
      * @return array<array>
      */
-    public function makeMove(array $desk, mixed $cellFrom, mixed $cellTo, bool $transformInput = false): array
+    public function makeMove(array $desk, array $cellFrom, array $cellTo): array
     {
-        #todo зарефакторити трансформацію вводу
-        if (is_string($cellFrom) && is_string($cellTo) && $transformInput) {
-            [$cellFrom, $cellTo] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
-            if ($cellFrom === [] || $cellTo === []) {
-                return $desk;
-            }
-        }
-
-        if (!is_array($cellFrom) || !is_array($cellTo)) {
-            $this->getLogger()?->warning('Cells are not transformed');
-            return $desk;
-        }
-
         $player = $this->detectPlayer($desk, $cellFrom);
         if (!$player) {
             $this->getLogger()?->warning('Can not find player on this cell');
@@ -73,6 +60,21 @@ final class Game
         }
 
         return $this->updateData($desk, $cellFrom, $cellTo, $player);
+    }
+
+    public function makeMoveWithCellTransform(array $desk, string $cellFrom, string $cellTo): array
+    {
+        [$cellFromTransformed, $cellToTransformed] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
+        if (!is_array($cellFromTransformed) || !is_array($cellToTransformed)) {
+            $this->getLogger()?->warning('Cells are not transformed');
+            return $desk;
+        }
+
+        if ($cellFromTransformed === [] || $cellToTransformed === []) {
+            return $desk;
+        }
+
+        return $this->makeMove($desk, $cellFromTransformed, $cellToTransformed);
     }
 
     /**

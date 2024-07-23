@@ -175,7 +175,7 @@ final class GameController extends AbstractController
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $updatedDesk = $game->makeMove($gameLaunch->getTableData(), $from, $to, true);
+                $updatedDesk = $game->makeMoveWithCellTransform($gameLaunch->getTableData(), $from, $to);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
                     $updatedDesk = $this->robotService->updateDesk($game, $white, $black, $updatedDesk);
                 }

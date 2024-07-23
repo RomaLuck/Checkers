@@ -34,7 +34,7 @@ class GameTest extends TestCase
     {
         $this->assertEquals(0, $this->desk[1][3]);
 
-        $updatedDesk = $this->game->makeMove($this->desk, 'a3', 'b4', true);
+        $updatedDesk = $this->game->makeMoveWithCellTransform($this->desk, 'a3', 'b4');
 
         $this->assertEquals(0, $updatedDesk[0][2]);
         $this->assertEquals(1, $updatedDesk[1][3]);
@@ -42,8 +42,8 @@ class GameTest extends TestCase
 
     public function testRunInFalseDirection(): void
     {
-        $updatedDesk = $this->game->makeMove($this->desk, 'a3', 'b4', true);
-        $updatedDesk = $this->game->makeMove($updatedDesk, 'b4', 'a3', true);
+        $updatedDesk = $this->game->makeMoveWithCellTransform($this->desk, 'a3', 'b4');
+        $updatedDesk = $this->game->makeMoveWithCellTransform($updatedDesk, 'b4', 'a3');
 
         $this->assertEquals(0, $updatedDesk[0][2]);
         $this->assertEquals(1, $updatedDesk[1][3]);
@@ -51,7 +51,7 @@ class GameTest extends TestCase
 
     public function testRunWithoutPossibility(): void
     {
-        $updatedDesk = $this->game->makeMove($this->desk, 'a3', 'c5', true);
+        $updatedDesk = $this->game->makeMoveWithCellTransform($this->desk, 'a3', 'c5');
 
         $this->assertEquals(1, $updatedDesk[0][2]);
         $this->assertEquals(0, $updatedDesk[2][4]);

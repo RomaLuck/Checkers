@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Game;
 
 use App\Entity\GameLaunch;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -35,9 +36,9 @@ final class GameService
 
     public function joinToGame(GameLaunch $game, UserInterface $user, string $color): void
     {
-        if ($color === 'white' && ! $game->getWhiteTeamUser()) {
+        if ($color === 'white' && !$game->getWhiteTeamUser()) {
             $game->setWhiteTeamUser($user);
-        } elseif ($color === 'black' && ! $game->getBlackTeamUser()) {
+        } elseif ($color === 'black' && !$game->getBlackTeamUser()) {
             $game->setBlackTeamUser($user);
         }
 
@@ -53,6 +54,20 @@ final class GameService
         $blackTeamUser = $game->getBlackTeamUser();
         if ($user === $blackTeamUser) {
             return 'black';
+        }
+
+        return null;
+    }
+
+    public function getOpponent(GameLaunch $game, UserInterface $user): ?User
+    {
+        $whiteTeamUser = $game->getWhiteTeamUser();
+        $blackTeamUser = $game->getBlackTeamUser();
+
+        if ($user === $whiteTeamUser && $blackTeamUser !== null) {
+            return $blackTeamUser;
+        } elseif ($user === $blackTeamUser && $whiteTeamUser !== null) {
+            return $whiteTeamUser;
         }
 
         return null;
