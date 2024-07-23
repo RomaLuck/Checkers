@@ -30,7 +30,7 @@ class MinimaxTest extends TestCase
         $this->desk = CheckerDesk::START_DESK;
 
         $this->game = new Game($robot, $player, $this->logger);
-        $this->minimax = new Robot($this->game, $robot, 10);
+        $this->minimax = new Robot($this->game, $robot, $player, 1);
     }
 
     public function testMakeMove()
@@ -43,10 +43,13 @@ class MinimaxTest extends TestCase
         $this->assertEquals(1, $updatedDesk[1][3]);
     }
 
-//    public function testRun(): void
-//    {
-//        $result = $this->minimax->bestMove(CheckerDesk::START_DESK)[1];
-//
-//        $this->assertIsArray($result);
-//    }
+    public function testRun(): void
+    {
+        $robot = new White(1, 'Comp');
+        $player = new Black(2, 'Player');
+
+        $result = $this->minimax->bestMove($robot, $player, CheckerDesk::START_DESK)[1];
+
+        $this->assertIsArray($result);
+    }
 }

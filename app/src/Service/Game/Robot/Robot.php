@@ -11,7 +11,8 @@ final class Robot
 {
     public function __construct(
         private Game            $game,
-        private PlayerInterface $computerTeam,
+        private PlayerInterface $computer,
+        private PlayerInterface $opponent,
         private int             $maxDepth
     )
     {
@@ -24,7 +25,7 @@ final class Robot
     public function run(array $originalBoard): array
     {
         $clonedBoard = $originalBoard;
-        $bestMove = $this->bestMove($clonedBoard)[1];
+        $bestMove = $this->bestMove($this->computer, $this->opponent, $clonedBoard)[1];
         if (is_array($bestMove)) {
             return $this->game->makeMove($originalBoard, $bestMove[0], $bestMove[1]);
         }
@@ -41,10 +42,16 @@ final class Robot
      * @return array An array containing the best score and the best move.
      * @return array<array>
      */
-    public function bestMove(array $board, int $depth = 0, bool $isMaximizingPlayer = true): array
+    public function bestMove(
+        PlayerInterface $computerTeam,
+        PlayerInterface $oppositeTeam,
+        array           $board,
+        int             $depth = 0,
+        bool            $isMaximizingPlayer = true
+    ): array
     {
         if ($depth === $this->maxDepth || $this->isGameOver($board)) {
-            $evaluate = $this->evaluate($board, $this->computerTeam->getTeamNumbers());
+            $evaluate = $this->evaluate($board, $computerTeam->getTeamNumbers());
             return [$evaluate, null];
         }
 
@@ -52,9 +59,9 @@ final class Robot
 
         if ($isMaximizingPlayer) {
             $bestScore = -PHP_INT_MAX;
-            foreach ($this->getPossibleMoves($board) as $move) {
+            foreach ($this->getPossibleMoves($board, $computerTeam) as $move) {
                 $board = $this->makeMove($board, $move);
-                $score = $this->bestMove($board, $depth + 1, false)[0];
+                $score = $this->bestMove($computerTeam, $oppositeTeam, $board, $depth + 1, false)[0];
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestMove = $move;
@@ -62,9 +69,9 @@ final class Robot
             }
         } else {
             $bestScore = PHP_INT_MAX;
-            foreach ($this->getPossibleMoves($board) as $move) {
+            foreach ($this->getPossibleMoves($board, $oppositeTeam) as $move) {
                 $board = $this->makeMove($board, $move);
-                $score = $this->bestMove($board, $depth + 1, true)[0];
+                $score = $this->bestMove($computerTeam, $oppositeTeam, $board, $depth + 1, true)[0];
                 if ($score < $bestScore) {
                     $bestScore = $score;
                     $bestMove = $move;
@@ -79,20 +86,20 @@ final class Robot
      * @param array<array> $board
      * @return array<array>
      */
-    public function getPossibleMoves(array $board): array
+    public function getPossibleMoves(array $board, PlayerInterface $player): array
     {
         $possibleMoves = [];
 
         foreach ($board as $rowKey => $row) {
             foreach ($row as $key => $cell) {
                 $from = [$rowKey, $key];
-                if (!in_array($cell, $this->computerTeam->getTeamNumbers())) {
+                if (!in_array($cell, $player->getTeamNumbers())) {
                     continue;
                 }
 
                 $possibleDestinations = $this->getEmptyCells($board);
                 foreach ($possibleDestinations as $destination) {
-                    if ($this->game->isValidMove($this->computerTeam, $board, $from, $destination)) {
+                    if ($this->game->isValidMove($player, $board, $from, $destination)) {
                         $possibleMoves[] = [$from, $destination];
                     }
                 }

@@ -31,8 +31,11 @@ final class RobotService
     public function updateDesk(Game $game, PlayerInterface $white, PlayerInterface $black, array $desk): array
     {
         $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
+
         $computerTeam = $computer->getId() === $white->getId() ? $white : $black;
-        $robot = new Robot($game, $computerTeam, 10);
+        $opponent = $computerTeam === $white ? $black : $white;
+
+        $robot = new Robot($game, $computerTeam, $opponent, 1);
 
         return $robot->run($desk);
     }
