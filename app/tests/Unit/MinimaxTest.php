@@ -8,11 +8,9 @@ use App\Service\Game\Robot\Robot;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class MinimaxTest extends TestCase
 {
-    private $logger;
     private Game $game;
     /**
      * @var array[]
@@ -22,14 +20,12 @@ class MinimaxTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->logger = $this->createMock(LoggerInterface::class);
-
         $robot = new White(1, 'Comp');
         $player = new Black(2, 'Player');
 
         $this->desk = CheckerDesk::START_DESK;
 
-        $this->game = new Game($robot, $player, $this->logger);
+        $this->game = new Game($robot, $player);
         $this->minimax = new Robot($this->game, $robot, $player, 1);
     }
 

@@ -167,7 +167,7 @@ final class GameController extends AbstractController
         $white = new White($whiteTeamUser->getId(), $whiteTeamUser->getUsername());
         $black = new Black($blackTeamUser->getId(), $blackTeamUser->getUsername());
 
-        $game = new Game($white, $black, $logger);
+        $game = new Game($white, $black);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
             $data = json_decode($request->request->get('formData'), true);
@@ -175,9 +175,9 @@ final class GameController extends AbstractController
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $updatedDesk = $game->makeMoveWithCellTransform($gameLaunch->getTableData(), $from, $to);
+                $updatedDesk = $game->makeMoveWithCellTransform($gameLaunch->getTableData(), $from, $to, $logger);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $updatedDesk = $this->robotService->updateDesk($game, $white, $black, $updatedDesk);
+                    $updatedDesk = $this->robotService->updateDesk($game, $updatedDesk, $logger);
                 }
 
                 $gameLaunch->setTableData($updatedDesk);

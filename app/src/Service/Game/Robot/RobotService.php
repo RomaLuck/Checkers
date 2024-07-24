@@ -7,8 +7,8 @@ namespace App\Service\Game\Robot;
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\Game;
-use App\Service\Game\Team\PlayerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 final class RobotService
 {
@@ -28,15 +28,22 @@ final class RobotService
         }
     }
 
-    public function updateDesk(Game $game, PlayerInterface $white, PlayerInterface $black, array $desk): array
+    public function updateDesk(
+        Game            $game,
+        array           $desk,
+        LoggerInterface $logger
+    ): array
     {
         $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
+
+        $white = $game->getWhite();
+        $black = $game->getBlack();
 
         $computerTeam = $computer->getId() === $white->getId() ? $white : $black;
         $opponent = $computerTeam === $white ? $black : $white;
 
         $robot = new Robot($game, $computerTeam, $opponent, 1);
 
-        return $robot->run($desk);
+        return $robot->run($desk, $logger);
     }
 }

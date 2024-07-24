@@ -17,32 +17,36 @@ final class Game
     private CheckerDeskService $checkerDeskService;
 
     public function __construct(
-        private White            $white,
-        private Black            $black,
-        private ?LoggerInterface $logger,
+        private White $white,
+        private Black $black,
     )
     {
         $this->inputTransformer = new InputTransformer();
         $this->checkerDeskService = new CheckerDeskService();
     }
 
-    public function setLogger(?LoggerInterface $logger): void
+    public function getWhite(): White
     {
-        $this->logger = $logger;
+        return $this->white;
+    }
+
+    public function getBlack(): Black
+    {
+        return $this->black;
     }
 
     /**
      * @return array<array>
      */
-    public function makeMove(array $desk, array $cellFrom, array $cellTo): array
+    public function makeMove(array $desk, array $cellFrom, array $cellTo, ?LoggerInterface $logger = null): array
     {
         $player = $this->detectPlayer($desk, $cellFrom);
         if (!$player) {
-            $this->getLogger()?->warning('Can not find player on this cell');
+            $logger?->warning('Can not find player on this cell');
             return $desk;
         }
 
-        if (!$this->isValidMove($player, $desk, $cellFrom, $cellTo)) {
+        if (!$this->isValidMove($player, $desk, $cellFrom, $cellTo, $logger)) {
             return $desk;
         }
 
@@ -54,19 +58,24 @@ final class Game
                 fn($figure) => $this->inputTransformer->transformCellToString($figure),
                 $figuresForBeat
             );
-            $this->logger?->warning('--removed: ['
+            $logger?->warning('--removed: ['
                 . implode(',', $transFormedFiguresForBeat) .
                 '] checkers');
         }
 
-        return $this->updateData($desk, $cellFrom, $cellTo, $player);
+        return $this->updateData($desk, $cellFrom, $cellTo, $player, $logger);
     }
 
-    public function makeMoveWithCellTransform(array $desk, string $cellFrom, string $cellTo): array
+    public function makeMoveWithCellTransform(
+        array           $desk,
+        string          $cellFrom,
+        string          $cellTo,
+        ?LoggerInterface $logger = null
+    ): array
     {
         [$cellFromTransformed, $cellToTransformed] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
         if (!is_array($cellFromTransformed) || !is_array($cellToTransformed)) {
-            $this->getLogger()?->warning('Cells are not transformed');
+            $logger?->warning('Cells are not transformed');
             return $desk;
         }
 
@@ -74,7 +83,7 @@ final class Game
             return $desk;
         }
 
-        return $this->makeMove($desk, $cellFromTransformed, $cellToTransformed);
+        return $this->makeMove($desk, $cellFromTransformed, $cellToTransformed, $logger);
     }
 
     /**
@@ -128,7 +137,13 @@ final class Game
      * @param array<int,int> $cellFrom
      * @param array<int,int> $cellTo
      */
-    public function updateData(array $desk, array $cellFrom, array $cellTo, PlayerInterface $player): array
+    public function updateData(
+        array           $desk,
+        array           $cellFrom,
+        array           $cellTo,
+        PlayerInterface $player,
+        ?LoggerInterface $logger = null
+    ): array
     {
         $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
         $updatedDesk = $this->checkerDeskService->updateDesk($desk, $cellFrom, $cellTo, $selectedTeamNumber);
@@ -136,14 +151,9 @@ final class Game
 
         $from = $this->inputTransformer->transformCellToString($cellFrom);
         $to = $this->inputTransformer->transformCellToString($cellTo);
-        $this->getLogger()?->info("{$player->getName()} : [{$from}] => [{$to}]");
+        $logger?->info("{$player->getName()} : [{$from}] => [{$to}]");
 
         return $updatedDesk;
-    }
-
-    private function getLogger(): ?LoggerInterface
-    {
-        return $this->logger;
     }
 
     /**
@@ -178,11 +188,12 @@ final class Game
         array           $desk,
         array           $cellFrom,
         array           $cellTo,
+        ?LoggerInterface $logger = null
     ): bool
     {
         $this->setPlayerFigure($player, $desk, $cellFrom);
 
-        $rules = new Rules($player, $desk, $this->logger);
+        $rules = new Rules($player, $desk, $logger);
 
         $figuresForBeat = $this->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
         if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {

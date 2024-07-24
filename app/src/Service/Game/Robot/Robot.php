@@ -6,6 +6,7 @@ namespace App\Service\Game\Robot;
 
 use App\Service\Game\Game;
 use App\Service\Game\Team\PlayerInterface;
+use Psr\Log\LoggerInterface;
 
 final class Robot
 {
@@ -16,18 +17,17 @@ final class Robot
         private int             $maxDepth
     )
     {
-        $this->game->setLogger(null);
     }
 
     /**
      * @return array<array>
      */
-    public function run(array $originalBoard): array
+    public function run(array $originalBoard, LoggerInterface $logger): array
     {
         $clonedBoard = $originalBoard;
         $bestMove = $this->bestMove($this->computer, $this->opponent, $clonedBoard)[1];
         if (is_array($bestMove)) {
-            return $this->game->makeMove($originalBoard, $bestMove[0], $bestMove[1]);
+            return $this->game->makeMove($originalBoard, $bestMove[0], $bestMove[1], $logger);
         }
 
         return $originalBoard;
