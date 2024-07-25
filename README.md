@@ -7,6 +7,7 @@
     - [ToDo](#todo)
 * [Setup](#setup)
 * [Test](#test)
+* [Screenshot](#screenshots)
 
 ## General info
 
@@ -26,13 +27,14 @@ Currently, it is under development.
 
 - Ability to play for two players
 - Ability to play multiple games at the same time
+- Ability to play with computer
 - Logger
 - Authorization through social networks
 - Server-Sent-Events
 
 ## Current works
 
-- Game with computer
+- Algorithm for game with computer
 
 ## ToDo
 
@@ -43,13 +45,13 @@ Currently, it is under development.
 Copy the .env.dist file and edit the entries to your needs:
 
 ```
-cp .env.dist .env
+cp .env.example .env
 ```
 
-Copy in app folder the .env file and edit the entries to your needs:
+Copy the phpunit.xml file and edit the entries to your needs:
 
 ```
-cp .env .env.local
+cp phpunit.xml.dist phpunit.xml
 ```
 
 Start docker-compose to start your environment:
@@ -75,3 +77,7 @@ docker exec php ./vendor/bin/doctrine-migrations migrations:migrate
 ```
 docker exec php bin/phpunit
 ```
+## Screenshots
+![Login](public/pictures/login.png)
+![Game_list](public/pictures/game-list.png)
+![Game](public/pictures/game.png)
