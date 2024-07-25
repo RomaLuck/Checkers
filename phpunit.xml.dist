@@ -5,16 +5,25 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          backupGlobals="false"
          colors="true"
+         verbose="true"
+         testdox="true"
          bootstrap="tests/bootstrap.php"
          convertDeprecationsToExceptions="false"
 >
     <php>
-        <ini name="display_errors" value="1" />
-        <ini name="error_reporting" value="-1" />
-        <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="9.6" />
+        <env name="MYSQL_ROOT_PASSWORD" value="root"/>
+        <env name="MYSQL_DATABASE" value="db_name_test"/>
+        <env name="MYSQL_USER" value="db_user"/>
+        <env name="MYSQL_PASSWORD" value="db_password"/>
+        <env name="MERCURE_URL" value="http://mercure/.well-known/mercure"/>
+        <env name="MERCURE_PUBLIC_URL" value="http://localhost:8001/.well-known/mercure"/>
+        <env name="MERCURE_JWT_SECRET" value="123"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+        <server name="APP_ENV" value="test" force="true"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+        <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.6"/>
     </php>
 
     <testsuites>
@@ -30,10 +39,10 @@
     </coverage>
 
     <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
     </listeners>
 
     <extensions>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
     </extensions>
 </phpunit>
