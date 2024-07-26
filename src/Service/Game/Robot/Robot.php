@@ -10,11 +10,12 @@ use Psr\Log\LoggerInterface;
 
 final class Robot
 {
+    private const MAX_DEPTH = 3;
+
     public function __construct(
         private Game            $game,
         private PlayerInterface $computer,
         private PlayerInterface $opponent,
-        private int             $maxDepth
     )
     {
     }
@@ -50,7 +51,7 @@ final class Robot
         bool            $isMaximizingPlayer = true
     ): array
     {
-        if ($depth === $this->maxDepth || $this->isGameOver($board)) {
+        if ($depth === self::MAX_DEPTH || $this->isGameOver($board)) {
             $evaluate = $this->evaluate($board, $computerTeam->getTeamNumbers());
             return [$evaluate, null];
         }

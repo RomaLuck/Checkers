@@ -26,7 +26,7 @@ class MinimaxTest extends TestCase
         $this->desk = CheckerDesk::START_DESK;
 
         $this->game = new Game($robot, $player);
-        $this->minimax = new Robot($this->game, $robot, $player, 1);
+        $this->minimax = new Robot($this->game, $robot, $player);
     }
 
     public function testMakeMove()

@@ -42,7 +42,7 @@ final class RobotService
         $computerTeam = $computer->getId() === $white->getId() ? $white : $black;
         $opponent = $computerTeam === $white ? $black : $white;
 
-        $robot = new Robot($game, $computerTeam, $opponent, 1);
+        $robot = new Robot($game, $computerTeam, $opponent);
 
         return $robot->run($desk, $logger);
     }
