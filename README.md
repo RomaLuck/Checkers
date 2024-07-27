@@ -48,12 +48,6 @@ Copy the .env.dist file and edit the entries to your needs:
 cp .env.example .env
 ```
 
-Copy the phpunit.xml file and edit the entries to your needs:
-
-```
-cp phpunit.xml.dist phpunit.xml
-```
-
 Start docker-compose to start your environment:
 
 ```
@@ -73,6 +67,21 @@ docker exec php ./vendor/bin/doctrine-migrations migrations:migrate
 ```
 
 ## Test
+
+Copy the phpunit.xml file and edit the entries to your needs:
+
+```
+cp phpunit.xml.dist phpunit.xml
+```
+
+
+Create schemas for testing
+
+```
+docker exec php bin/console --env=test doctrine:schema:create
+```
+
+Run tests
 
 ```
 docker exec php bin/phpunit

@@ -49,10 +49,10 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_name_test
-      MYSQL_USER: db_user
-      MYSQL_PASSWORD: db_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}_test
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data_test:/var/lib/mysql
     networks:
@@ -81,16 +81,16 @@ services:
       - "8001:80"
     networks:
       - my_network
-
-  elasticsearch:
-    image: elasticsearch:8.14.3
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-    ports:
-      - "9200:9200"
-    networks:
-      - my_network
+#
+#  elasticsearch:
+#    image: elasticsearch:8.14.3
+#    container_name: elasticsearch
+#    environment:
+#      - discovery.type=single-node
+#    ports:
+#      - "9200:9200"
+#    networks:
+#      - my_network
 
 volumes:
   mysql_data:
