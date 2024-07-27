@@ -25,8 +25,7 @@ final class Robot
      */
     public function run(array $originalBoard, LoggerInterface $logger): array
     {
-        $clonedBoard = $originalBoard;
-        $bestMove = $this->bestMove($this->computer, $this->opponent, $clonedBoard)[1];
+        $bestMove = $this->bestMove($this->computer, $this->opponent, $originalBoard)[1];
         if (is_array($bestMove)) {
             return $this->game->makeMove($originalBoard, $bestMove[0], $bestMove[1], $logger);
         }
