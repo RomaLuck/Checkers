@@ -23,7 +23,7 @@ final class Robot
     /**
      * @return array<array>
      */
-    public function run(array $originalBoard, LoggerInterface $logger): array
+    public function run(array $originalBoard, ?LoggerInterface $logger): array
     {
         $bestMove = $this->bestMove($this->computer, $this->opponent, $originalBoard)[1];
         if (is_array($bestMove)) {

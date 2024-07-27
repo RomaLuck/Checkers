@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\GameLaunch;
 use App\Entity\User;
+use App\Message\UpdateDeskMessage;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mercure\Discovery;
 use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -136,7 +138,8 @@ final class GameController extends AbstractController
         Session                $session,
         EntityManagerInterface $entityManager,
         LoggerInterface        $logger,
-        HubInterface           $hub
+        HubInterface           $hub,
+        MessageBusInterface    $bus
     ): Response
     {
         $roomId = $session->get('room');
@@ -177,7 +180,7 @@ final class GameController extends AbstractController
             if ($from && $to) {
                 $updatedDesk = $game->makeMoveWithCellTransform($gameLaunch->getTableData(), $from, $to, $logger);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $updatedDesk = $this->robotService->updateDesk($game, $updatedDesk, $logger);
+                    $bus->dispatch(new UpdateDeskMessage($strategyId, $game, $updatedDesk, $roomId));
                 }
 
                 $gameLaunch->setTableData($updatedDesk);
@@ -185,7 +188,7 @@ final class GameController extends AbstractController
 
                 $session->set('advantagePlayer', $game->getAdvantagePlayer($updatedDesk)->getId());
 
-                $this->mercureService->publishData($gameLaunch, $entityManager, $roomId, $hub, $this->loggerService);
+                $this->mercureService->publishData($gameLaunch, $entityManager, $hub);
 
                 return $this->json('Done');
             }

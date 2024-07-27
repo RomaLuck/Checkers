@@ -29,9 +29,9 @@ final class RobotService
     }
 
     public function updateDesk(
-        Game            $game,
-        array           $desk,
-        LoggerInterface $logger
+        Game             $game,
+        array            $desk,
+        ?LoggerInterface $logger = null
     ): array
     {
         $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');

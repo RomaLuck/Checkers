@@ -15,15 +15,15 @@ final class MercureService
     public function publishData(
         GameLaunch             $gameLaunch,
         EntityManagerInterface $entityManager,
-        string                 $roomId,
         HubInterface           $hub,
-        LoggerService          $loggerService
     ): void {
+        $loggerService = new LoggerService();
+
         $update = new Update(
             '/chat',
             json_encode([
                 'table' => $gameLaunch->getTableData(),
-                'log' => $loggerService->getLastLogs($entityManager, $roomId),
+                'log' => $loggerService->getLastLogs($entityManager, $gameLaunch->getRoomId()),
             ])
         );
 
