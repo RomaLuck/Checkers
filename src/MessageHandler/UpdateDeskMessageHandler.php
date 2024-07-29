@@ -8,6 +8,7 @@ use App\Service\Game\GameStrategyIds;
 use App\Service\Game\Robot\RobotService;
 use App\Service\Mercure\MercureService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -18,17 +19,20 @@ class UpdateDeskMessageHandler
         private RobotService           $robotService,
         private EntityManagerInterface $entityManager,
         private HubInterface           $hub,
+        private LoggerInterface        $logger
     )
     {
     }
 
     public function __invoke(UpdateDeskMessage $message): void
     {
-        #todo доробити логгер
-        if ($message->getStrategyId() === GameStrategyIds::COMPUTER) {
-            $updatedDesk = $this->robotService->updateDesk($message->getGame(), $message->getUpdatedDesk());
+        $roomId = $message->getRoomId();
+        $logger = $this->logger->withName($roomId);
 
-            $gameLaunch = $this->entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $message->getRoomId()]);
+        if ($message->getStrategyId() === GameStrategyIds::COMPUTER) {
+            $updatedDesk = $this->robotService->updateDesk($message->getGame(), $message->getUpdatedDesk(), $logger);
+
+            $gameLaunch = $this->entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
             if ($gameLaunch) {
                 $gameLaunch->setTableData($updatedDesk);
                 $this->entityManager->flush();
