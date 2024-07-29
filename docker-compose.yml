@@ -81,17 +81,6 @@ services:
       - "8001:80"
     networks:
       - my_network
-
-#  messenger:
-#    container_name: messenger
-#    image: php:latest
-#    command: php /app/bin/console messenger:consume async
-#    volumes:
-#      - ./:/app
-#    depends_on:
-#      - php
-#    networks:
-#      - my_network
 #
 #  elasticsearch:
 #    image: elasticsearch:8.14.3
