@@ -17,6 +17,7 @@ Currently, it is under development.
 
 ## Tools
 
+- Docker
 - Symfony v7.1.1
 - Twig v.3.10.3
 - PHP v8.2
@@ -77,7 +78,6 @@ Copy the phpunit.xml file and edit the entries to your needs:
 cp phpunit.xml.dist phpunit.xml
 ```
 
-
 Create schemas for testing
 
 ```
@@ -89,7 +89,9 @@ Run tests
 ```
 docker exec php bin/phpunit
 ```
+
 ## Screenshots
+
 ![Login](public/pictures/login.png)
 ![Game_list](public/pictures/game-list.png)
 ![Game](public/pictures/game.png)
