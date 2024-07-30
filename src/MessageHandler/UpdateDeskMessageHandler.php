@@ -29,15 +29,18 @@ class UpdateDeskMessageHandler
         $roomId = $message->getRoomId();
         $logger = $this->logger->withName($roomId);
 
-        if ($message->getStrategyId() === GameStrategyIds::COMPUTER) {
-            $updatedDesk = $this->robotService->updateDesk($message->getGame(), $message->getUpdatedDesk(), $logger);
+        $updatedDesk = $this->robotService->updateDesk(
+            $message->getGame(),
+            $message->getComputer(),
+            $message->getUpdatedDesk(),
+            $logger
+        );
 
-            $gameLaunch = $this->entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-            if ($gameLaunch) {
-                $gameLaunch->setTableData($updatedDesk);
-                $this->entityManager->flush();
-                (new MercureService())->publishData($gameLaunch, $this->entityManager, $this->hub);
-            }
+        $gameLaunch = $this->entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
+        if ($gameLaunch) {
+            $gameLaunch->setTableData($updatedDesk);
+            $this->entityManager->flush();
+            (new MercureService())->publishData($gameLaunch, $this->entityManager, $this->hub);
         }
     }
 }

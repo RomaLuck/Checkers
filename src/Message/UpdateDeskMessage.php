@@ -3,21 +3,22 @@
 namespace App\Message;
 
 use App\Service\Game\Game;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UpdateDeskMessage
 {
     public function __construct(
-        private int             $strategyId,
-        private Game            $game,
-        private array           $updatedDesk,
-        private string          $roomId,
+        private UserInterface $computer,
+        private Game          $game,
+        private array         $updatedDesk,
+        private string        $roomId,
     )
     {
     }
 
-    public function getStrategyId(): int
+    public function getComputer(): UserInterface
     {
-        return $this->strategyId;
+        return $this->computer;
     }
 
     public function getGame(): Game

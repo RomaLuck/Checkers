@@ -63,13 +63,23 @@ final class Game
                 '] checkers');
         }
 
-        return $this->updateData($desk, $cellFrom, $cellTo, $player, $logger);
+        $from = $this->inputTransformer->transformCellToString($cellFrom);
+        $to = $this->inputTransformer->transformCellToString($cellTo);
+        $logger?->info("{$player->getName()} : [{$from}] => [{$to}]");
+
+        if ($this->isGameOver($desk)) {
+            $logger?->info('Game over');
+            $winner = $this->getAdvantagePlayer($desk)->getName();
+            $logger?->info("$winner won!");
+        }
+
+        return $this->updateData($desk, $cellFrom, $cellTo);
     }
 
     public function makeMoveWithCellTransform(
-        array           $desk,
-        string          $cellFrom,
-        string          $cellTo,
+        array            $desk,
+        string           $cellFrom,
+        string           $cellTo,
         ?LoggerInterface $logger = null
     ): array
     {
@@ -138,22 +148,14 @@ final class Game
      * @param array<int,int> $cellTo
      */
     public function updateData(
-        array           $desk,
-        array           $cellFrom,
-        array           $cellTo,
-        PlayerInterface $player,
-        ?LoggerInterface $logger = null
+        array            $desk,
+        array            $cellFrom,
+        array            $cellTo,
     ): array
     {
         $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
         $updatedDesk = $this->checkerDeskService->updateDesk($desk, $cellFrom, $cellTo, $selectedTeamNumber);
-        $updatedDesk = $this->checkerDeskService->updateFigures($updatedDesk);
-
-        $from = $this->inputTransformer->transformCellToString($cellFrom);
-        $to = $this->inputTransformer->transformCellToString($cellTo);
-        $logger?->info("{$player->getName()} : [{$from}] => [{$to}]");
-
-        return $updatedDesk;
+        return $this->checkerDeskService->updateFigures($updatedDesk);
     }
 
     /**
@@ -184,10 +186,10 @@ final class Game
      * @param array<int,int> $cellTo
      */
     public function isValidMove(
-        PlayerInterface $player,
-        array           $desk,
-        array           $cellFrom,
-        array           $cellTo,
+        PlayerInterface  $player,
+        array            $desk,
+        array            $cellFrom,
+        array            $cellTo,
         ?LoggerInterface $logger = null
     ): bool
     {

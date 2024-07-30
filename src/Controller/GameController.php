@@ -153,7 +153,8 @@ final class GameController extends AbstractController
 
         $strategyId = $gameLaunch->getStrategyId();
         if ($strategyId === GameStrategyIds::COMPUTER) {
-            $this->robotService->assignComputerPlayerToGame($gameLaunch);
+            $computer = $this->robotService->getComputerPlayer($entityManager);
+            $this->robotService->assignComputerPlayerToGame($gameLaunch, $computer);
         }
 
         $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
@@ -180,13 +181,11 @@ final class GameController extends AbstractController
             if ($from && $to) {
                 $updatedDesk = $game->makeMoveWithCellTransform($gameLaunch->getTableData(), $from, $to, $logger);
                 if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $bus->dispatch(new UpdateDeskMessage($strategyId, $game, $updatedDesk, $roomId));
+                    $bus->dispatch(new UpdateDeskMessage($computer, $game, $updatedDesk, $roomId));
                 }
 
                 $gameLaunch->setTableData($updatedDesk);
                 $entityManager->flush();
-
-                $session->set('advantagePlayer', $game->getAdvantagePlayer($updatedDesk)->getId());
 
                 $this->mercureService->publishData($gameLaunch, $entityManager, $hub);
 

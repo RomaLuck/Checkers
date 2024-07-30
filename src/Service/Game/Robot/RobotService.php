@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Service\Game\Game;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final class RobotService
 {
@@ -16,26 +17,38 @@ final class RobotService
     {
     }
 
-    public function assignComputerPlayerToGame(GameLaunch $gameLaunch): void
+    public function assignComputerPlayerToGame(GameLaunch $gameLaunch, UserInterface $computer): void
     {
-        $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
-        if ($computer) {
-            $gameLaunch->getWhiteTeamUser()
-                ? $gameLaunch->setBlackTeamUser($computer)
-                : $gameLaunch->setWhiteTeamUser($computer);
+        $gameLaunch->getWhiteTeamUser()
+            ? $gameLaunch->setBlackTeamUser($computer)
+            : $gameLaunch->setWhiteTeamUser($computer);
 
-            $this->entityManager->flush();
+        $this->entityManager->flush();
+    }
+
+    public function getComputerPlayer(EntityManagerInterface $entityManager)
+    {
+        $computer = $entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
+        if (!$computer) {
+            $computer = new User();
+            $computer->setUsername('computer');
+            $computer->setRoles(['ROLE_COMPUTER']);
+            $computer->setPassword('********');
+
+            $entityManager->persist($computer);
+            $entityManager->flush();
         }
+
+        return $computer;
     }
 
     public function updateDesk(
         Game             $game,
+        UserInterface    $computer,
         array            $desk,
-        ?LoggerInterface $logger = null
+        LoggerInterface $logger
     ): array
     {
-        $computer = $this->entityManager->getRepository(User::class)->findOneByRole('ROLE_COMPUTER');
-
         $white = $game->getWhite();
         $black = $game->getBlack();
 
