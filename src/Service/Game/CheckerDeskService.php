@@ -7,6 +7,7 @@ namespace App\Service\Game;
 use App\Service\Game\Figure\Checker;
 use App\Service\Game\Figure\King;
 use App\Service\Game\Team\Black;
+use App\Service\Game\Team\PlayerInterface;
 use App\Service\Game\Team\White;
 
 final class CheckerDeskService
@@ -17,6 +18,21 @@ final class CheckerDeskService
     public function getSelectedTeamNumber(array $deskData, array $cellFrom): int
     {
         return $deskData[$cellFrom[0]][$cellFrom[1]];
+    }
+
+    /**
+     * @param array<int,int> $cellFrom
+     * @param array<int,int> $cellTo
+     */
+    public function updateData(
+        array            $desk,
+        array            $cellFrom,
+        array            $cellTo,
+    ): array
+    {
+        $selectedTeamNumber = $this->getSelectedTeamNumber($desk, $cellFrom);
+        $updatedDesk = $this->updateDesk($desk, $cellFrom, $cellTo, $selectedTeamNumber);
+        return $this->updateFigures($updatedDesk);
     }
 
     /**
@@ -62,5 +78,32 @@ final class CheckerDeskService
         }
 
         return $updatedDeskData;
+    }
+
+    /**
+     * @param array<array> $deskData
+     * @param array<int,int> $from
+     * @param array<int,int> $to
+     */
+    public function findFiguresForBeat(PlayerInterface $player, array $deskData, array $from, array $to): array
+    {
+        $figuresCells = [];
+        $directionX = $to[0] - $from[0] > 0 ? 1 : -1;
+        $directionY = $to[1] - $from[1] > 0 ? 1 : -1;
+        $currentX = $from[0] + $directionX;
+        $currentY = $from[1] + $directionY;
+
+        while ($currentX !== $to[0] && $currentY !== $to[1]) {
+            if (isset($deskData[$currentX][$currentY])
+                && $deskData[$currentX][$currentY] > 0
+                && !in_array($deskData[$currentX][$currentY], $player->getTeamNumbers())
+            ) {
+                $figuresCells[] = [$currentX, $currentY];
+            }
+            $currentX += $directionX;
+            $currentY += $directionY;
+        }
+
+        return $figuresCells;
     }
 }

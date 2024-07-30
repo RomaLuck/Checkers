@@ -50,7 +50,7 @@ final class Game
             return $desk;
         }
 
-        $figuresForBeat = $this->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
+        $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
         if ($figuresForBeat !== []) {
             $desk = $this->checkerDeskService->clearCells($desk, $figuresForBeat);
 
@@ -73,7 +73,7 @@ final class Game
             $logger?->info("$winner won!");
         }
 
-        return $this->updateData($desk, $cellFrom, $cellTo);
+        return $this->checkerDeskService->updateData($desk, $cellFrom, $cellTo);
     }
 
     public function makeMoveWithCellTransform(
@@ -98,33 +98,6 @@ final class Game
 
     /**
      * @param array<array> $desk
-     * @param array<int,int> $from
-     * @param array<int,int> $to
-     */
-    public function findFiguresForBeat(PlayerInterface $player, array $desk, array $from, array $to): array
-    {
-        $figuresCells = [];
-        $directionX = $to[0] - $from[0] > 0 ? 1 : -1;
-        $directionY = $to[1] - $from[1] > 0 ? 1 : -1;
-        $currentX = $from[0] + $directionX;
-        $currentY = $from[1] + $directionY;
-
-        while ($currentX !== $to[0] && $currentY !== $to[1]) {
-            if (isset($desk[$currentX][$currentY])
-                && $desk[$currentX][$currentY] > 0
-                && !in_array($desk[$currentX][$currentY], $player->getTeamNumbers())
-            ) {
-                $figuresCells[] = [$currentX, $currentY];
-            }
-            $currentX += $directionX;
-            $currentY += $directionY;
-        }
-
-        return $figuresCells;
-    }
-
-    /**
-     * @param array<array> $desk
      */
     public function isGameOver(array $desk): bool
     {
@@ -141,21 +114,6 @@ final class Game
         > $this->countFigures($desk, Black::BLACK_NUMBERS)
             ? $this->white
             : $this->black;
-    }
-
-    /**
-     * @param array<int,int> $cellFrom
-     * @param array<int,int> $cellTo
-     */
-    public function updateData(
-        array            $desk,
-        array            $cellFrom,
-        array            $cellTo,
-    ): array
-    {
-        $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
-        $updatedDesk = $this->checkerDeskService->updateDesk($desk, $cellFrom, $cellTo, $selectedTeamNumber);
-        return $this->checkerDeskService->updateFigures($updatedDesk);
     }
 
     /**
@@ -197,9 +155,12 @@ final class Game
 
         $rules = new Rules($player, $desk, $logger);
 
-        $figuresForBeat = $this->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
-        if (count($figuresForBeat) > 0 && $rules->checkForBeat($cellFrom, $cellTo)) {
-            return true;
+        $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
+        if (count($figuresForBeat) > 0) {
+            if ($rules->checkForBeat($cellFrom, $cellTo)) {
+                return true;
+            }
+            return false;
         }
 
         if ($rules->checkForMove($cellFrom, $cellTo)) {

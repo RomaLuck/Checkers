@@ -27,6 +27,7 @@ final class Rules
      */
     public function checkForMove(array $from, array $to): bool
     {
+        #todo зарефакторити
         $rules = [
             new IsAvailableCellRule($this->desk),
             new IsTrueDirectionRule(),
@@ -53,7 +54,7 @@ final class Rules
         $rules = [
             new IsAvailableCellRule($this->desk),
             new IsCorrectStep(),
-            new IsOpportunityForBeatRule(),
+            new IsOpportunityForBeatRule($this->desk),
         ];
 
         foreach ($rules as $rule) {
