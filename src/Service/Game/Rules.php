@@ -9,6 +9,7 @@ use App\Service\Game\Rule\IsCorrectStep;
 use App\Service\Game\Rule\IsOpportunityForBeatRule;
 use App\Service\Game\Rule\IsOpportunityForMoveRule;
 use App\Service\Game\Rule\IsTrueDirectionRule;
+use App\Service\Game\Rule\RuleInterface;
 use App\Service\Game\Team\PlayerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -18,7 +19,8 @@ final class Rules
         private PlayerInterface  $player,
         private array            $desk,
         private ?LoggerInterface $logger
-    ) {
+    )
+    {
     }
 
     /**
@@ -27,7 +29,6 @@ final class Rules
      */
     public function checkForMove(array $from, array $to): bool
     {
-        #todo зарефакторити
         $rules = [
             new IsAvailableCellRule($this->desk),
             new IsTrueDirectionRule(),
@@ -35,14 +36,7 @@ final class Rules
             new IsOpportunityForMoveRule(),
         ];
 
-        foreach ($rules as $rule) {
-            if (!$rule->check($this->player, $from, $to)) {
-                $this->logger?->warning($rule->getMessage());
-                return false;
-            }
-        }
-
-        return true;
+        return $this->checkRules($rules, $from, $to);
     }
 
     /**
@@ -57,6 +51,16 @@ final class Rules
             new IsOpportunityForBeatRule($this->desk),
         ];
 
+        return $this->checkRules($rules, $from, $to);
+    }
+
+    /**
+     * @param array<RuleInterface> $rules
+     * @param array<int,int> $from
+     * @param array<int,int> $to
+     */
+    public function checkRules(array $rules, array $from, array $to): bool
+    {
         foreach ($rules as $rule) {
             if (!$rule->check($this->player, $from, $to)) {
                 $this->logger?->warning($rule->getMessage());
