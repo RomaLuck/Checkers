@@ -18,10 +18,12 @@ Currently, it is under development.
 ## Tools
 
 - Symfony v7.1.1
+- Twig v.3.10.3
 - PHP v8.2
 - Mysql v8.0.33
 - Bootstrap v5.2.2
-- Mercure
+- Mercure-bundle v0.3.9
+- Doctrine-messenger v7.1
 
 ## Current features
 
@@ -31,6 +33,7 @@ Currently, it is under development.
 - Logger
 - Authorization through social networks
 - Server-Sent-Events
+- Async/Queued Messages
 
 ## Current works
 
