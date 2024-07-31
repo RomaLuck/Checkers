@@ -29,3 +29,13 @@ services:
     arguments:
       - '@doctrine.orm.entity_manager'
     public: true
+
+  Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
+    arguments:
+      - '@Redis'
+
+  Redis:
+    class: Predis\Client
+    arguments:
+      - host: '%env(REDIS_HOST)%'
+      - port: '%env(REDIS_PORT)%'

@@ -81,22 +81,24 @@ services:
       - "8001:80"
     networks:
       - my_network
-#
-#  elasticsearch:
-#    image: elasticsearch:8.14.3
-#    container_name: elasticsearch
-#    environment:
-#      - discovery.type=single-node
-#    ports:
-#      - "9200:9200"
-#    networks:
-#      - my_network
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - my_network
 
 volumes:
   mysql_data:
   mysql_data_test:
   mercure_data:
   mercure_config:
+  redis_data:
 
 
 networks:

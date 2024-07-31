@@ -25,6 +25,7 @@ Currently, it is under development.
 - Bootstrap v5.2.2
 - Mercure-bundle v0.3.9
 - Doctrine-messenger v7.1
+- Redis v.7.4.0
 
 ## Current features
 
