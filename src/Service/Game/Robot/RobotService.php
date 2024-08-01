@@ -43,9 +43,9 @@ final class RobotService
     }
 
     public function updateDesk(
-        Game             $game,
-        UserInterface    $computer,
-        array            $desk,
+        Game            $game,
+        UserInterface   $computer,
+        array           $desk,
         LoggerInterface $logger
     ): array
     {

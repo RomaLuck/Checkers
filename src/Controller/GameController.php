@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Message\UpdateDeskMessage;
+use App\Service\Cache\UserCacheService;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
@@ -31,10 +32,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class GameController extends AbstractController
 {
     public function __construct(
-        private readonly GameService    $gameService,
-        private readonly LoggerService  $loggerService,
-        private readonly MercureService $mercureService,
-        private readonly RobotService   $robotService
+        private readonly GameService      $gameService,
+        private readonly LoggerService    $loggerService,
+        private readonly MercureService   $mercureService,
+        private readonly RobotService     $robotService,
+        private readonly UserCacheService $userCacheService,
     )
     {
     }
@@ -85,7 +87,7 @@ final class GameController extends AbstractController
     }
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
-    public function join(Request $request, EntityManagerInterface $entityManager): Response
+    public function join(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {
         $user = $this->getUser();
         if (!$user) {
@@ -106,6 +108,9 @@ final class GameController extends AbstractController
         }
 
         $this->gameService->joinToGame($gameLaunch, $user, $color);
+
+        $logger = $logger->withName($roomId);
+        $logger->info("User {$user->getUsername()} has joined the room");
 
         return $this->redirectToRoute('app_game', ['room' => $roomId]);
     }
@@ -139,7 +144,7 @@ final class GameController extends AbstractController
         EntityManagerInterface $entityManager,
         LoggerInterface        $logger,
         HubInterface           $hub,
-        MessageBusInterface    $bus
+        MessageBusInterface    $bus,
     ): Response
     {
         $roomId = $session->get('room');
@@ -157,10 +162,10 @@ final class GameController extends AbstractController
             $this->robotService->assignComputerPlayerToGame($gameLaunch, $computer);
         }
 
-        $whiteTeamUser = $gameLaunch->getWhiteTeamUser();
-        $blackTeamUser = $gameLaunch->getBlackTeamUser();
-
-        if (!$whiteTeamUser || !$blackTeamUser) {
+        try {
+            $whiteTeamUser = $this->userCacheService->getCachedWhiteTeamUser($gameLaunch, $roomId);
+            $blackTeamUser = $this->userCacheService->getCachedBlackTeamUser($gameLaunch, $roomId);
+        } catch (\RuntimeException) {
             $logger->info('Waiting for second player...');
             return $this->json([
                 'table' => $gameLaunch->getTableData(),
@@ -168,8 +173,8 @@ final class GameController extends AbstractController
             ]);
         }
 
-        $white = new White($whiteTeamUser->getId(), $whiteTeamUser->getUsername());
-        $black = new Black($blackTeamUser->getId(), $blackTeamUser->getUsername());
+        $white = new White($whiteTeamUser['id'], $whiteTeamUser['username']);
+        $black = new Black($blackTeamUser['id'], $blackTeamUser['username']);
 
         $game = new Game($white, $black);
 
