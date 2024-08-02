@@ -30,6 +30,11 @@ services:
       - '@doctrine.orm.entity_manager'
     public: true
 
+  App\Service\Monolog\RedisHandler:
+    arguments:
+      - '@Redis'
+      - 'logs'
+
   Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
     arguments:
       - '@Redis'

@@ -22,9 +22,14 @@ when@dev:
                 type: console
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine", "!console", "!request"]
-            db:
+#            db:
+#                type: service
+#                id: app.monolog.database.handler
+#                level: debug
+#                channels: ["!event", "!doctrine", "!console", "!security", "!request"]
+            predis:
                 type: service
-                id: app.monolog.database.handler
+                id: App\Service\Monolog\RedisHandler
                 level: debug
                 channels: ["!event", "!doctrine", "!console", "!security", "!request"]
 
@@ -65,8 +70,8 @@ when@prod:
                 channels: [deprecation]
                 path: php://stderr
                 formatter: monolog.formatter.json
-            db:
+            predis:
                 type: service
-                id: app.monolog.database.handler
+                id: App\Service\Monolog\RedisHandler
                 level: debug
                 channels: [ "!event", "!doctrine", "!console", "!security", "!request" ]

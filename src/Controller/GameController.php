@@ -169,7 +169,7 @@ final class GameController extends AbstractController
             $logger->info('Waiting for second player...');
             return $this->json([
                 'table' => $gameLaunch->getTableData(),
-                'log' => $this->loggerService->getLastLogs($entityManager, $roomId),
+                'log' => $this->loggerService->getLastLogs($roomId),
             ]);
         }
 
@@ -192,7 +192,7 @@ final class GameController extends AbstractController
                 $gameLaunch->setTableData($updatedDesk);
                 $entityManager->flush();
 
-                $this->mercureService->publishData($gameLaunch, $entityManager, $hub);
+                $this->mercureService->publishData($gameLaunch, $hub);
 
                 return $this->json('Done');
             }
@@ -200,7 +200,7 @@ final class GameController extends AbstractController
 
         return $this->json([
             'table' => $gameLaunch->getTableData(),
-            'log' => $this->loggerService->getLastLogs($entityManager, $roomId),
+            'log' => $this->loggerService->getLastLogs($roomId),
         ]);
     }
 

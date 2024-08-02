@@ -19,7 +19,8 @@ class UpdateDeskMessageHandler
         private RobotService           $robotService,
         private EntityManagerInterface $entityManager,
         private HubInterface           $hub,
-        private LoggerInterface        $logger
+        private LoggerInterface        $logger,
+        private MercureService         $mercureService,
     )
     {
     }
@@ -40,7 +41,7 @@ class UpdateDeskMessageHandler
         if ($gameLaunch) {
             $gameLaunch->setTableData($updatedDesk);
             $this->entityManager->flush();
-            (new MercureService())->publishData($gameLaunch, $this->entityManager, $this->hub);
+            $this->mercureService->publishData($gameLaunch, $this->hub);
         }
     }
 }

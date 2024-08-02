@@ -165,13 +165,8 @@ function showLog(logs) {
     logsContainer.innerHTML = '';
     for (let log of logs) {
         let logElement = document.createElement('li');
-
-        let logTime = document.createElement('span');
-        logTime.innerText = '[' + log.time + '] ';
-        logElement.appendChild(logTime);
-
         let logMessage = document.createElement('span');
-        logMessage.innerText = log.message;
+        logMessage.innerText = log;
         logElement.appendChild(logMessage);
 
         logsContainer.appendChild(logElement);

@@ -9,10 +9,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class LoggerService
 {
+    public function __construct(private RedisHandler $handler)
+    {
+    }
+
+    public function getLastLogs(string $roomId): array
+    {
+        return $this->handler->getLastLogs($roomId);
+    }
+
     /**
      * @return array<array>
      */
-    public function getLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
+    public function getDbLastLogs(EntityManagerInterface $entityManager, mixed $roomId): array
     {
         #todo перевірити чому не працює в prod середовищі
         $logs = $entityManager->getRepository(Log::class)->findBy(
