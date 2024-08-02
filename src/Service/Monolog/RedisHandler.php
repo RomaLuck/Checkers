@@ -53,7 +53,7 @@ class RedisHandler extends AbstractProcessingHandler
                 '[' . $record->datetime->format('H:i:s') . ']' . $record->message
             ]);
         }
-        $this->redisClient->expire($this->redisKey, 3600);
+        $this->redisClient->expire($this->redisKey . '_' . $record->channel, 3600);
     }
 
     /**
@@ -64,12 +64,13 @@ class RedisHandler extends AbstractProcessingHandler
     {
         $redisKey = $this->redisKey;
         $capSize = $this->capSize;
-        $this->redisClient->transaction(function ($tx) use ($record, $redisKey, $capSize) {
-            $tx->rpush($this->redisKey . '_' . $record->channel, [
+        $channel = $record->channel;
+        $this->redisClient->transaction(function ($tx) use ($record, $redisKey, $capSize, $channel) {
+            $tx->rpush($redisKey . '_' . $channel, [
                 '[' . $record->datetime->format('H:i:s') . ']' . $record->message
             ]);
-            $tx->ltrim($redisKey, -$capSize, -1);
-            $tx->expire($redisKey, 3600);
+            $tx->ltrim($redisKey . '_' . $channel, -$capSize, -1);
+            $tx->expire($redisKey . '_' . $channel, 3600);
         });
     }
 
