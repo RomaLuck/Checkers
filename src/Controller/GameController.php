@@ -87,7 +87,12 @@ final class GameController extends AbstractController
     }
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
-    public function join(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    public function join(
+        Request                $request,
+        EntityManagerInterface $entityManager,
+        LoggerInterface        $logger,
+        HubInterface           $hub,
+    ): Response
     {
         $user = $this->getUser();
         if (!$user) {
@@ -111,6 +116,7 @@ final class GameController extends AbstractController
 
         $logger = $logger->withName($roomId);
         $logger->info("User {$user->getUsername()} has joined the room");
+        $this->mercureService->publishData($gameLaunch, $hub);
 
         return $this->redirectToRoute('app_game', ['room' => $roomId]);
     }
