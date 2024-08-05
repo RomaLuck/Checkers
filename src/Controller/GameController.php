@@ -134,6 +134,7 @@ final class GameController extends AbstractController
 
         return $this->render('game/game.html.twig', [
             'color' => $userColor,
+            'room' => $room
         ]);
     }
 

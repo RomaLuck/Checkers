@@ -1,4 +1,5 @@
 const tableContainer = document.getElementById('table-responsive');
+const roomId = document.getElementById('room-id');
 
 function handleTableClick() {
     let form1 = '';
@@ -71,7 +72,7 @@ function handleUpdates() {
             .then(response => {
                 const hubUrl = response.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
                 const hub = new URL(hubUrl, window.origin);
-                hub.searchParams.append('topic', '/chat');
+                hub.searchParams.append('topic', '/chat/' + roomId.innerText);
                 const eventSource = new EventSource(hub);
                 eventSource.onmessage = event => {
                     try {

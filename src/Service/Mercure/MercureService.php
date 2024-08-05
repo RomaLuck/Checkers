@@ -20,11 +20,12 @@ final class MercureService
         HubInterface $hub,
     ): void
     {
+        $roomId = $gameLaunch->getRoomId();
         $update = new Update(
-            '/chat',
+            '/chat/' . $roomId,
             json_encode([
                 'table' => $gameLaunch->getTableData(),
-                'log' => $this->loggerService->getLastLogs($gameLaunch->getRoomId()),
+                'log' => $this->loggerService->getLastLogs($roomId),
             ])
         );
 
