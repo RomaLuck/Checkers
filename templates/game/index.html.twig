@@ -37,7 +37,7 @@
                                         Rating
                                     </p>
                                     {% if(gamesCount != 0) %}
-                                        <p class="mb-0">{{ winsCount / gamesCount * 10|round(2) }}</p>
+                                        <p class="mb-0">{{ rating|round('2') }}%</p>
                                     {% endif %}
                                 </div>
                             </div>

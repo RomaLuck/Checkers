@@ -53,12 +53,14 @@ final class GameController extends AbstractController
         $gameList = $entityManager->getRepository(GameLaunch::class)->findBy(['is_active' => true]);
         $gamesCount = $user->getWhiteTeamGames()->count() + $user->getBlackTeamGames()->count();
         $winsCount = $user->getWonGames()->count();
+        $rating = $winsCount / $gamesCount * 100;
 
         return $this->render('game/index.html.twig', [
             'username' => $user->getUsername(),
             'gameList' => $gameList,
             'gamesCount' => $gamesCount,
             'winsCount' => $winsCount,
+            'rating' => $rating
         ]);
     }
 
