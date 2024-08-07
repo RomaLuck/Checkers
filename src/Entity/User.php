@@ -173,7 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setOauthId(string|int|null $oauth_id): static
     {
-        $this->oauth_id = (string) $oauth_id;
+        $this->oauth_id = (string)$oauth_id;
 
         return $this;
     }
