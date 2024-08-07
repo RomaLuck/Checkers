@@ -39,11 +39,11 @@ Currently, it is under development.
 
 ## Current works
 
-- Algorithm for game with computer
+- Statistics
 
 ## ToDo
 
-- Statistics
+- Tests
 
 ## Setup
 
