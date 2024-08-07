@@ -18,6 +18,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[Table(name: 'games')]
 class GameLaunch
 {
+    public const WHITE_TURN = true;
+
+    public const BLACK_TURN = false;
+
     #[Id]
     #[Column(type: 'integer')]
     #[GeneratedValue]
@@ -46,6 +50,9 @@ class GameLaunch
 
     #[ORM\Column(type: 'smallint')]
     private ?int $strategy_id = null;
+
+    #[Column(type: 'boolean')]
+    private bool $currentTurn = self::WHITE_TURN;
 
     public function __construct()
     {
@@ -134,5 +141,15 @@ class GameLaunch
         $this->strategy_id = $strategy_id;
 
         return $this;
+    }
+
+    public function getCurrentTurn(): bool
+    {
+        return $this->currentTurn;
+    }
+
+    public function setCurrentTurn(bool $currentTurn): void
+    {
+        $this->currentTurn = $currentTurn;
     }
 }
