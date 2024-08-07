@@ -29,16 +29,17 @@ class UpdateDeskMessageHandler
         $roomId = $message->getRoomId();
         $logger = $this->logger->withName($roomId);
 
-        $updatedDesk = $this->robotService->updateDesk(
+        $moveResult = $this->robotService->updateDesk(
             $message->getGame(),
             $message->getComputer(),
-            $message->getUpdatedDesk(),
+            $message->getMoveResult(),
             $logger
         );
 
         $gameLaunch = $this->entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
         if ($gameLaunch) {
-            $gameLaunch->setTableData($updatedDesk);
+            $gameLaunch->setTableData($moveResult->getCheckerDesk());
+            $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
             $this->entityManager->flush();
             $this->mercureService->publishData($gameLaunch, $this->hub);
         }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Team;
 
+use App\Entity\GameLaunch;
 use App\Service\Game\Figure\FigureInterface;
 
 final class White implements PlayerInterface
@@ -55,5 +56,10 @@ final class White implements PlayerInterface
     public static function isWhiteNumber(int $number): bool
     {
         return in_array($number, self::WHITE_NUMBERS);
+    }
+
+    public function isTurnForPlayer(bool $currentTurn): bool
+    {
+        return $currentTurn === GameLaunch::WHITE_TURN;
     }
 }

@@ -7,6 +7,7 @@ namespace App\Service\Game\Robot;
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\Game;
+use App\Service\Game\MoveResult;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -45,9 +46,9 @@ final class RobotService
     public function updateDesk(
         Game            $game,
         UserInterface   $computer,
-        array           $desk,
+        MoveResult      $moveResult,
         LoggerInterface $logger
-    ): array
+    ): MoveResult
     {
         $white = $game->getWhite();
         $black = $game->getBlack();
@@ -57,6 +58,6 @@ final class RobotService
 
         $robot = new Robot($game, $computerTeam, $opponent);
 
-        return $robot->run($desk, $logger);
+        return $robot->run($moveResult, $logger);
     }
 }

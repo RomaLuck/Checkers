@@ -36,18 +36,32 @@ final class Game
     }
 
     /**
-     * @return array<array>
+     * @param array<int,int> $cellFrom
+     * @param array<int,int> $cellTo
      */
-    public function makeMove(array $desk, array $cellFrom, array $cellTo, ?LoggerInterface $logger = null): array
+    public function makeMove(
+        MoveResult       $moveResult,
+        array            $cellFrom,
+        array            $cellTo,
+        ?LoggerInterface $logger = null
+    ): MoveResult
     {
+        $desk = $moveResult->getCheckerDesk();
+        $currentTurn = $moveResult->getCurrentTurn();
+
         $player = $this->detectPlayer($desk, $cellFrom);
         if (!$player) {
             $logger?->warning('Can not find player on this cell');
-            return $desk;
+            return $moveResult;
+        }
+
+        if (!$player->isTurnForPlayer($currentTurn)) {
+            $logger?->warning('Now it\'s the turn of another player');
+            return $moveResult;
         }
 
         if (!$this->isValidMove($player, $desk, $cellFrom, $cellTo, $logger)) {
-            return $desk;
+            return $moveResult;
         }
 
         $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
@@ -73,27 +87,30 @@ final class Game
             $logger?->info("$winner won!");
         }
 
-        return $this->checkerDeskService->updateData($desk, $cellFrom, $cellTo);
+        $moveResult->setCheckerDesk($this->checkerDeskService->updateData($desk, $cellFrom, $cellTo));
+        $moveResult->setCurrentTurn(!$currentTurn);
+
+        return $moveResult;
     }
 
     public function makeMoveWithCellTransform(
-        array            $desk,
+        MoveResult       $moveResult,
         string           $cellFrom,
         string           $cellTo,
         ?LoggerInterface $logger = null
-    ): array
+    ): MoveResult
     {
         [$cellFromTransformed, $cellToTransformed] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
         if (!is_array($cellFromTransformed) || !is_array($cellToTransformed)) {
             $logger?->warning('Cells are not transformed');
-            return $desk;
+            return $moveResult;
         }
 
         if ($cellFromTransformed === [] || $cellToTransformed === []) {
-            return $desk;
+            return $moveResult;
         }
 
-        return $this->makeMove($desk, $cellFromTransformed, $cellToTransformed, $logger);
+        return $this->makeMove($moveResult, $cellFromTransformed, $cellToTransformed, $logger);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Message;
 
 use App\Service\Game\Game;
+use App\Service\Game\MoveResult;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UpdateDeskMessage
@@ -10,7 +11,7 @@ class UpdateDeskMessage
     public function __construct(
         private UserInterface $computer,
         private Game          $game,
-        private array         $updatedDesk,
+        private MoveResult    $moveResult,
         private string        $roomId,
     )
     {
@@ -26,9 +27,9 @@ class UpdateDeskMessage
         return $this->game;
     }
 
-    public function getUpdatedDesk(): array
+    public function getMoveResult(): MoveResult
     {
-        return $this->updatedDesk;
+        return $this->moveResult;
     }
 
     public function getRoomId(): string

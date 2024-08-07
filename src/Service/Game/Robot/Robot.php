@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Game\Robot;
 
 use App\Service\Game\Game;
+use App\Service\Game\MoveResult;
 use App\Service\Game\Team\PlayerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -20,36 +21,34 @@ final class Robot
     {
     }
 
-    /**
-     * @return array<array>
-     */
-    public function run(array $originalBoard, LoggerInterface $logger): array
+    public function run(MoveResult $startCondition, LoggerInterface $logger): MoveResult
     {
-        $bestMove = $this->bestMove($this->computer, $this->opponent, $originalBoard)[1];
+        $moveResult = clone $startCondition;
+
+        $bestMove = $this->bestMove($this->computer, $this->opponent, $moveResult)[1];
         if (is_array($bestMove)) {
-            return $this->game->makeMove($originalBoard, $bestMove[0], $bestMove[1], $logger);
+            return $this->game->makeMove($startCondition, $bestMove[0], $bestMove[1], $logger);
         }
 
-        return $originalBoard;
+        return $startCondition;
     }
 
     /**
      *  Calculates the best move using the minimax algorithm.
      *
-     * @param array<array> $board The current state of the game board.
-     * @param int $depth The current depth of recursion.
-     * @param bool $isMaximizingPlayer Indicates if the current move is for the maximizing player.
      * @return array An array containing the best score and the best move.
      * @return array<array>
      */
     public function bestMove(
         PlayerInterface $computerTeam,
         PlayerInterface $oppositeTeam,
-        array           $board,
+        MoveResult      $startCondition,
         int             $depth = 0,
         bool            $isMaximizingPlayer = true
     ): array
     {
+        $board = $startCondition->getCheckerDesk();
+
         if ($depth === self::MAX_DEPTH || $this->isGameOver($board)) {
             $evaluate = $this->evaluate($board, $computerTeam->getTeamNumbers());
             return [$evaluate, null];
@@ -60,8 +59,8 @@ final class Robot
         if ($isMaximizingPlayer) {
             $bestScore = -PHP_INT_MAX;
             foreach ($this->getPossibleMoves($board, $computerTeam) as $move) {
-                $board = $this->makeMove($board, $move);
-                $score = $this->bestMove($computerTeam, $oppositeTeam, $board, $depth + 1, false)[0];
+                $moveResult = $this->makeMove($startCondition, $move);
+                $score = $this->bestMove($computerTeam, $oppositeTeam, $moveResult, $depth + 1, false)[0];
                 if ($score > $bestScore) {
                     $bestScore = $score;
                     $bestMove = $move;
@@ -70,8 +69,8 @@ final class Robot
         } else {
             $bestScore = PHP_INT_MAX;
             foreach ($this->getPossibleMoves($board, $oppositeTeam) as $move) {
-                $board = $this->makeMove($board, $move);
-                $score = $this->bestMove($computerTeam, $oppositeTeam, $board, $depth + 1, true)[0];
+                $moveResult = $this->makeMove($startCondition, $move);
+                $score = $this->bestMove($computerTeam, $oppositeTeam, $moveResult, $depth + 1, true)[0];
                 if ($score < $bestScore) {
                     $bestScore = $score;
                     $bestMove = $move;
@@ -133,13 +132,12 @@ final class Robot
 
     /**
      * @param array<array> $move
-     * @return array<array>
      */
-    public function makeMove(array $board, array $move): array
+    public function makeMove(MoveResult $startCondition, array $move): MoveResult
     {
         [$cellFrom, $cellTo] = $move;
 
-        return $this->game->makeMove($board, $cellFrom, $cellTo);
+        return $this->game->makeMove($startCondition, $cellFrom, $cellTo);
     }
 
     private function isGameOver(array $board): bool

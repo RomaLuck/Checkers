@@ -19,4 +19,6 @@ interface PlayerInterface
     public function setFigure(FigureInterface $figure): void;
 
     public function getFigure(): FigureInterface;
+
+    public function isTurnForPlayer(bool $currentTurn): bool;
 }

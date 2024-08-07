@@ -11,6 +11,7 @@ use App\Service\Cache\UserCacheService;
 use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
+use App\Service\Game\MoveResult;
 use App\Service\Game\Robot\RobotService;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
@@ -163,6 +164,8 @@ final class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
+        $startCondition = new MoveResult($gameLaunch->getTableData(), $gameLaunch->getCurrentTurn());
+
         $strategyId = $gameLaunch->getStrategyId();
         if ($strategyId === GameStrategyIds::COMPUTER) {
             $computer = $this->robotService->getComputerPlayer($entityManager);
@@ -191,12 +194,14 @@ final class GameController extends AbstractController
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $updatedDesk = $game->makeMoveWithCellTransform($gameLaunch->getTableData(), $from, $to, $logger);
+                $moveResult = $game->makeMoveWithCellTransform($startCondition, $from, $to, $logger);
+
                 if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $bus->dispatch(new UpdateDeskMessage($computer, $game, $updatedDesk, $roomId));
+                    $bus->dispatch(new UpdateDeskMessage($computer, $game, $moveResult, $roomId));
                 }
 
-                $gameLaunch->setTableData($updatedDesk);
+                $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
+                $gameLaunch->setTableData($moveResult->getCheckerDesk());
                 $entityManager->flush();
 
                 $this->mercureService->publishData($gameLaunch, $hub);
