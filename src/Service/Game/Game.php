@@ -83,8 +83,11 @@ final class Game
 
         if ($this->isGameOver($desk)) {
             $logger?->info('Game over');
-            $winner = $this->getAdvantagePlayer($desk)->getName();
+            $advantagePlayer = $this->getAdvantagePlayer($desk);
+            $winner = $advantagePlayer->getName();
             $logger?->info("$winner won!");
+
+            $moveResult->setWinnerId($advantagePlayer->getId());
         }
 
         $moveResult->setCheckerDesk($this->checkerDeskService->updateData($desk, $cellFrom, $cellTo));
@@ -119,7 +122,9 @@ final class Game
     public function isGameOver(array $desk): bool
     {
         return $this->countFigures($desk, White::WHITE_NUMBERS) === 0
-            || $this->countFigures($desk, Black::BLACK_NUMBERS) === 0;
+            || $this->countFigures($desk, Black::BLACK_NUMBERS) === 0
+            || $this->getPossibleMoves($desk, $this->white) === []
+            || $this->getPossibleMoves($desk, $this->black) === [];
     }
 
     /**
@@ -154,6 +159,47 @@ final class Game
         $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
         $figure = (new FigureFactory($selectedTeamNumber))->create();
         $player->setFigure($figure);
+    }
+
+    /**
+     * @param array<array> $board
+     * @return array<array>
+     */
+    public function getPossibleMoves(array $board, PlayerInterface $player): array
+    {
+        $possibleMoves = [];
+
+        foreach ($board as $rowKey => $row) {
+            foreach ($row as $key => $cell) {
+                $from = [$rowKey, $key];
+                if (!in_array($cell, $player->getTeamNumbers())) {
+                    continue;
+                }
+
+                $possibleDestinations = $this->getEmptyCells($board);
+                foreach ($possibleDestinations as $destination) {
+                    if ($this->isValidMove($player, $board, $from, $destination)) {
+                        $possibleMoves[] = [$from, $destination];
+                    }
+                }
+            }
+        }
+
+        return $possibleMoves;
+    }
+
+    private function getEmptyCells(array $board): array
+    {
+        $emptyCells = [];
+        foreach ($board as $rowKey => $row) {
+            foreach ($row as $key => $cell) {
+                if ($cell === 0) {
+                    $emptyCells[] = [$rowKey, $key];
+                }
+            }
+        }
+
+        return $emptyCells;
     }
 
     /**

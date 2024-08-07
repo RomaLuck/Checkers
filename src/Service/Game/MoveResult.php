@@ -11,6 +11,8 @@ class MoveResult
 
     private bool $currentTurn;
 
+    private ?int $winnerId = null;
+
     /**
      * @param array<array> $checkerDesk
      * @param bool $currentTurn
@@ -47,5 +49,15 @@ class MoveResult
     public function setCurrentTurn(bool $currentTurn): void
     {
         $this->currentTurn = $currentTurn;
+    }
+
+    public function getWinnerId(): ?int
+    {
+        return $this->winnerId;
+    }
+
+    public function setWinnerId(int $winnerId): void
+    {
+        $this->winnerId = $winnerId;
     }
 }

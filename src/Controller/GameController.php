@@ -202,6 +202,16 @@ final class GameController extends AbstractController
 
                 $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
                 $gameLaunch->setTableData($moveResult->getCheckerDesk());
+
+                $winnerId = $moveResult->getWinnerId();
+                if ($winnerId) {
+                    $winner = $entityManager->getRepository(User::class)->findOneBy(['id' => $winnerId]);
+                    if ($winner) {
+                        $gameLaunch->setWinner($winner);
+                        $gameLaunch->setIsActive(false);
+                    }
+                }
+
                 $entityManager->flush();
 
                 $this->mercureService->publishData($gameLaunch, $hub);
@@ -225,11 +235,6 @@ final class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $winnerId = $session->get('advantagePlayer');
-        $winner = $entityManager->getRepository(User::class)->findOneBy(['id' => $winnerId]);
-        if ($winner) {
-            $gameLaunch->setWinner($winner);
-        }
         $gameLaunch->setIsActive(false);
         $entityManager->flush();
 
