@@ -29,11 +29,11 @@ class GameLaunch
 
     #[ManyToOne(targetEntity: User::class, inversedBy: 'whiteTeamGames')]
     #[ORM\JoinColumn(name: 'white_user_id', referencedColumnName: 'id')]
-    private ?User $white_team_user;
+    private ?User $white_team_user = null;
 
     #[ManyToOne(targetEntity: User::class, inversedBy: 'blackTeamGames')]
     #[ORM\JoinColumn(name: 'black_user_id', referencedColumnName: 'id')]
-    private ?User $black_team_user;
+    private ?User $black_team_user = null;
 
     #[ManyToOne(targetEntity: User::class, inversedBy: 'wonGames')]
     #[ORM\JoinColumn(name: 'winner_id', referencedColumnName: 'id')]
@@ -57,8 +57,6 @@ class GameLaunch
     public function __construct()
     {
         $this->setRoomId();
-        $this->white_team_user = null;
-        $this->black_team_user = null;
     }
 
     public function getId(): int
