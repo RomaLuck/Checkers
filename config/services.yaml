@@ -23,13 +23,6 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-  #logger
-  app.monolog.database.handler:
-    class: App\Service\Monolog\DatabaseHandler
-    arguments:
-      - '@doctrine.orm.entity_manager'
-    public: true
-
   App\Service\Monolog\RedisHandler:
     arguments:
       - '@Redis'
