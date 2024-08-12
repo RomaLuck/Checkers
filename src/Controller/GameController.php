@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\GameLaunch;
+use App\Event\GameStatusUpdatedEvent;
+use App\Event\JoinedGameEvent;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
 use App\Service\Game\Strategy\GameStrategyFactory;
@@ -20,14 +22,14 @@ use Symfony\Component\Mercure\Discovery;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[IsGranted('ROLE_USER')]
 final class GameController extends AbstractController
 {
     public function __construct(
-        private readonly GameService      $gameService,
-        private readonly LoggerService    $loggerService,
-        private readonly MercureService   $mercureService,
+        private readonly GameService    $gameService,
+        private readonly LoggerService  $loggerService,
     )
     {
     }
@@ -85,10 +87,9 @@ final class GameController extends AbstractController
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
     public function join(
-        Request                $request,
-        EntityManagerInterface $entityManager,
-        LoggerInterface        $logger,
-        HubInterface           $hub,
+        Request                  $request,
+        EntityManagerInterface   $entityManager,
+        EventDispatcherInterface $eventDispatcher,
     ): Response
     {
         $user = $this->getUser();
@@ -111,9 +112,8 @@ final class GameController extends AbstractController
 
         $this->gameService->joinToGame($gameLaunch, $user, $color);
 
-        $logger = $logger->withName($roomId);
-        $logger->info("User {$user->getUsername()} has joined the room");
-        $this->mercureService->publishData($gameLaunch, $hub);
+        $event = new JoinedGameEvent($gameLaunch, $user->getUsername());
+        $eventDispatcher->dispatch($event, 'JoinedGameEvent');
 
         return $this->redirectToRoute('app_game', ['room' => $roomId]);
     }
@@ -143,12 +143,12 @@ final class GameController extends AbstractController
 
     #[Route('/update', name: 'app_game_update', methods: ['GET', 'POST'])]
     public function update(
-        GameStrategyFactory    $gameStrategyFactory,
-        Request                $request,
-        Session                $session,
-        EntityManagerInterface $entityManager,
-        LoggerInterface        $logger,
-        HubInterface           $hub
+        GameStrategyFactory      $gameStrategyFactory,
+        Request                  $request,
+        Session                  $session,
+        EntityManagerInterface   $entityManager,
+        LoggerInterface          $logger,
+        EventDispatcherInterface $eventDispatcher,
     ): Response
     {
         $roomId = $session->get('room');
@@ -165,7 +165,10 @@ final class GameController extends AbstractController
         $game = $gameStrategyFactory->create($strategyId);
         $game->run($gameLaunch, $roomId, $request, $logger);
 
-        $this->mercureService->publishData($gameLaunch, $hub);
+        $event = new GameStatusUpdatedEvent($gameLaunch);
+        $eventDispatcher->dispatch($event, 'GameStatusUpdatedEvent');
+
+//        $this->mercureService->publishData($gameLaunch, $hub);
 
         return $this->json([
             'table' => $gameLaunch->getTableData(),
