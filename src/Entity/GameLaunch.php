@@ -150,4 +150,16 @@ class GameLaunch
     {
         $this->currentTurn = $currentTurn;
     }
+
+    public function assignPlayerToGame(UserInterface $player): bool
+    {
+        if (!$this->getWhiteTeamUser()) {
+            $this->setWhiteTeamUser($player);
+            return true;
+        } elseif (!$this->getBlackTeamUser()) {
+            $this->setBlackTeamUser($player);
+            return true;
+        }
+        return false;
+    }
 }

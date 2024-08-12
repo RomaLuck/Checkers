@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Service\Game;
 
 use App\Entity\GameLaunch;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class GameService
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+    )
     {
     }
 
@@ -54,20 +55,6 @@ final class GameService
         $blackTeamUser = $game->getBlackTeamUser();
         if ($user === $blackTeamUser) {
             return 'black';
-        }
-
-        return null;
-    }
-
-    public function getOpponent(GameLaunch $game, UserInterface $user): ?User
-    {
-        $whiteTeamUser = $game->getWhiteTeamUser();
-        $blackTeamUser = $game->getBlackTeamUser();
-
-        if ($user === $whiteTeamUser && $blackTeamUser !== null) {
-            return $blackTeamUser;
-        } elseif ($user === $blackTeamUser && $whiteTeamUser !== null) {
-            return $whiteTeamUser;
         }
 
         return null;

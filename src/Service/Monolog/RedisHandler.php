@@ -9,17 +9,6 @@ use Monolog\Level;
 use Monolog\LogRecord;
 use Predis\Client as Predis;
 
-/**
- * Logs to a Redis key using rpush
- *
- * usage example:
- *
- *   $log = new Logger('application');
- *   $redis = new RedisHandler(new Predis\Client("tcp://localhost:6379"), "logs");
- *   $log->pushHandler($redis);
- *
- * @author Thomas Tourlourat <thomas@tourlourat.com>
- */
 class RedisHandler extends AbstractProcessingHandler
 {
     /** @var Predis<Predis> */
