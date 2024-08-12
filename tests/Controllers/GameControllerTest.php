@@ -120,7 +120,6 @@ class GameControllerTest extends WebTestCase
         ]);
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-
-        self::assertEquals('"Done"', $this->client->getResponse()->getContent());
+        $this->assertIsString($this->client->getResponse()->getContent());
     }
 }

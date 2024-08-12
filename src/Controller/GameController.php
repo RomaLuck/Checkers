@@ -5,16 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\GameLaunch;
-use App\Entity\User;
-use App\Message\UpdateDeskMessage;
-use App\Service\Cache\UserCacheService;
-use App\Service\Game\Game;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
-use App\Service\Game\MoveResult;
-use App\Service\Game\Robot\RobotService;
-use App\Service\Game\Team\Black;
-use App\Service\Game\Team\White;
+use App\Service\Game\Strategy\GameStrategyFactory;
 use App\Service\Mercure\MercureService;
 use App\Service\Monolog\LoggerService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mercure\Discovery;
 use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -36,8 +28,6 @@ final class GameController extends AbstractController
         private readonly GameService      $gameService,
         private readonly LoggerService    $loggerService,
         private readonly MercureService   $mercureService,
-        private readonly RobotService     $robotService,
-        private readonly UserCacheService $userCacheService,
     )
     {
     }
@@ -153,16 +143,17 @@ final class GameController extends AbstractController
 
     #[Route('/update', name: 'app_game_update', methods: ['GET', 'POST'])]
     public function update(
+        GameStrategyFactory    $gameStrategyFactory,
         Request                $request,
         Session                $session,
         EntityManagerInterface $entityManager,
         LoggerInterface        $logger,
-        HubInterface           $hub,
-        MessageBusInterface    $bus,
+        HubInterface           $hub
     ): Response
     {
         $roomId = $session->get('room');
 
+        /** @var LoggerInterface $logger */
         $logger = $logger->withName($roomId);
 
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
@@ -170,67 +161,18 @@ final class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $startCondition = new MoveResult($gameLaunch->getTableData(), $gameLaunch->getCurrentTurn());
-
         $strategyId = $gameLaunch->getStrategyId();
-        if ($strategyId === GameStrategyIds::COMPUTER) {
-            $computer = $this->robotService->getComputerPlayer($entityManager);
-            $this->robotService->assignComputerPlayerToGame($gameLaunch, $computer);
-        }
+        $game = $gameStrategyFactory->create($strategyId);
+        $game->run($gameLaunch, $roomId, $request, $logger);
 
-        try {
-            $whiteTeamUser = $this->userCacheService->getCachedWhiteTeamUser($gameLaunch, $roomId);
-            $blackTeamUser = $this->userCacheService->getCachedBlackTeamUser($gameLaunch, $roomId);
-        } catch (\RuntimeException) {
-            $logger->info('Waiting for second player...');
-            return $this->json([
-                'table' => $gameLaunch->getTableData(),
-                'log' => $this->loggerService->getLastLogs($roomId),
-            ]);
-        }
-
-        $white = new White($whiteTeamUser['id'], $whiteTeamUser['username']);
-        $black = new Black($blackTeamUser['id'], $blackTeamUser['username']);
-
-        $game = new Game($white, $black);
-
-        if ($request->isMethod('POST') && $request->request->has('formData')) {
-            $data = json_decode($request->request->get('formData'), true);
-            $from = htmlspecialchars($data['form1']);
-            $to = htmlspecialchars($data['form2']);
-
-            if ($from && $to) {
-                $moveResult = $game->makeMoveWithCellTransform($startCondition, $from, $to, $logger);
-
-                if ($strategyId === GameStrategyIds::COMPUTER) {
-                    $bus->dispatch(new UpdateDeskMessage($computer, $game, $moveResult, $roomId));
-                }
-
-                $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
-                $gameLaunch->setTableData($moveResult->getCheckerDesk());
-
-                $winnerId = $moveResult->getWinnerId();
-                if ($winnerId) {
-                    $winner = $entityManager->getRepository(User::class)->findOneBy(['id' => $winnerId]);
-                    if ($winner) {
-                        $gameLaunch->setWinner($winner);
-                        $gameLaunch->setIsActive(false);
-                    }
-                }
-
-                $entityManager->flush();
-
-                $this->mercureService->publishData($gameLaunch, $hub);
-
-                return $this->json('Done');
-            }
-        }
+        $this->mercureService->publishData($gameLaunch, $hub);
 
         return $this->json([
             'table' => $gameLaunch->getTableData(),
             'log' => $this->loggerService->getLastLogs($roomId),
         ]);
     }
+
 
     #[Route('/end', name: 'app_game_end', methods: ['GET'])]
     public function end(Session $session, EntityManagerInterface $entityManager): Response
