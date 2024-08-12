@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class PlayerStrategy implements StrategyInterface
+final class PlayerStrategy implements StrategyInterface
 {
 
     public function __construct(

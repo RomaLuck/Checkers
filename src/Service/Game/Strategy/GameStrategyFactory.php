@@ -8,7 +8,7 @@ use App\Service\Game\Robot\RobotService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class GameStrategyFactory
+final class GameStrategyFactory
 {
 
     public function __construct(

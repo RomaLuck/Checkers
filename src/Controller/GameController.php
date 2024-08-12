@@ -173,7 +173,6 @@ final class GameController extends AbstractController
         ]);
     }
 
-
     #[Route('/end', name: 'app_game_end', methods: ['GET'])]
     public function end(Session $session, EntityManagerInterface $entityManager): Response
     {

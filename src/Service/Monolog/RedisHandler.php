@@ -9,11 +9,13 @@ use Monolog\Level;
 use Monolog\LogRecord;
 use Predis\Client as Predis;
 
-class RedisHandler extends AbstractProcessingHandler
+final class RedisHandler extends AbstractProcessingHandler
 {
     /** @var Predis<Predis> */
     private Predis $redisClient;
+
     private string $redisKey;
+
     protected int $capSize;
 
     /**

@@ -16,9 +16,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class RobotStrategy implements StrategyInterface
+final class RobotStrategy implements StrategyInterface
 {
-
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserCacheService       $userCacheService,
@@ -27,7 +26,6 @@ class RobotStrategy implements StrategyInterface
     )
     {
     }
-
 
     public function run(GameLaunch $gameLaunch, string $roomId, Request $request, LoggerInterface $logger): void
     {
