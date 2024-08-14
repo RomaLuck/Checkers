@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game\Strategy;
 
 use App\Service\Cache\UserCacheService;
@@ -10,14 +12,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class GameStrategyFactory
 {
-
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserCacheService       $userCacheService,
-        private RobotService           $robotService,
-        private MessageBusInterface    $bus,
-    )
-    {
+        private UserCacheService $userCacheService,
+        private RobotService $robotService,
+        private MessageBusInterface $bus,
+    ) {
     }
 
     public function create(int $strategyId): StrategyInterface

@@ -11,8 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method GameLaunch|null find($id, $lockMode = null, $lockVersion = null)
  * @method GameLaunch|null findOneBy(array $criteria, array $orderBy = null)
- * @method GameLaunch[] findAll()
- * @method GameLaunch[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method array<GameLaunch> findAll()
+ * @method array<GameLaunch> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class GameLaunchRepository extends ServiceEntityRepository
 {

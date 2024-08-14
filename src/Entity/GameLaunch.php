@@ -106,7 +106,7 @@ class GameLaunch
 
     public function setRoomId(): void
     {
-        $this->room_id = md5((string)(new \DateTime())->getTimestamp());
+        $this->room_id = md5((string) (new \DateTime())->getTimestamp());
     }
 
     public function isActive(): bool
@@ -153,10 +153,11 @@ class GameLaunch
 
     public function assignPlayerToGame(UserInterface $player): bool
     {
-        if (!$this->getWhiteTeamUser()) {
+        if (! $this->getWhiteTeamUser()) {
             $this->setWhiteTeamUser($player);
             return true;
-        } elseif (!$this->getBlackTeamUser()) {
+        }
+        if (! $this->getBlackTeamUser()) {
             $this->setBlackTeamUser($player);
             return true;
         }

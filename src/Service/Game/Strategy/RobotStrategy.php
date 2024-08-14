@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game\Strategy;
 
 use App\Entity\GameLaunch;
@@ -20,11 +22,10 @@ final class RobotStrategy implements StrategyInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserCacheService       $userCacheService,
-        private RobotService           $robotService,
-        private MessageBusInterface    $bus,
-    )
-    {
+        private UserCacheService $userCacheService,
+        private RobotService $robotService,
+        private MessageBusInterface $bus,
+    ) {
     }
 
     public function run(GameLaunch $gameLaunch, string $roomId, Request $request, LoggerInterface $logger): void
@@ -38,7 +39,7 @@ final class RobotStrategy implements StrategyInterface
             $blackTeamUser = $this->userCacheService->getCachedBlackTeamUser($gameLaunch, $roomId);
         } catch (\RuntimeException) {
             if ($gameLaunch->assignPlayerToGame($computer)) {
-                $logger->info("Computer has joined the room");
+                $logger->info('Computer has joined the room');
                 $this->entityManager->flush();
             }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game;
 
 class MoveResult
@@ -14,15 +16,13 @@ class MoveResult
     private ?int $winnerId = null;
 
     /**
-     * @param array<array> $checkerDesk
-     * @param bool $currentTurn
+     * @param array<array<int>> $checkerDesk
      */
     public function __construct(array $checkerDesk, bool $currentTurn)
     {
         $this->checkerDesk = $checkerDesk;
         $this->currentTurn = $currentTurn;
     }
-
 
     /**
      * @return array<array>
@@ -33,8 +33,7 @@ class MoveResult
     }
 
     /**
-     * @param array<array> $checkerDesk
-     * @return void
+     * @param array<array<int>> $checkerDesk
      */
     public function setCheckerDesk(array $checkerDesk): void
     {

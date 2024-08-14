@@ -12,8 +12,7 @@ final class GameService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
     }
 
     public function createGameLaunch(UserInterface $user, string $color, int $strategyId = 2): GameLaunch
@@ -37,9 +36,9 @@ final class GameService
 
     public function joinToGame(GameLaunch $game, UserInterface $user, string $color): void
     {
-        if ($color === 'white' && !$game->getWhiteTeamUser()) {
+        if ($color === 'white' && ! $game->getWhiteTeamUser()) {
             $game->setWhiteTeamUser($user);
-        } elseif ($color === 'black' && !$game->getBlackTeamUser()) {
+        } elseif ($color === 'black' && ! $game->getBlackTeamUser()) {
             $game->setBlackTeamUser($user);
         }
 

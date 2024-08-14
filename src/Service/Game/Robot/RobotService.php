@@ -12,12 +12,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class RobotService
 {
     public function updateDesk(
-        Game            $game,
-        UserInterface   $computer,
-        MoveResult      $moveResult,
+        Game $game,
+        UserInterface $computer,
+        MoveResult $moveResult,
         LoggerInterface $logger
-    ): MoveResult
-    {
+    ): MoveResult {
         $white = $game->getWhite();
         $black = $game->getBlack();
 

@@ -19,8 +19,7 @@ final class Game
     public function __construct(
         private White $white,
         private Black $black,
-    )
-    {
+    ) {
         $this->inputTransformer = new InputTransformer();
         $this->checkerDeskService = new CheckerDeskService();
     }
@@ -36,31 +35,30 @@ final class Game
     }
 
     /**
-     * @param array<int,int> $cellFrom
-     * @param array<int,int> $cellTo
+     * @param array<int> $cellFrom
+     * @param array<int> $cellTo
      */
     public function makeMove(
-        MoveResult       $moveResult,
-        array            $cellFrom,
-        array            $cellTo,
+        MoveResult $moveResult,
+        array $cellFrom,
+        array $cellTo,
         ?LoggerInterface $logger = null
-    ): MoveResult
-    {
+    ): MoveResult {
         $desk = $moveResult->getCheckerDesk();
         $currentTurn = $moveResult->getCurrentTurn();
 
         $player = $this->detectPlayer($desk, $cellFrom);
-        if (!$player) {
+        if (! $player) {
             $logger?->warning('Can not find player on this cell');
             return $moveResult;
         }
 
-        if (!$player->isTurnForPlayer($currentTurn)) {
+        if (! $player->isTurnForPlayer($currentTurn)) {
             $logger?->warning('Now it\'s the turn of another player');
             return $moveResult;
         }
 
-        if (!$this->isValidMove($player, $desk, $cellFrom, $cellTo, $logger)) {
+        if (! $this->isValidMove($player, $desk, $cellFrom, $cellTo, $logger)) {
             return $moveResult;
         }
 
@@ -69,7 +67,7 @@ final class Game
             $desk = $this->checkerDeskService->clearCells($desk, $figuresForBeat);
 
             $transFormedFiguresForBeat = array_map(
-                fn($figure) => $this->inputTransformer->transformCellToString($figure),
+                fn ($figure) => $this->inputTransformer->transformCellToString($figure),
                 $figuresForBeat
             );
             $logger?->warning('--removed: ['
@@ -85,26 +83,25 @@ final class Game
             $logger?->info('Game over');
             $advantagePlayer = $this->getAdvantagePlayer($desk);
             $winner = $advantagePlayer->getName();
-            $logger?->info("$winner won!");
+            $logger?->info("{$winner} won!");
 
             $moveResult->setWinnerId($advantagePlayer->getId());
         }
 
         $moveResult->setCheckerDesk($this->checkerDeskService->updateData($desk, $cellFrom, $cellTo));
-        $moveResult->setCurrentTurn(!$currentTurn);
+        $moveResult->setCurrentTurn(! $currentTurn);
 
         return $moveResult;
     }
 
     public function makeMoveWithCellTransform(
-        MoveResult       $moveResult,
-        string           $cellFrom,
-        string           $cellTo,
+        MoveResult $moveResult,
+        string $cellFrom,
+        string $cellTo,
         ?LoggerInterface $logger = null
-    ): MoveResult
-    {
+    ): MoveResult {
         [$cellFromTransformed, $cellToTransformed] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
-        if (!is_array($cellFromTransformed) || !is_array($cellToTransformed)) {
+        if (! is_array($cellFromTransformed) || ! is_array($cellToTransformed)) {
             $logger?->warning('Cells are not transformed');
             return $moveResult;
         }
@@ -117,7 +114,7 @@ final class Game
     }
 
     /**
-     * @param array<array> $desk
+     * @param array<array<int>> $desk
      */
     public function isGameOver(array $desk): bool
     {
@@ -128,7 +125,7 @@ final class Game
     }
 
     /**
-     * @param array<array> $desk
+     * @param array<array<int>> $desk
      */
     public function getAdvantagePlayer(array $desk): PlayerInterface
     {
@@ -139,31 +136,8 @@ final class Game
     }
 
     /**
-     * @param array<array> $desk
-     * @param array<int,int> $cellFrom
-     */
-    private function detectPlayer(array $desk, array $cellFrom): ?PlayerInterface
-    {
-        $playerDetector = new PlayerDetector($this->white, $this->black);
-        $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
-
-        return $playerDetector->detect($selectedTeamNumber);
-    }
-
-    /**
-     * @param array<int,int> $cellFrom
-     * @param array<array> $desk
-     */
-    private function setPlayerFigure(PlayerInterface $player, array $desk, array $cellFrom): void
-    {
-        $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
-        $figure = (new FigureFactory($selectedTeamNumber))->create();
-        $player->setFigure($figure);
-    }
-
-    /**
-     * @param array<array> $board
-     * @return array<array>
+     * @param array<array<int>> $board
+     * @return array<array<int>>
      */
     public function getPossibleMoves(array $board, PlayerInterface $player): array
     {
@@ -172,7 +146,7 @@ final class Game
         foreach ($board as $rowKey => $row) {
             foreach ($row as $key => $cell) {
                 $from = [$rowKey, $key];
-                if (!in_array($cell, $player->getTeamNumbers())) {
+                if (! in_array($cell, $player->getTeamNumbers())) {
                     continue;
                 }
 
@@ -188,29 +162,15 @@ final class Game
         return $possibleMoves;
     }
 
-    private function getEmptyCells(array $board): array
-    {
-        $emptyCells = [];
-        foreach ($board as $rowKey => $row) {
-            foreach ($row as $key => $cell) {
-                if ($cell === 0) {
-                    $emptyCells[] = [$rowKey, $key];
-                }
-            }
-        }
-
-        return $emptyCells;
-    }
-
     /**
-     * @param array<int,int> $cellFrom
-     * @param array<int,int> $cellTo
+     * @param array<int> $cellFrom
+     * @param array<int> $cellTo
      */
     public function isValidMove(
-        PlayerInterface  $player,
-        array            $desk,
-        array            $cellFrom,
-        array            $cellTo,
+        PlayerInterface $player,
+        array $desk,
+        array $cellFrom,
+        array $cellTo,
         ?LoggerInterface $logger = null
     ): bool
     {
@@ -234,8 +194,47 @@ final class Game
     }
 
     /**
+     * @param array<array<int>> $desk
+     * @param array<int> $cellFrom
+     */
+    private function detectPlayer(array $desk, array $cellFrom): ?PlayerInterface
+    {
+        $playerDetector = new PlayerDetector($this->white, $this->black);
+
+        $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
+
+        return $playerDetector->detect($selectedTeamNumber);
+    }
+
+
+    /**
+     * @param array<int,int> $cellFrom
      * @param array<array> $desk
-     * @param array<int,int> $figureNumbers
+     */
+    private function setPlayerFigure(PlayerInterface $player, array $desk, array $cellFrom): void
+    {
+        $selectedTeamNumber = $this->checkerDeskService->getSelectedTeamNumber($desk, $cellFrom);
+        $figure = (new FigureFactory($selectedTeamNumber))->create();
+        $player->setFigure($figure);
+    }
+
+    private function getEmptyCells(array $board): array
+    {
+        $emptyCells = [];
+        foreach ($board as $rowKey => $row) {
+            foreach ($row as $key => $cell) {
+                if ($cell === 0) {
+                    $emptyCells[] = [$rowKey, $key];
+                }
+            }
+        }
+
+        return $emptyCells;
+    }
+
+    /**
+     * @param array<array<int>> $desk
+     * @param array<int> $figureNumbers
      */
     private function countFigures(array $desk, array $figureNumbers): int
     {

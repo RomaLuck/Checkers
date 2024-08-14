@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Message;
 
 use App\Service\Game\Game;
@@ -10,11 +12,10 @@ class UpdateDeskMessage
 {
     public function __construct(
         private UserInterface $computer,
-        private Game          $game,
-        private MoveResult    $moveResult,
-        private string        $roomId,
-    )
-    {
+        private Game $game,
+        private MoveResult $moveResult,
+        private string $roomId,
+    ) {
     }
 
     public function getComputer(): UserInterface

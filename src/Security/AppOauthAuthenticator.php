@@ -56,7 +56,7 @@ final class AppOauthAuthenticator extends OAuth2Authenticator implements Authent
                 }
 
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $email]);
-                if (!$user) {
+                if (! $user) {
                     $newUser = new User();
                     $newUser->setUsername($email);
                     $newUser->setPassword(password_hash($oauthId, PASSWORD_BCRYPT));

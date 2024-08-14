@@ -19,15 +19,15 @@ final class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(
-        Request                     $request,
+        Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        Security                    $security,
-        EntityManagerInterface      $entityManager,
-        ValidatorInterface          $validator
+        Security $security,
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator
     ): Response {
         if ($request->isMethod('POST')) {
             $submittedToken = $request->getPayload()->get('_csrf_token');
-            if (!$this->isCsrfTokenValid('register', $submittedToken)) {
+            if (! $this->isCsrfTokenValid('register', $submittedToken)) {
                 $this->addFlash('error', 'Token is invalid');
                 return $this->redirectToRoute('app_register');
             }

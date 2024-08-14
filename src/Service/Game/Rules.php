@@ -15,12 +15,14 @@ use Psr\Log\LoggerInterface;
 
 final class Rules
 {
+    /**
+     * @param array<array<int>> $desk
+     */
     public function __construct(
-        private PlayerInterface  $player,
-        private array            $desk,
+        private PlayerInterface $player,
+        private array $desk,
         private ?LoggerInterface $logger
-    )
-    {
+    ) {
     }
 
     /**
@@ -56,13 +58,13 @@ final class Rules
 
     /**
      * @param array<RuleInterface> $rules
-     * @param array<int,int> $from
-     * @param array<int,int> $to
+     * @param array<int> $from
+     * @param array<int> $to
      */
     public function checkRules(array $rules, array $from, array $to): bool
     {
         foreach ($rules as $rule) {
-            if (!$rule->check($this->player, $from, $to)) {
+            if (! $rule->check($this->player, $from, $to)) {
                 $this->logger?->warning($rule->getMessage());
                 return false;
             }

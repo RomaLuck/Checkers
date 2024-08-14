@@ -14,11 +14,10 @@ final class Robot
     private const MAX_DEPTH = 3;
 
     public function __construct(
-        private Game            $game,
+        private Game $game,
         private PlayerInterface $computer,
         private PlayerInterface $opponent,
-    )
-    {
+    ) {
     }
 
     public function run(MoveResult $startCondition, LoggerInterface $logger): MoveResult
@@ -42,11 +41,10 @@ final class Robot
     public function bestMove(
         PlayerInterface $computerTeam,
         PlayerInterface $oppositeTeam,
-        MoveResult      $startCondition,
-        int             $depth = 0,
-        bool            $isMaximizingPlayer = true
-    ): array
-    {
+        MoveResult $startCondition,
+        int $depth = 0,
+        bool $isMaximizingPlayer = true
+    ): array {
         $board = $startCondition->getCheckerDesk();
 
         if ($depth === self::MAX_DEPTH || $this->isGameOver($board)) {
@@ -82,8 +80,8 @@ final class Robot
     }
 
     /**
-     * @param array<array> $board
-     * @return array<array>
+     * @param array<array<int>> $board
+     * @return array<array<int>>
      */
     public function getPossibleMoves(array $board, PlayerInterface $player): array
     {
@@ -92,7 +90,7 @@ final class Robot
         foreach ($board as $rowKey => $row) {
             foreach ($row as $key => $cell) {
                 $from = [$rowKey, $key];
-                if (!in_array($cell, $player->getTeamNumbers())) {
+                if (! in_array($cell, $player->getTeamNumbers())) {
                     continue;
                 }
 
@@ -109,8 +107,18 @@ final class Robot
     }
 
     /**
-     * @param array<array> $board
-     * @param array<int,int> $computerTeamNumbers
+     * @param array<array<int>> $move
+     */
+    public function makeMove(MoveResult $startCondition, array $move): MoveResult
+    {
+        [$cellFrom, $cellTo] = $move;
+
+        return $this->game->makeMove($startCondition, $cellFrom, $cellTo);
+    }
+
+    /**
+     * @param array<array<int>> $board
+     * @param array<int> $computerTeamNumbers
      */
     private function evaluate(array $board, array $computerTeamNumbers): int
     {
@@ -128,16 +136,6 @@ final class Robot
         }
 
         return $computerCount - $opponentCount;
-    }
-
-    /**
-     * @param array<array> $move
-     */
-    public function makeMove(MoveResult $startCondition, array $move): MoveResult
-    {
-        [$cellFrom, $cellTo] = $move;
-
-        return $this->game->makeMove($startCondition, $cellFrom, $cellTo);
     }
 
     private function isGameOver(array $board): bool

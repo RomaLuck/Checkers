@@ -16,10 +16,9 @@ final class MercureService
     }
 
     public function publishData(
-        GameLaunch   $gameLaunch,
+        GameLaunch $gameLaunch,
         HubInterface $hub,
-    ): void
-    {
+    ): void {
         $roomId = $gameLaunch->getRoomId();
         $update = new Update(
             '/chat/' . $roomId,

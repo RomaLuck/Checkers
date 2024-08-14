@@ -12,8 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[] findAll()
- * @method User[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method array<User> findAll()
+ * @method array<User> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class UserRepository extends ServiceEntityRepository
 {
@@ -35,7 +35,7 @@ final class UserRepository extends ServiceEntityRepository
     public function getComputerPLayer(): UserInterface
     {
         $computer = $this->findOneByRole('ROLE_COMPUTER');
-        if (!$computer) {
+        if (! $computer) {
             $computer = new User();
             $computer->setUsername('computer');
             $computer->setRoles(['ROLE_COMPUTER']);

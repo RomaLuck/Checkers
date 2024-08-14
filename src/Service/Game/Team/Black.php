@@ -10,7 +10,9 @@ use App\Service\Game\Figure\FigureInterface;
 final class Black implements PlayerInterface
 {
     public const BLACK_NUMBERS = [2, 4];
+
     public const DIRECTION_BLACK = -1;
+
     public const TRANSFORMATION_CELL_BLACK = 0;
 
     private string $name;
@@ -28,6 +30,9 @@ final class Black implements PlayerInterface
         return $this->name;
     }
 
+    /**
+     * @return array<int>
+     */
     public function getTeamNumbers(): array
     {
         return self::BLACK_NUMBERS;

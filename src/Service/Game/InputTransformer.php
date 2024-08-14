@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game;
 
 use RuntimeException;
@@ -11,7 +13,7 @@ final class InputTransformer
      */
     public function transformInputData(string $cell): array
     {
-        if (!preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
+        if (! preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
             throw new RuntimeException('Cell is incorrect');
         }
 
@@ -25,7 +27,6 @@ final class InputTransformer
         return [$key, $splitCell['number'] - 1];
     }
 
-
     /**
      * @return array<array>
      */
@@ -38,7 +39,7 @@ final class InputTransformer
     }
 
     /**
-     * @param array<int,int> $cell
+     * @param array<int> $cell
      */
     public function transformCellToString(array $cell): string
     {

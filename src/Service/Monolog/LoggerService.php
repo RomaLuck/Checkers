@@ -10,6 +10,9 @@ final class LoggerService
     {
     }
 
+    /**
+     * @return array<string>
+     */
     public function getLastLogs(string $roomId): array
     {
         return $this->handler->getLastLogs($roomId);

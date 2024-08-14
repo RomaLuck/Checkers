@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\MessageHandler;
 
 use App\Entity\GameLaunch;
@@ -15,13 +17,12 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 class UpdateDeskMessageHandler
 {
     public function __construct(
-        private RobotService           $robotService,
+        private RobotService $robotService,
         private EntityManagerInterface $entityManager,
-        private HubInterface           $hub,
-        private LoggerInterface        $logger,
-        private MercureService         $mercureService,
-    )
-    {
+        private HubInterface $hub,
+        private LoggerInterface $logger,
+        private MercureService $mercureService,
+    ) {
     }
 
     public function __invoke(UpdateDeskMessage $message): void

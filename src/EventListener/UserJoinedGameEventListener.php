@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventListener;
 
 use App\Service\Mercure\MercureService;
@@ -11,9 +13,9 @@ final class UserJoinedGameEventListener
 {
     public function __construct(
         private LoggerInterface $logger,
-        private MercureService  $mercureService,
-        private HubInterface    $hub)
-    {
+        private MercureService $mercureService,
+        private HubInterface $hub
+    ) {
     }
 
     #[AsEventListener(event: 'JoinedGameEvent')]

@@ -8,6 +8,10 @@ use App\Service\Game\Team\PlayerInterface;
 
 final class IsTrueDirectionRule implements RuleInterface
 {
+    /**
+     * @param array<int> $from
+     * @param array<int> $to
+     */
     public function check(PlayerInterface $player, array $from, array $to): bool
     {
         if ($this->defineStep($from, $to) === 0) {
@@ -15,7 +19,8 @@ final class IsTrueDirectionRule implements RuleInterface
         }
 
         $playerDirection = $player->getDirection();
-        $playerFigureDirections = $player->getFigure()->getAvailableDirections();
+        $figure = $player->getFigure();
+        $playerFigureDirections = $figure->getAvailableDirections();
         $availableDirections = array_map(static function ($playerFigureDirection) use ($playerDirection) {
             return $playerFigureDirection * $playerDirection;
         }, $playerFigureDirections);

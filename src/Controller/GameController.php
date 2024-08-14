@@ -10,7 +10,6 @@ use App\Event\JoinedGameEvent;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
 use App\Service\Game\Strategy\GameStrategyFactory;
-use App\Service\Mercure\MercureService;
 use App\Service\Monolog\LoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -19,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mercure\Discovery;
-use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -28,17 +26,16 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 final class GameController extends AbstractController
 {
     public function __construct(
-        private readonly GameService    $gameService,
-        private readonly LoggerService  $loggerService,
-    )
-    {
+        private readonly GameService $gameService,
+        private readonly LoggerService $loggerService,
+    ) {
     }
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        if (!$user) {
+        if (! $user) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -56,7 +53,7 @@ final class GameController extends AbstractController
             'gameList' => $gameList,
             'gamesCount' => $gamesCount,
             'winsCount' => $winsCount,
-            'rating' => $rating
+            'rating' => $rating,
         ]);
     }
 
@@ -64,18 +61,18 @@ final class GameController extends AbstractController
     public function create(Request $request): Response
     {
         $user = $this->getUser();
-        if (!$user) {
+        if (! $user) {
             return $this->redirectToRoute('app_login');
         }
 
         $color = $request->request->get('player');
-        if (!in_array($color, ['white', 'black'])) {
+        if (! in_array($color, ['white', 'black'])) {
             $this->addFlash('danger', 'Color is not set');
             return $this->redirectToRoute('app_game_list');
         }
 
-        $strategyId = (int)$request->request->get('strategy');
-        if (!in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
+        $strategyId = (int) $request->request->get('strategy');
+        if (! in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
             $this->addFlash('danger', 'Type of game is not set');
             return $this->redirectToRoute('app_game_list');
         }
@@ -87,25 +84,24 @@ final class GameController extends AbstractController
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
     public function join(
-        Request                  $request,
-        EntityManagerInterface   $entityManager,
+        Request $request,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
-        if (!$user) {
+        if (! $user) {
             return $this->redirectToRoute('app_login');
         }
 
         $color = $request->request->get('player');
         $roomId = $request->request->get('room');
-        if (!$roomId || !in_array($color, ['white', 'black'])) {
+        if (! $roomId || ! in_array($color, ['white', 'black'])) {
             $this->addFlash('danger', 'Color not set');
             return $this->redirectToRoute('app_game_list');
         }
 
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-        if (!$gameLaunch) {
+        if (! $gameLaunch) {
             $this->addFlash('danger', 'Game not found');
             return $this->redirectToRoute('app_game_list');
         }
@@ -122,13 +118,13 @@ final class GameController extends AbstractController
     public function game(EntityManagerInterface $entityManager, Session $session, string $room): Response
     {
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $room]);
-        if (!$gameLaunch) {
+        if (! $gameLaunch) {
             $this->addFlash('danger', 'Game not found');
             return $this->redirectToRoute('app_game_list');
         }
 
         $userColor = $this->gameService->getUserColor($gameLaunch, $this->getUser());
-        if (!$userColor) {
+        if (! $userColor) {
             $this->addFlash('danger', 'This room is occupied');
             return $this->redirectToRoute('app_game_list');
         }
@@ -137,27 +133,26 @@ final class GameController extends AbstractController
 
         return $this->render('game/game.html.twig', [
             'color' => $userColor,
-            'room' => $room
+            'room' => $room,
         ]);
     }
 
     #[Route('/update', name: 'app_game_update', methods: ['GET', 'POST'])]
     public function update(
-        GameStrategyFactory      $gameStrategyFactory,
-        Request                  $request,
-        Session                  $session,
-        EntityManagerInterface   $entityManager,
-        LoggerInterface          $logger,
+        GameStrategyFactory $gameStrategyFactory,
+        Request $request,
+        Session $session,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,
-    ): Response
-    {
+    ): Response {
         $roomId = $session->get('room');
 
         /** @var LoggerInterface $logger */
         $logger = $logger->withName($roomId);
 
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-        if (!$gameLaunch) {
+        if (! $gameLaunch) {
             return $this->redirectToRoute('app_game_list');
         }
 
@@ -167,8 +162,6 @@ final class GameController extends AbstractController
 
         $event = new GameStatusUpdatedEvent($gameLaunch);
         $eventDispatcher->dispatch($event, 'GameStatusUpdatedEvent');
-
-//        $this->mercureService->publishData($gameLaunch, $hub);
 
         return $this->json([
             'table' => $gameLaunch->getTableData(),
@@ -181,7 +174,7 @@ final class GameController extends AbstractController
     {
         $roomId = $session->get('room');
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-        if (!$gameLaunch) {
+        if (! $gameLaunch) {
             return $this->redirectToRoute('app_game_list');
         }
 

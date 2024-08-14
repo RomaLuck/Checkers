@@ -12,6 +12,9 @@ interface PlayerInterface
 
     public function getName(): string;
 
+    /**
+     * @return array<int>
+     */
     public function getTeamNumbers(): array;
 
     public function getDirection(): int;

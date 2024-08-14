@@ -10,8 +10,11 @@ use App\Service\Game\Figure\FigureInterface;
 final class White implements PlayerInterface
 {
     public const WHITE_NUMBERS = [1, 3];
+
     public const DIRECTION_WHITE = 1;
+
     public const TRANSFORMATION_CELL_WHITE = 7;
+
 
     private string $name;
     private FigureInterface $figure;
@@ -28,6 +31,9 @@ final class White implements PlayerInterface
         return $this->name;
     }
 
+    /**
+     * @return array<int>
+     */
     public function getTeamNumbers(): array
     {
         return self::WHITE_NUMBERS;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Cache;
 
 use App\Entity\GameLaunch;
@@ -10,40 +12,39 @@ class UserCacheService
 {
     public function __construct(
         private CacheInterface $cache
-    )
-    {
+    ) {
     }
 
     public function getCachedWhiteTeamUser(GameLaunch $gameLaunch, string $roomId): array
     {
-        return $this->cache->get('white_user_' . $roomId, function (ItemInterface $item) use ($gameLaunch): array {
+        return $this->cache->get('white_user_' . $roomId, static function (ItemInterface $item) use ($gameLaunch): array {
             $item->expiresAfter(3600);
 
             $user = $gameLaunch->getWhiteTeamUser();
-            if (!$user) {
+            if (! $user) {
                 throw new \RuntimeException('User not found');
             }
 
             return [
                 'id' => $user->getId(),
-                'username' => $user->getUsername()
+                'username' => $user->getUsername(),
             ];
         });
     }
 
     public function getCachedBlackTeamUser(GameLaunch $gameLaunch, string $roomId): array
     {
-        return $this->cache->get('black_user_' . $roomId, function (ItemInterface $item) use ($gameLaunch): array {
+        return $this->cache->get('black_user_' . $roomId, static function (ItemInterface $item) use ($gameLaunch): array {
             $item->expiresAfter(3600);
 
             $user = $gameLaunch->getBlackTeamUser();
-            if (!$user) {
+            if (! $user) {
                 throw new \RuntimeException('User not found');
             }
 
             return [
                 'id' => $user->getId(),
-                'username' => $user->getUsername()
+                'username' => $user->getUsername(),
             ];
         });
     }

@@ -13,7 +13,7 @@ use App\Service\Game\Team\White;
 final class CheckerDeskService
 {
     /**
-     * @param array<int,int> $cellFrom
+     * @param array<int> $cellFrom
      */
     public function getSelectedTeamNumber(array $deskData, array $cellFrom): int
     {
@@ -21,22 +21,21 @@ final class CheckerDeskService
     }
 
     /**
-     * @param array<int,int> $cellFrom
-     * @param array<int,int> $cellTo
+     * @param array<int> $cellFrom
+     * @param array<int> $cellTo
      */
     public function updateData(
-        array            $desk,
-        array            $cellFrom,
-        array            $cellTo,
-    ): array
-    {
+        array $desk,
+        array $cellFrom,
+        array $cellTo,
+    ): array {
         $selectedTeamNumber = $this->getSelectedTeamNumber($desk, $cellFrom);
         $updatedDesk = $this->updateDesk($desk, $cellFrom, $cellTo, $selectedTeamNumber);
         return $this->updateFigures($updatedDesk);
     }
 
     /**
-     * @param array<array> $figuresForBeat
+     * @param array<array<int>> $figuresForBeat
      */
     public function clearCells(array $deskData, array $figuresForBeat): array
     {
@@ -81,9 +80,9 @@ final class CheckerDeskService
     }
 
     /**
-     * @param array<array> $deskData
-     * @param array<int,int> $from
-     * @param array<int,int> $to
+     * @param array<array<int>> $deskData
+     * @param array<int> $from
+     * @param array<int> $to
      */
     public function findFiguresForBeat(PlayerInterface $player, array $deskData, array $from, array $to): array
     {
@@ -96,7 +95,7 @@ final class CheckerDeskService
         while ($currentX !== $to[0] && $currentY !== $to[1]) {
             if (isset($deskData[$currentX][$currentY])
                 && $deskData[$currentX][$currentY] > 0
-                && !in_array($deskData[$currentX][$currentY], $player->getTeamNumbers())
+                && ! in_array($deskData[$currentX][$currentY], $player->getTeamNumbers())
             ) {
                 $figuresCells[] = [$currentX, $currentY];
             }

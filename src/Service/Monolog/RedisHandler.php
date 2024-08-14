@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service\Monolog;
 
-use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\FormatterInterface;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Level;
 use Monolog\LogRecord;
@@ -11,12 +13,12 @@ use Predis\Client as Predis;
 
 final class RedisHandler extends AbstractProcessingHandler
 {
+
+    protected int $capSize;
     /** @var Predis<Predis> */
     private Predis $redisClient;
 
     private string $redisKey;
-
-    protected int $capSize;
 
     /**
      * @param Predis<Predis> $redis The redis instance
@@ -33,15 +35,20 @@ final class RedisHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @inheritDoc
+     * @return array<string>
      */
+    public function getLastLogs(string $key, int $count = 10): array
+    {
+        return $this->redisClient->lrange('logs_' . $key, -$count, -1);
+    }
+
     protected function write(LogRecord $record): void
     {
         if ($this->capSize > 0) {
             $this->writeCapped($record);
         } else {
             $this->redisClient->rpush($this->redisKey . '_' . $record->channel, [
-                '[' . $record->datetime->format('H:i:s') . ']' . $record->message
+                '[' . $record->datetime->format('H:i:s') . ']' . $record->message,
             ]);
         }
         $this->redisClient->expire($this->redisKey . '_' . $record->channel, 3600);
@@ -56,25 +63,17 @@ final class RedisHandler extends AbstractProcessingHandler
         $redisKey = $this->redisKey;
         $capSize = $this->capSize;
         $channel = $record->channel;
-        $this->redisClient->transaction(function ($tx) use ($record, $redisKey, $capSize, $channel) {
+        $this->redisClient->transaction(static function ($tx) use ($record, $redisKey, $capSize, $channel): void {
             $tx->rpush($redisKey . '_' . $channel, [
-                '[' . $record->datetime->format('H:i:s') . ']' . $record->message
+                '[' . $record->datetime->format('H:i:s') . ']' . $record->message,
             ]);
             $tx->ltrim($redisKey . '_' . $channel, -$capSize, -1);
             $tx->expire($redisKey . '_' . $channel, 3600);
         });
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getDefaultFormatter(): FormatterInterface
     {
         return new LineFormatter();
-    }
-
-    public function getLastLogs(string $key, int $count = 10): array
-    {
-        return $this->redisClient->lrange('logs_' . $key, -$count, -1);
     }
 }
