@@ -6,6 +6,7 @@ namespace App\Tests\Unit;
 
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
+use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
@@ -30,7 +31,8 @@ class GameTest extends TestCase
     {
         $this->assertEquals(0, $this->startMoveResult->getCheckerDesk()[1][3]);
 
-        $moveResult = $this->game->makeMoveWithCellTransform($this->startMoveResult, 'a3', 'b4');
+        $move = Move::createMoveWithCellTransform('a3', 'b4');
+        $moveResult = $this->game->run($this->startMoveResult, $move);
 
         $this->assertEquals(0, $moveResult->getCheckerDesk()[0][2]);
         $this->assertEquals(1, $moveResult->getCheckerDesk()[1][3]);
@@ -38,17 +40,11 @@ class GameTest extends TestCase
 
     public function testRunInFalseDirection(): void
     {
-        $firstMoveResult = $this->game->makeMoveWithCellTransform(
-            $this->startMoveResult,
-            'a3',
-            'b4',
-        );
+        $move = Move::createMoveWithCellTransform('a3', 'b4');
+        $firstMoveResult = $this->game->run($this->startMoveResult, $move);
 
-        $secondMoveResult = $this->game->makeMoveWithCellTransform(
-            $firstMoveResult,
-            'b4',
-            'a3',
-        );
+        $move = Move::createMoveWithCellTransform('b4', 'a3');
+        $secondMoveResult = $this->game->run($firstMoveResult, $move);
 
         $this->assertEquals(0, $secondMoveResult->getCheckerDesk()[0][2]);
         $this->assertEquals(1, $secondMoveResult->getCheckerDesk()[1][3]);
@@ -56,7 +52,8 @@ class GameTest extends TestCase
 
     public function testRunWithoutPossibility(): void
     {
-        $moveResult = $this->game->makeMoveWithCellTransform($this->startMoveResult, 'a3', 'c5');
+        $move = Move::createMoveWithCellTransform('a3', 'c5');
+        $moveResult = $this->game->run($this->startMoveResult, $move);
 
         $this->assertEquals(1, $moveResult->getCheckerDesk()[0][2]);
         $this->assertEquals(0, $moveResult->getCheckerDesk()[2][4]);

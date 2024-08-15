@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Game\Robot;
 
 use App\Service\Game\Game;
+use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use App\Service\Game\Team\PlayerInterface;
 use Psr\Log\LoggerInterface;
@@ -25,9 +26,10 @@ final class Robot
     {
         $moveResult = clone $startCondition;
 
+        /** @var Move $bestMove */
         $bestMove = $this->bestMove($this->computer, $this->opponent, $moveResult)[1];
-        if (is_array($bestMove)) {
-            return $this->game->makeMove($startCondition, $bestMove[0], $bestMove[1], $logger);
+        if ($bestMove->getFrom() !== [] && $bestMove->getTo() !== []) {
+            return $this->game->run($startCondition, $bestMove, $logger);
         }
 
         return $startCondition;
@@ -83,39 +85,16 @@ final class Robot
     /**
      * @param array<array<int>> $board
      *
-     * @return array<array<int>>
+     * @return array<Move>
      */
     public function getPossibleMoves(array $board, PlayerInterface $player): array
     {
-        $possibleMoves = [];
-
-        foreach ($board as $rowKey => $row) {
-            foreach ($row as $key => $cell) {
-                $from = [$rowKey, $key];
-                if (! in_array($cell, $player->getTeamNumbers())) {
-                    continue;
-                }
-
-                $possibleDestinations = $this->getEmptyCells($board);
-                foreach ($possibleDestinations as $destination) {
-                    if ($this->game->isValidMove($player, $board, $from, $destination)) {
-                        $possibleMoves[] = [$from, $destination];
-                    }
-                }
-            }
-        }
-
-        return $possibleMoves;
+        return $this->game->getPossibleMoves($board, $player);
     }
 
-    /**
-     * @param array<array<int>> $move
-     */
-    public function makeMove(MoveResult $startCondition, array $move): MoveResult
+    public function makeMove(MoveResult $startCondition, Move $move): MoveResult
     {
-        [$cellFrom, $cellTo] = $move;
-
-        return $this->game->makeMove($startCondition, $cellFrom, $cellTo);
+        return $this->game->run($startCondition, $move);
     }
 
     public function setMaxDepth(int $maxDepth): void

@@ -25,11 +25,7 @@ final class Rules
     ) {
     }
 
-    /**
-     * @param array<int> $from
-     * @param array<int> $to
-     */
-    public function checkForMove(array $from, array $to): bool
+    public function checkForMove(Move $move): bool
     {
         $rules = [
             new IsAvailableCellRule($this->desk),
@@ -38,14 +34,10 @@ final class Rules
             new IsOpportunityForMoveRule(),
         ];
 
-        return $this->checkRules($rules, $from, $to);
+        return $this->checkRules($rules, $move);
     }
 
-    /**
-     * @param array<int> $from
-     * @param array<int> $to
-     */
-    public function checkForBeat(array $from, array $to): bool
+    public function checkForBeat(Move $move): bool
     {
         $rules = [
             new IsAvailableCellRule($this->desk),
@@ -53,18 +45,16 @@ final class Rules
             new IsOpportunityForBeatRule($this->desk),
         ];
 
-        return $this->checkRules($rules, $from, $to);
+        return $this->checkRules($rules, $move);
     }
 
     /**
      * @param array<RuleInterface> $rules
-     * @param array<int> $from
-     * @param array<int> $to
      */
-    public function checkRules(array $rules, array $from, array $to): bool
+    public function checkRules(array $rules, Move $move): bool
     {
         foreach ($rules as $rule) {
-            if (! $rule->check($this->player, $from, $to)) {
+            if (! $rule->check($this->player, $move)) {
                 $this->logger?->warning($rule->getMessage());
                 return false;
             }

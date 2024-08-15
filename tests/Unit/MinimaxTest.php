@@ -4,6 +4,7 @@ namespace App\Tests\Unit;
 
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Game;
+use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use App\Service\Game\Robot\Robot;
 use App\Service\Game\Team\Black;
@@ -32,7 +33,8 @@ class MinimaxTest extends TestCase
     {
         $this->assertEquals(0, $this->startCondition->getCheckerDesk()[1][3]);
 
-        $moveResult = $this->minimax->makeMove($this->startCondition, [[0, 2], [1, 3]]);
+        $move = new Move([0, 2], [1, 3]);
+        $moveResult = $this->minimax->makeMove($this->startCondition, $move);
 
         $this->assertEquals(0, $moveResult->getCheckerDesk()[0][2]);
         $this->assertEquals(1, $moveResult->getCheckerDesk()[1][3]);
@@ -45,6 +47,6 @@ class MinimaxTest extends TestCase
 
         $result = $this->minimax->bestMove($robot, $player, $this->startCondition)[1];
 
-        $this->assertIsArray($result);
+        $this->assertInstanceOf(Move::class, $result);
     }
 }

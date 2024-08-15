@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Game\Rule;
 
 use App\Service\Game\CheckerDeskService;
+use App\Service\Game\Move;
 use App\Service\Game\Team\PlayerInterface;
 
 final class IsOpportunityForBeatRule implements RuleInterface
@@ -13,12 +14,12 @@ final class IsOpportunityForBeatRule implements RuleInterface
     {
     }
 
-    public function check(PlayerInterface $player, array $from, array $to): bool
+    public function check(PlayerInterface $player, Move $move): bool
     {
-        $step = abs($to[1] - $from[1]);
+        $step = abs($move->getTo()[1] - $move->getFrom()[1]);
 
         $deskService = new CheckerDeskService();
-        $figuresForBeat = $deskService->findFiguresForBeat($player, $this->desk, $from, $to);
+        $figuresForBeat = $deskService->findFiguresForBeat($player, $this->desk, $move);
 
         $stepLengthBetweenCheckersList = [];
         for ($i = 1; $i < count($figuresForBeat); $i++) {

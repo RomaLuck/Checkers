@@ -4,6 +4,7 @@ namespace App\Tests\Unit;
 
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\CheckerDeskService;
+use App\Service\Game\Move;
 use PHPUnit\Framework\TestCase;
 
 class CheckerDeskServiceTest extends TestCase
@@ -35,7 +36,8 @@ class CheckerDeskServiceTest extends TestCase
 
     public function testUpdateDesk(): void
     {
-        $updatedDesk = $this->checkerDeskService->updateDesk($this->desk, [0, 2], [1, 3], 1);
+        $move = new Move([0, 2], [1, 3]);
+        $updatedDesk = $this->checkerDeskService->updateDesk($this->desk, $move, 1);
         $teamNumberOld = $this->checkerDeskService->getSelectedTeamNumber($updatedDesk, [0, 2]);
         $teamNumberNew = $this->checkerDeskService->getSelectedTeamNumber($updatedDesk, [1, 3]);
         $this->assertEquals(0, $teamNumberOld);

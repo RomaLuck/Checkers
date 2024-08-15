@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Rule;
 
+use App\Service\Game\Move;
 use App\Service\Game\Team\PlayerInterface;
 
 final class IsTrueDirectionRule implements RuleInterface
 {
-    /**
-     * @param array<int> $from
-     * @param array<int> $to
-     */
-    public function check(PlayerInterface $player, array $from, array $to): bool
+    public function check(PlayerInterface $player, Move $move): bool
     {
+        $from = $move->getFrom();
+        $to = $move->getTo();
         if ($this->defineStep($from, $to) === 0) {
             return false;
         }

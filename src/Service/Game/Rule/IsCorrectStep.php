@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Rule;
 
+use App\Service\Game\Move;
 use App\Service\Game\Team\PlayerInterface;
 
 final class IsCorrectStep implements RuleInterface
 {
-    public function check(PlayerInterface $player, array $from, array $to): bool
+    public function check(PlayerInterface $player, Move $move): bool
     {
-        return abs($to[0] - $from[0]) === abs($to[1] - $from[1]);
+        return abs($move->getTo()[0] - $move->getFrom()[0]) === abs($move->getTo()[1] - $move->getFrom()[1]);
     }
 
     public function getMessage(): string

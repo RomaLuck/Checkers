@@ -6,6 +6,7 @@ namespace App\Tests\Unit;
 
 use App\Service\Game\CheckerDesk;
 use App\Service\Game\Figure\FigureInterface;
+use App\Service\Game\Move;
 use App\Service\Game\Rules;
 use App\Service\Game\Team\PlayerInterface;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +36,8 @@ class RulesTest extends TestCase
      */
     public function testCheckForMove(bool $expected, array $from, array $to): void
     {
-        $this->assertEquals($expected, $this->rules->checkForMove($from, $to));
+        $move = new Move($from, $to);
+        $this->assertEquals($expected, $this->rules->checkForMove($move));
     }
 
     /**
@@ -43,7 +45,8 @@ class RulesTest extends TestCase
      */
     public function testCheckForAttack(bool $expected, array $from, array $to): void
     {
-        $this->assertEquals($expected, $this->rules->checkForBeat($from, $to));
+        $move = new Move($from, $to);
+        $this->assertEquals($expected, $this->rules->checkForBeat($move));
     }
 
     public static function getStepDataProvider(): array

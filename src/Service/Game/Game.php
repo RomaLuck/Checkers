@@ -34,35 +34,30 @@ final class Game
         return $this->black;
     }
 
-    /**
-     * @param array<int> $cellFrom
-     * @param array<int> $cellTo
-     */
-    public function makeMove(
-        MoveResult $moveResult,
-        array $cellFrom,
-        array $cellTo,
+    public function run(
+        MoveResult $currenCondition,
+        Move $move,
         ?LoggerInterface $logger = null
     ): MoveResult {
-        $desk = $moveResult->getCheckerDesk();
-        $currentTurn = $moveResult->getCurrentTurn();
+        $desk = $currenCondition->getCheckerDesk();
+        $currentTurn = $currenCondition->getCurrentTurn();
 
-        $player = $this->detectPlayer($desk, $cellFrom);
+        $player = $this->detectPlayer($desk, $move->getFrom());
         if (! $player) {
             $logger?->warning('Can not find player on this cell');
-            return $moveResult;
+            return $currenCondition;
         }
 
         if (! $player->isTurnForPlayer($currentTurn)) {
             $logger?->warning('Now it\'s the turn of another player');
-            return $moveResult;
+            return $currenCondition;
         }
 
-        if (! $this->isValidMove($player, $desk, $cellFrom, $cellTo, $logger)) {
-            return $moveResult;
+        if (! $this->isValidMove($player, $desk, $move, $logger)) {
+            return $currenCondition;
         }
 
-        $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
+        $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $move);
         if ($figuresForBeat !== []) {
             $desk = $this->checkerDeskService->clearCells($desk, $figuresForBeat);
 
@@ -75,8 +70,8 @@ final class Game
                 '] checkers');
         }
 
-        $from = $this->inputTransformer->transformCellToString($cellFrom);
-        $to = $this->inputTransformer->transformCellToString($cellTo);
+        $from = $this->inputTransformer->transformCellToString($move->getFrom());
+        $to = $this->inputTransformer->transformCellToString($move->getTo());
         $logger?->info("{$player->getName()} : [{$from}] => [{$to}]");
 
         if ($this->isGameOver($desk)) {
@@ -85,32 +80,13 @@ final class Game
             $winner = $advantagePlayer->getName();
             $logger?->info("{$winner} won!");
 
-            $moveResult->setWinnerId($advantagePlayer->getId());
+            $currenCondition->setWinnerId($advantagePlayer->getId());
         }
 
-        $moveResult->setCheckerDesk($this->checkerDeskService->updateData($desk, $cellFrom, $cellTo));
-        $moveResult->setCurrentTurn(! $currentTurn);
+        $currenCondition->setCheckerDesk($this->checkerDeskService->updateData($desk, $move));
+        $currenCondition->setCurrentTurn(! $currentTurn);
 
-        return $moveResult;
-    }
-
-    public function makeMoveWithCellTransform(
-        MoveResult $moveResult,
-        string $cellFrom,
-        string $cellTo,
-        ?LoggerInterface $logger = null
-    ): MoveResult {
-        [$cellFromTransformed, $cellToTransformed] = $this->inputTransformer->transformInputToArray($cellFrom, $cellTo);
-        if (! is_array($cellFromTransformed) || ! is_array($cellToTransformed)) {
-            $logger?->warning('Cells are not transformed');
-            return $moveResult;
-        }
-
-        if ($cellFromTransformed === [] || $cellToTransformed === []) {
-            return $moveResult;
-        }
-
-        return $this->makeMove($moveResult, $cellFromTransformed, $cellToTransformed, $logger);
+        return $currenCondition;
     }
 
     /**
@@ -138,7 +114,7 @@ final class Game
     /**
      * @param array<array<int>> $board
      *
-     * @return array<array<int>>
+     * @return array<Move>
      */
     public function getPossibleMoves(array $board, PlayerInterface $player): array
     {
@@ -153,8 +129,9 @@ final class Game
 
                 $possibleDestinations = $this->getEmptyCells($board);
                 foreach ($possibleDestinations as $destination) {
-                    if ($this->isValidMove($player, $board, $from, $destination)) {
-                        $possibleMoves[] = [$from, $destination];
+                    $move = new Move($from, $destination);
+                    if ($this->isValidMove($player, $board, $move)) {
+                        $possibleMoves[] = $move;
                     }
                 }
             }
@@ -163,30 +140,25 @@ final class Game
         return $possibleMoves;
     }
 
-    /**
-     * @param array<int> $cellFrom
-     * @param array<int> $cellTo
-     */
     public function isValidMove(
         PlayerInterface $player,
         array $desk,
-        array $cellFrom,
-        array $cellTo,
+        Move $move,
         ?LoggerInterface $logger = null
     ): bool {
-        $this->setPlayerFigure($player, $desk, $cellFrom);
+        $this->setPlayerFigure($player, $desk, $move->getFrom());
 
         $rules = new Rules($player, $desk, $logger);
 
-        $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $cellFrom, $cellTo);
+        $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $move);
         if (count($figuresForBeat) > 0) {
-            if ($rules->checkForBeat($cellFrom, $cellTo)) {
+            if ($rules->checkForBeat($move)) {
                 return true;
             }
             return false;
         }
 
-        if ($rules->checkForMove($cellFrom, $cellTo)) {
+        if ($rules->checkForMove($move)) {
             return true;
         }
 

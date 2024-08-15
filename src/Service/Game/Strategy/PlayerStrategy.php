@@ -8,6 +8,7 @@ use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Cache\UserCacheService;
 use App\Service\Game\Game;
+use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
@@ -47,7 +48,8 @@ final class PlayerStrategy implements StrategyInterface
             $to = htmlspecialchars($data['form2']);
 
             if ($from && $to) {
-                $moveResult = $game->makeMoveWithCellTransform($startCondition, $from, $to, $logger);
+                $move = Move::createMoveWithCellTransform($from, $to);
+                $moveResult = $game->run($startCondition, $move, $logger);
 
                 $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
                 $gameLaunch->setTableData($moveResult->getCheckerDesk());

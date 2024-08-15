@@ -20,17 +20,12 @@ final class CheckerDeskService
         return $deskData[$cellFrom[0]][$cellFrom[1]];
     }
 
-    /**
-     * @param array<int> $cellFrom
-     * @param array<int> $cellTo
-     */
     public function updateData(
         array $desk,
-        array $cellFrom,
-        array $cellTo,
+        Move $move,
     ): array {
-        $selectedTeamNumber = $this->getSelectedTeamNumber($desk, $cellFrom);
-        $updatedDesk = $this->updateDesk($desk, $cellFrom, $cellTo, $selectedTeamNumber);
+        $selectedTeamNumber = $this->getSelectedTeamNumber($desk, $move->getFrom());
+        $updatedDesk = $this->updateDesk($desk, $move, $selectedTeamNumber);
         return $this->updateFigures($updatedDesk);
     }
 
@@ -46,14 +41,10 @@ final class CheckerDeskService
         return $deskData;
     }
 
-    /**
-     * @param array<int> $cellFrom
-     * @param array<int> $cellTo
-     */
-    public function updateDesk(array $deskData, array $cellFrom, array $cellTo, int $selectedTeamNumber): array
+    public function updateDesk(array $deskData, Move $move, int $selectedTeamNumber): array
     {
-        $deskData[$cellFrom[0]][$cellFrom[1]] = 0;
-        $deskData[$cellTo[0]][$cellTo[1]] = $selectedTeamNumber;
+        $deskData[$move->getFrom()[0]][$move->getFrom()[1]] = 0;
+        $deskData[$move->getTo()[0]][$move->getTo()[1]] = $selectedTeamNumber;
 
         return $deskData;
     }
@@ -81,11 +72,12 @@ final class CheckerDeskService
 
     /**
      * @param array<array<int>> $deskData
-     * @param array<int> $from
-     * @param array<int> $to
      */
-    public function findFiguresForBeat(PlayerInterface $player, array $deskData, array $from, array $to): array
+    public function findFiguresForBeat(PlayerInterface $player, array $deskData, Move $move): array
     {
+        $from = $move->getFrom();
+        $to = $move->getTo();
+
         $figuresCells = [];
         $directionX = $to[0] - $from[0] > 0 ? 1 : -1;
         $directionY = $to[1] - $from[1] > 0 ? 1 : -1;
