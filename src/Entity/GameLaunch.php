@@ -54,6 +54,9 @@ class GameLaunch
     #[Column(type: 'boolean')]
     private bool $currentTurn = self::WHITE_TURN;
 
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    private ?int $complexity = null;
+
     public function __construct()
     {
         $this->setRoomId();
@@ -162,5 +165,15 @@ class GameLaunch
             return true;
         }
         return false;
+    }
+
+    public function getComplexity(): ?int
+    {
+        return $this->complexity;
+    }
+
+    public function setComplexity(?int $complexity): void
+    {
+        $this->complexity = $complexity;
     }
 }

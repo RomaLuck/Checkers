@@ -71,13 +71,15 @@ final class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
-        $strategyId = (int) $request->request->get('strategy');
+        $strategyId = $request->request->getInt('strategy');
         if (! in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
             $this->addFlash('danger', 'Type of game is not set');
             return $this->redirectToRoute('app_game_list');
         }
 
-        $game = $this->gameService->createGameLaunch($user, $color, $strategyId);
+        $complexity = $request->request->getInt('complexity');
+
+        $game = $this->gameService->createGameLaunch($user, $color, $strategyId, $complexity);
 
         return $this->redirectToRoute('app_game', ['room' => $game->getRoomId()]);
     }

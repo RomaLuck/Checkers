@@ -15,6 +15,7 @@ class UpdateDeskMessage
         private Game $game,
         private MoveResult $moveResult,
         private string $roomId,
+        private ?int $complexity,
     ) {
     }
 
@@ -36,5 +37,10 @@ class UpdateDeskMessage
     public function getRoomId(): string
     {
         return $this->roomId;
+    }
+
+    public function getComplexity(): ?int
+    {
+        return $this->complexity;
     }
 }

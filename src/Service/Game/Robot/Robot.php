@@ -11,13 +11,14 @@ use Psr\Log\LoggerInterface;
 
 final class Robot
 {
-    private const MAX_DEPTH = 3;
+    private int $maxDepth;
 
     public function __construct(
         private Game $game,
         private PlayerInterface $computer,
         private PlayerInterface $opponent,
     ) {
+        $this->maxDepth = 3;
     }
 
     public function run(MoveResult $startCondition, LoggerInterface $logger): MoveResult
@@ -47,7 +48,7 @@ final class Robot
     ): array {
         $board = $startCondition->getCheckerDesk();
 
-        if ($depth === self::MAX_DEPTH || $this->isGameOver($board)) {
+        if ($depth === $this->maxDepth || $this->isGameOver($board)) {
             $evaluate = $this->evaluate($board, $computerTeam->getTeamNumbers());
             return [$evaluate, null];
         }
@@ -81,6 +82,7 @@ final class Robot
 
     /**
      * @param array<array<int>> $board
+     *
      * @return array<array<int>>
      */
     public function getPossibleMoves(array $board, PlayerInterface $player): array
@@ -114,6 +116,11 @@ final class Robot
         [$cellFrom, $cellTo] = $move;
 
         return $this->game->makeMove($startCondition, $cellFrom, $cellTo);
+    }
+
+    public function setMaxDepth(int $maxDepth): void
+    {
+        $this->maxDepth = $maxDepth;
     }
 
     /**

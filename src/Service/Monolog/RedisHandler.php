@@ -13,7 +13,6 @@ use Predis\Client as Predis;
 
 final class RedisHandler extends AbstractProcessingHandler
 {
-
     protected int $capSize;
     /** @var Predis<Predis> */
     private Predis $redisClient;

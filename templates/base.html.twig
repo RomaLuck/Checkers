@@ -41,15 +41,39 @@
             </div>
             <form method="post" action="/create">
                 <div class="m-2 d-block">
-                    <div>
-                        <div class="form-check">
+                    <div id="strategy">
+                        <div class="form-check my-2">
                             <input class="form-check-input" type="radio" name="strategy" id="computer-strategy"
                                    value="1">
                             <label class="form-check-label" for="computer-strategy">
                                 With computer
                             </label>
                         </div>
-                        <div class="form-check">
+                        <div class="d-flex d-none" id="complexity">
+                            <div>Complexity: </div>
+                            <div class="form-check mx-2">
+                                <input class="form-check-input" type="radio" name="complexity" id="complexity1"
+                                       value="3" checked>
+                                <label class="form-check-label" for="complexity1">
+                                    low
+                                </label>
+                            </div>
+                            <div class="form-check mx-2">
+                                <input class="form-check-input" type="radio" name="complexity" id="complexity2"
+                                       value="6" checked>
+                                <label class="form-check-label" for="complexity2">
+                                    middle
+                                </label>
+                            </div>
+                            <div class="form-check mx-2">
+                                <input class="form-check-input" type="radio" name="complexity" id="complexity3"
+                                       value="9" checked>
+                                <label class="form-check-label" for="complexity3">
+                                    hard
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-check my-2">
                             <input class="form-check-input" type="radio" name="strategy" id="multiplayer-strategy"
                                    value="2" checked>
                             <label class="form-check-label" for="multiplayer-strategy">

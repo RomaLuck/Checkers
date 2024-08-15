@@ -137,6 +137,7 @@ final class Game
 
     /**
      * @param array<array<int>> $board
+     *
      * @return array<array<int>>
      */
     public function getPossibleMoves(array $board, PlayerInterface $player): array
@@ -172,8 +173,7 @@ final class Game
         array $cellFrom,
         array $cellTo,
         ?LoggerInterface $logger = null
-    ): bool
-    {
+    ): bool {
         $this->setPlayerFigure($player, $desk, $cellFrom);
 
         $rules = new Rules($player, $desk, $logger);
@@ -205,7 +205,6 @@ final class Game
 
         return $playerDetector->detect($selectedTeamNumber);
     }
-
 
     /**
      * @param array<int,int> $cellFrom

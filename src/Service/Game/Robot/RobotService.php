@@ -15,7 +15,8 @@ final class RobotService
         Game $game,
         UserInterface $computer,
         MoveResult $moveResult,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ?int $complexity
     ): MoveResult {
         $white = $game->getWhite();
         $black = $game->getBlack();
@@ -24,6 +25,9 @@ final class RobotService
         $opponent = $computerTeam === $white ? $black : $white;
 
         $robot = new Robot($game, $computerTeam, $opponent);
+        if ($complexity !== null) {
+            $robot->setMaxDepth($complexity);
+        }
 
         return $robot->run($moveResult, $logger);
     }

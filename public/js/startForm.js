@@ -60,5 +60,15 @@ function setupRadioButtons() {
     });
 }
 
+function complexity() {
+    let complexityBlock = document.getElementById('complexity');
+    let computerRadio = document.getElementById('computer-strategy');
+
+    computerRadio.addEventListener('click', function () {
+        complexityBlock.classList.remove('d-none');
+    })
+}
+
 createJoinForms();
 setupRadioButtons();
+complexity();

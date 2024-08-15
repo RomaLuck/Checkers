@@ -34,7 +34,8 @@ class UpdateDeskMessageHandler
             $message->getGame(),
             $message->getComputer(),
             $message->getMoveResult(),
-            $logger
+            $logger,
+            $message->getComplexity()
         );
 
         $gameLaunch = $this->entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);

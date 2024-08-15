@@ -15,8 +15,12 @@ final class GameService
     ) {
     }
 
-    public function createGameLaunch(UserInterface $user, string $color, int $strategyId = 2): GameLaunch
-    {
+    public function createGameLaunch(
+        UserInterface $user,
+        string $color,
+        int $strategyId = 2,
+        ?int $complexity = null
+    ): GameLaunch {
         $game = new GameLaunch();
         if ($color === 'white') {
             $game->setWhiteTeamUser($user);
@@ -25,6 +29,7 @@ final class GameService
         }
 
         $game->setStrategyId($strategyId);
+        $game->setComplexity($complexity);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
 

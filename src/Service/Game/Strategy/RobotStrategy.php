@@ -57,7 +57,8 @@ final class RobotStrategy implements StrategyInterface
                     new Game($white, $black),
                     $computer,
                     $startCondition,
-                    $logger
+                    $logger,
+                    $gameLaunch->getComplexity()
                 );
 
                 $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
@@ -82,7 +83,7 @@ final class RobotStrategy implements StrategyInterface
             if ($from && $to) {
                 $moveResult = $game->makeMoveWithCellTransform($startCondition, $from, $to, $logger);
 
-                $this->bus->dispatch(new UpdateDeskMessage($computer, $game, $moveResult, $roomId));
+                $this->bus->dispatch(new UpdateDeskMessage($computer, $game, $moveResult, $roomId, $gameLaunch->getComplexity()));
 
                 $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
                 $gameLaunch->setTableData($moveResult->getCheckerDesk());
