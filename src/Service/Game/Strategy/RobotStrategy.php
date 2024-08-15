@@ -10,7 +10,6 @@ use App\Message\UpdateDeskMessage;
 use App\Service\Cache\UserCacheService;
 use App\Service\Game\Game;
 use App\Service\Game\MoveResult;
-use App\Service\Game\Robot\RobotService;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\White;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +22,6 @@ final class RobotStrategy implements StrategyInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserCacheService $userCacheService,
-        private RobotService $robotService,
         private MessageBusInterface $bus,
     ) {
     }
@@ -53,18 +51,13 @@ final class RobotStrategy implements StrategyInterface
                     $gameLaunch->getBlackTeamUser()->getUsername()
                 );
 
-                $moveResult = $this->robotService->updateDesk(
-                    new Game($white, $black),
+                $this->bus->dispatch(new UpdateDeskMessage(
                     $computer,
+                    new Game($white, $black),
                     $startCondition,
-                    $logger,
+                    $roomId,
                     $gameLaunch->getComplexity()
-                );
-
-                $gameLaunch->setCurrentTurn($moveResult->getCurrentTurn());
-                $gameLaunch->setTableData($moveResult->getCheckerDesk());
-
-                $this->entityManager->flush();
+                ));
             }
 
             return;
