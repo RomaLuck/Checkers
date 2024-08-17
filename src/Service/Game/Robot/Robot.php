@@ -115,7 +115,7 @@ final class Robot
             foreach ($row as $cell) {
                 if (in_array($cell, $computerTeamNumbers)) {
                     $computerCount++;
-                } elseif ($cell !== 0) {
+                } elseif ($cell > 0) {
                     $opponentCount++;
                 }
             }
@@ -127,19 +127,5 @@ final class Robot
     private function isGameOver(array $board): bool
     {
         return $this->game->isGameOver($board);
-    }
-
-    private function getEmptyCells(array $board): array
-    {
-        $emptyCells = [];
-        foreach ($board as $rowKey => $row) {
-            foreach ($row as $key => $cell) {
-                if ($cell === 0) {
-                    $emptyCells[] = [$rowKey, $key];
-                }
-            }
-        }
-
-        return $emptyCells;
     }
 }
