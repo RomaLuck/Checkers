@@ -13,14 +13,16 @@ RUN set -ex \
     wget \
     supervisor
 
-RUN docker-php-ext-install pdo pdo_mysql zip xsl gd intl
-
-RUN apk add --update linux-headers
-
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
-RUN install-php-extensions xdebug-^3.2.2
-RUN install-php-extensions @composer
+RUN install-php-extensions xdebug-^3.2.2 \
+    pdo \
+    pdo_mysql \
+    zip \
+    xsl \
+    gd \
+    intl \
+    @composer
 
 WORKDIR /app
 
