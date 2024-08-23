@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Game;
 
-use RuntimeException;
-
 final class InputTransformer
 {
     /**
@@ -13,15 +11,15 @@ final class InputTransformer
      */
     public function transformInputData(string $cell): array
     {
-        if (! preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
-            throw new RuntimeException('Cell is incorrect');
+        if (!preg_match('!^(?<letter>[[:alpha:]]+)(?<number>\d+)$!iu', $cell, $splitCell)) {
+            throw new \RuntimeException('Cell is incorrect');
         }
 
         $letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
         $key = array_search($splitCell['letter'], $letters, true);
 
         if ($key === false || $splitCell['number'] <= 0 || $splitCell['number'] > 8) {
-            throw new RuntimeException('Cell is unavailable');
+            throw new \RuntimeException('Cell is unavailable');
         }
 
         return [$key, $splitCell['number'] - 1];

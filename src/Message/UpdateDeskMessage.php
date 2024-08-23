@@ -16,8 +16,7 @@ class UpdateDeskMessage
         private MoveResult $moveResult,
         private string $roomId,
         private ?int $complexity,
-    ) {
-    }
+    ) {}
 
     public function getComputer(): UserInterface
     {

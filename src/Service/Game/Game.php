@@ -43,17 +43,19 @@ final class Game
         $currentTurn = $currenCondition->getCurrentTurn();
 
         $player = $this->detectPlayer($desk, $move->getFrom());
-        if (! $player) {
+        if (!$player) {
             $logger?->warning('Can not find player on this cell');
+
             return $currenCondition;
         }
 
-        if (! $player->isTurnForPlayer($currentTurn)) {
+        if (!$player->isTurnForPlayer($currentTurn)) {
             $logger?->warning('Now it\'s the turn of another player');
+
             return $currenCondition;
         }
 
-        if (! $this->isValidMove($player, $desk, $move, $logger)) {
+        if (!$this->isValidMove($player, $desk, $move, $logger)) {
             return $currenCondition;
         }
 
@@ -84,7 +86,7 @@ final class Game
         }
 
         $currenCondition->setCheckerDesk($this->checkerDeskService->updateData($desk, $move));
-        $currenCondition->setCurrentTurn(! $currentTurn);
+        $currenCondition->setCurrentTurn(!$currentTurn);
 
         return $currenCondition;
     }
@@ -123,7 +125,7 @@ final class Game
         foreach ($board as $rowKey => $row) {
             foreach ($row as $key => $cell) {
                 $from = [$rowKey, $key];
-                if (! in_array($cell, $player->getTeamNumbers())) {
+                if (!in_array($cell, $player->getTeamNumbers())) {
                     continue;
                 }
 
@@ -155,6 +157,7 @@ final class Game
             if ($rules->checkForBeat($move)) {
                 return true;
             }
+
             return false;
         }
 
@@ -167,7 +170,7 @@ final class Game
 
     /**
      * @param array<array<int>> $desk
-     * @param array<int> $cellFrom
+     * @param array<int>        $cellFrom
      */
     private function detectPlayer(array $desk, array $cellFrom): ?PlayerInterface
     {
@@ -180,7 +183,7 @@ final class Game
 
     /**
      * @param array<int,int> $cellFrom
-     * @param array<array> $desk
+     * @param array<array>   $desk
      */
     private function setPlayerFigure(PlayerInterface $player, array $desk, array $cellFrom): void
     {
@@ -205,7 +208,7 @@ final class Game
 
     /**
      * @param array<array<int>> $desk
-     * @param array<int> $figureNumbers
+     * @param array<int>        $figureNumbers
      */
     private function countFigures(array $desk, array $figureNumbers): int
     {

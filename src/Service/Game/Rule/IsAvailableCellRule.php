@@ -9,13 +9,12 @@ use App\Service\Game\Team\PlayerInterface;
 
 final class IsAvailableCellRule implements RuleInterface
 {
-    public function __construct(private array $desk)
-    {
-    }
+    public function __construct(private array $desk) {}
 
     public function check(PlayerInterface $player, Move $move): bool
     {
         $to = $move->getTo();
+
         return isset($this->desk[$to[0]][$to[1]]) && $this->desk[$to[0]][$to[1]] === 0;
     }
 

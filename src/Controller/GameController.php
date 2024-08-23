@@ -28,14 +28,13 @@ final class GameController extends AbstractController
     public function __construct(
         private readonly GameService $gameService,
         private readonly LoggerService $loggerService,
-    ) {
-    }
+    ) {}
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        if (! $user) {
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -61,19 +60,21 @@ final class GameController extends AbstractController
     public function create(Request $request): Response
     {
         $user = $this->getUser();
-        if (! $user) {
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
         $color = $request->request->get('player');
-        if (! in_array($color, ['white', 'black'])) {
+        if (!in_array($color, ['white', 'black'])) {
             $this->addFlash('danger', 'Color is not set');
+
             return $this->redirectToRoute('app_game_list');
         }
 
         $strategyId = $request->request->getInt('strategy');
-        if (! in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
+        if (!in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
             $this->addFlash('danger', 'Type of game is not set');
+
             return $this->redirectToRoute('app_game_list');
         }
 
@@ -91,20 +92,22 @@ final class GameController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
     ): Response {
         $user = $this->getUser();
-        if (! $user) {
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
         $color = $request->request->get('player');
         $roomId = $request->request->get('room');
-        if (! $roomId || ! in_array($color, ['white', 'black'])) {
+        if (!$roomId || !in_array($color, ['white', 'black'])) {
             $this->addFlash('danger', 'Color not set');
+
             return $this->redirectToRoute('app_game_list');
         }
 
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-        if (! $gameLaunch) {
+        if (!$gameLaunch) {
             $this->addFlash('danger', 'Game not found');
+
             return $this->redirectToRoute('app_game_list');
         }
 
@@ -120,14 +123,16 @@ final class GameController extends AbstractController
     public function game(EntityManagerInterface $entityManager, Session $session, string $room): Response
     {
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $room]);
-        if (! $gameLaunch) {
+        if (!$gameLaunch) {
             $this->addFlash('danger', 'Game not found');
+
             return $this->redirectToRoute('app_game_list');
         }
 
         $userColor = $this->gameService->getUserColor($gameLaunch, $this->getUser());
-        if (! $userColor) {
+        if (!$userColor) {
             $this->addFlash('danger', 'This room is occupied');
+
             return $this->redirectToRoute('app_game_list');
         }
 
@@ -154,7 +159,7 @@ final class GameController extends AbstractController
         $logger = $logger->withName($roomId);
 
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-        if (! $gameLaunch) {
+        if (!$gameLaunch) {
             return $this->redirectToRoute('app_game_list');
         }
 
@@ -176,7 +181,7 @@ final class GameController extends AbstractController
     {
         $roomId = $session->get('room');
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $roomId]);
-        if (! $gameLaunch) {
+        if (!$gameLaunch) {
             return $this->redirectToRoute('app_game_list');
         }
 

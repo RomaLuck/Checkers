@@ -10,9 +10,7 @@ use App\Service\Game\Team\PlayerInterface;
 
 final class IsOpportunityForBeatRule implements RuleInterface
 {
-    public function __construct(private array $desk)
-    {
-    }
+    public function __construct(private array $desk) {}
 
     public function check(PlayerInterface $player, Move $move): bool
     {
@@ -27,7 +25,7 @@ final class IsOpportunityForBeatRule implements RuleInterface
         }
 
         return $step <= $player->getFigure()->getStepOpportunityForAttack()
-            && ! in_array(1, $stepLengthBetweenCheckersList);
+            && !in_array(1, $stepLengthBetweenCheckersList);
     }
 
     public function getMessage(): string

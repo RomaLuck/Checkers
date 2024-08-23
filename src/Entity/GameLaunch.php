@@ -48,13 +48,13 @@ class GameLaunch
     #[Column(type: 'boolean')]
     private bool $is_active;
 
-    #[ORM\Column(type: 'smallint')]
+    #[Column(type: 'smallint')]
     private ?int $strategy_id = null;
 
     #[Column(type: 'boolean')]
     private bool $currentTurn = self::WHITE_TURN;
 
-    #[ORM\Column(type: 'smallint', nullable: true)]
+    #[Column(type: 'smallint', nullable: true)]
     private ?int $complexity = null;
 
     public function __construct()
@@ -156,14 +156,17 @@ class GameLaunch
 
     public function assignPlayerToGame(UserInterface $player): bool
     {
-        if (! $this->getWhiteTeamUser()) {
+        if (!$this->getWhiteTeamUser()) {
             $this->setWhiteTeamUser($player);
+
             return true;
         }
-        if (! $this->getBlackTeamUser()) {
+        if (!$this->getBlackTeamUser()) {
             $this->setBlackTeamUser($player);
+
             return true;
         }
+
         return false;
     }
 

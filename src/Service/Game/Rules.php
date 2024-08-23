@@ -22,8 +22,7 @@ final class Rules
         private PlayerInterface $player,
         private array $desk,
         private ?LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
     public function checkForMove(Move $move): bool
     {
@@ -54,8 +53,9 @@ final class Rules
     public function checkRules(array $rules, Move $move): bool
     {
         foreach ($rules as $rule) {
-            if (! $rule->check($this->player, $move)) {
+            if (!$rule->check($this->player, $move)) {
                 $this->logger?->warning($rule->getMessage());
+
                 return false;
             }
         }

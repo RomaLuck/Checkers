@@ -10,9 +10,7 @@ class Move
      * @param array<int> $from
      * @param array<int> $to
      */
-    public function __construct(private array $from, private array $to)
-    {
-    }
+    public function __construct(private array $from, private array $to) {}
 
     /**
      * @return array<int>
@@ -52,7 +50,7 @@ class Move
     ): self {
         $inputTransformer = new InputTransformer();
         [$cellFromTransformed, $cellToTransformed] = $inputTransformer->transformInputToArray($cellFrom, $cellTo);
-        if (! is_array($cellFromTransformed) || ! is_array($cellToTransformed)) {
+        if (!is_array($cellFromTransformed) || !is_array($cellToTransformed)) {
             throw new \RuntimeException('Cells are no transformed');
         }
 

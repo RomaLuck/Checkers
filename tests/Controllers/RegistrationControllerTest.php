@@ -15,7 +15,7 @@ class RegistrationControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $client->submitForm('Register', [
             'username' => 'john.doe@example.com',
-            'password' => '12345678'
+            'password' => '12345678',
         ]);
         self::assertResponseRedirects('/');
     }

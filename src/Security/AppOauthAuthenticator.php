@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-final class AppOauthAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+final class AppOauthAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private ClientRegistry $clientRegistry;
     private EntityManagerInterface $entityManager;
@@ -56,7 +56,7 @@ final class AppOauthAuthenticator extends OAuth2Authenticator implements Authent
                 }
 
                 $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $email]);
-                if (! $user) {
+                if (!$user) {
                     $newUser = new User();
                     $newUser->setUsername($email);
                     $newUser->setPassword(password_hash($oauthId, PASSWORD_BCRYPT));

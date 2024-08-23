@@ -83,7 +83,7 @@ class GameControllerTest extends WebTestCase
 
         $this->client->request('POST', '/join', [
             'player' => 'white',
-            'room' => $roomId
+            'room' => $roomId,
         ]);
 
         $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());

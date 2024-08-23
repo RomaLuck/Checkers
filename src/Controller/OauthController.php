@@ -17,6 +17,7 @@ final class OauthController extends AbstractController
         if ($this->getUser()) {
             return $this->redirectToRoute('app_game_list');
         }
+
         return $clientRegistry
             ->getClient('google')
             ->redirect([]);
@@ -34,6 +35,7 @@ final class OauthController extends AbstractController
         if ($this->getUser()) {
             return $this->redirectToRoute('app_game_list');
         }
+
         return $clientRegistry
             ->getClient('facebook')
             ->redirect([]);
@@ -51,6 +53,7 @@ final class OauthController extends AbstractController
         if ($this->getUser()) {
             return $this->redirectToRoute('app_game_list');
         }
+
         return $clientRegistry
             ->getClient('github')
             ->redirect([
@@ -70,6 +73,7 @@ final class OauthController extends AbstractController
         if ($this->getUser()) {
             return $this->redirectToRoute('app_game_list');
         }
+
         return $clientRegistry
             ->getClient('microsoft')
             ->redirect(

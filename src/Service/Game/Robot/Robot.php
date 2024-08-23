@@ -38,7 +38,7 @@ final class Robot
     /**
      *  Calculates the best move using the minimax algorithm.
      *
-     * @return array An array containing the best score and the best move.
+     * @return array        an array containing the best score and the best move
      * @return array<array>
      */
     public function bestMove(
@@ -52,6 +52,7 @@ final class Robot
 
         if ($depth === $this->maxDepth || $this->isGameOver($board)) {
             $evaluate = $this->evaluate($board, $computerTeam->getTeamNumbers());
+
             return [$evaluate, null];
         }
 
@@ -104,7 +105,7 @@ final class Robot
 
     /**
      * @param array<array<int>> $board
-     * @param array<int> $computerTeamNumbers
+     * @param array<int>        $computerTeamNumbers
      */
     private function evaluate(array $board, array $computerTeamNumbers): int
     {

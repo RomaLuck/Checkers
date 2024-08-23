@@ -20,9 +20,9 @@ final class RedisHandler extends AbstractProcessingHandler
     private string $redisKey;
 
     /**
-     * @param Predis<Predis> $redis The redis instance
-     * @param string $key The key name to push records to
-     * @param int $capSize Number of entries to limit list size to, 0 = unlimited
+     * @param Predis<Predis> $redis   The redis instance
+     * @param string         $key     The key name to push records to
+     * @param int            $capSize Number of entries to limit list size to, 0 = unlimited
      */
     public function __construct(Predis $redis, string $key, int|string|Level $level = Level::Debug, bool $bubble = true, int $capSize = 0)
     {
@@ -55,7 +55,7 @@ final class RedisHandler extends AbstractProcessingHandler
 
     /**
      * Write and cap the collection
-     * Writes the record to the redis list and caps its
+     * Writes the record to the redis list and caps its.
      */
     protected function writeCapped(LogRecord $record): void
     {

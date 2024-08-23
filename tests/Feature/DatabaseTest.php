@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Feature;
 
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class DatabaseTest extends KernelTestCase
@@ -21,7 +20,7 @@ class DatabaseTest extends KernelTestCase
             $db = $entityManager->getConnection();
             $db->executeQuery('SELECT 1');
             $this->assertTrue(true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->fail("Can not connect to: {$e->getMessage()}");
         }
     }

@@ -9,9 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class GameStatusUpdatedEvent extends Event
 {
-    public function __construct(private GameLaunch $gameLaunch)
-    {
-    }
+    public function __construct(private GameLaunch $gameLaunch) {}
 
     public function getGameLaunch(): GameLaunch
     {

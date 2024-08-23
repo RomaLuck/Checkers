@@ -12,8 +12,7 @@ class UserCacheService
 {
     public function __construct(
         private CacheInterface $cache
-    ) {
-    }
+    ) {}
 
     public function getCachedWhiteTeamUser(GameLaunch $gameLaunch, string $roomId): array
     {
@@ -21,7 +20,7 @@ class UserCacheService
             $item->expiresAfter(3600);
 
             $user = $gameLaunch->getWhiteTeamUser();
-            if (! $user) {
+            if (!$user) {
                 throw new \RuntimeException('User not found');
             }
 
@@ -38,7 +37,7 @@ class UserCacheService
             $item->expiresAfter(3600);
 
             $user = $gameLaunch->getBlackTeamUser();
-            if (! $user) {
+            if (!$user) {
                 throw new \RuntimeException('User not found');
             }
 

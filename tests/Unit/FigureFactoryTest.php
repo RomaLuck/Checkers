@@ -8,7 +8,6 @@ use App\Service\Game\Figure\Checker;
 use App\Service\Game\Figure\FigureFactory;
 use App\Service\Game\Figure\King;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class FigureFactoryTest extends TestCase
 {
@@ -22,7 +21,7 @@ class FigureFactoryTest extends TestCase
 
     public function createFalseFigure(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $figure = (new FigureFactory(5))->create();
     }
 }

@@ -6,9 +6,7 @@ namespace App\Service\Monolog;
 
 final class LoggerService
 {
-    public function __construct(private RedisHandler $handler)
-    {
-    }
+    public function __construct(private RedisHandler $handler) {}
 
     /**
      * @return array<string>

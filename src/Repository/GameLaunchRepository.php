@@ -9,8 +9,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method GameLaunch|null find($id, $lockMode = null, $lockVersion = null)
- * @method GameLaunch|null findOneBy(array $criteria, array $orderBy = null)
+ * @method GameLaunch|null   find($id, $lockMode = null, $lockVersion = null)
+ * @method GameLaunch|null   findOneBy(array $criteria, array $orderBy = null)
  * @method array<GameLaunch> findAll()
  * @method array<GameLaunch> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

@@ -15,8 +15,7 @@ final class GameStrategyFactory
         private EntityManagerInterface $entityManager,
         private UserCacheService $userCacheService,
         private MessageBusInterface $bus,
-    ) {
-    }
+    ) {}
 
     public function create(int $strategyId): StrategyInterface
     {

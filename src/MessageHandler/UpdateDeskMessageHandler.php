@@ -22,8 +22,7 @@ class UpdateDeskMessageHandler
         private HubInterface $hub,
         private LoggerInterface $logger,
         private MercureService $mercureService,
-    ) {
-    }
+    ) {}
 
     public function __invoke(UpdateDeskMessage $message): void
     {

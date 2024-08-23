@@ -26,6 +26,7 @@ final class CheckerDeskService
     ): array {
         $selectedTeamNumber = $this->getSelectedTeamNumber($desk, $move->getFrom());
         $updatedDesk = $this->updateDesk($desk, $move, $selectedTeamNumber);
+
         return $this->updateFigures($updatedDesk);
     }
 
@@ -87,7 +88,7 @@ final class CheckerDeskService
         while ($currentX !== $to[0] && $currentY !== $to[1]) {
             if (isset($deskData[$currentX][$currentY])
                 && $deskData[$currentX][$currentY] > 0
-                && ! in_array($deskData[$currentX][$currentY], $player->getTeamNumbers())
+                && !in_array($deskData[$currentX][$currentY], $player->getTeamNumbers())
             ) {
                 $figuresCells[] = [$currentX, $currentY];
             }

@@ -27,8 +27,9 @@ final class RegistrationController extends AbstractController
     ): Response {
         if ($request->isMethod('POST')) {
             $submittedToken = $request->getPayload()->get('_csrf_token');
-            if (! $this->isCsrfTokenValid('register', $submittedToken)) {
+            if (!$this->isCsrfTokenValid('register', $submittedToken)) {
                 $this->addFlash('error', 'Token is invalid');
+
                 return $this->redirectToRoute('app_register');
             }
 

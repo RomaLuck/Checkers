@@ -21,8 +21,7 @@ final class PlayerStrategy implements StrategyInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserCacheService $userCacheService,
-    ) {
-    }
+    ) {}
 
     public function run(GameLaunch $gameLaunch, string $roomId, Request $request, LoggerInterface $logger): void
     {

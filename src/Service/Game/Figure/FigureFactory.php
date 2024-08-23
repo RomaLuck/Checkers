@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Figure;
 
-use RuntimeException;
-
 final class FigureFactory
 {
-    public function __construct(private int $teamNumber)
-    {
-    }
+    public function __construct(private int $teamNumber) {}
 
     public function create(): FigureInterface
     {
@@ -20,6 +16,6 @@ final class FigureFactory
         if (King::isKing($this->teamNumber)) {
             return new King();
         }
-        throw new RuntimeException('Figure is not selected');
+        throw new \RuntimeException('Figure is not selected');
     }
 }
