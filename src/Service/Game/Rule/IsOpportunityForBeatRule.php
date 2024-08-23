@@ -10,7 +10,9 @@ use App\Service\Game\Team\PlayerInterface;
 
 final class IsOpportunityForBeatRule implements RuleInterface
 {
-    public function __construct(private array $desk) {}
+    public function __construct(private array $desk)
+    {
+    }
 
     public function check(PlayerInterface $player, Move $move): bool
     {

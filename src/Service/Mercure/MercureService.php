@@ -11,7 +11,9 @@ use Symfony\Component\Mercure\Update;
 
 final class MercureService
 {
-    public function __construct(private LoggerService $loggerService) {}
+    public function __construct(private LoggerService $loggerService)
+    {
+    }
 
     public function publishData(
         GameLaunch $gameLaunch,

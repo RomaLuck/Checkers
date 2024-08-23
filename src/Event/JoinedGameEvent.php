@@ -9,7 +9,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class JoinedGameEvent extends Event
 {
-    public function __construct(private GameLaunch $gameLaunch, private string $username) {}
+    public function __construct(private GameLaunch $gameLaunch, private string $username)
+    {
+    }
 
     public function getGameLaunch(): GameLaunch
     {

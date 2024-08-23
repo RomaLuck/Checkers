@@ -28,7 +28,8 @@ final class GameController extends AbstractController
     public function __construct(
         private readonly GameService $gameService,
         private readonly LoggerService $loggerService,
-    ) {}
+    ) {
+    }
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response

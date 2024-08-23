@@ -12,7 +12,8 @@ final class GameService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-    ) {}
+    ) {
+    }
 
     public function createGameLaunch(
         UserInterface $user,

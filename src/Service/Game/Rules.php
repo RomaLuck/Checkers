@@ -22,7 +22,8 @@ final class Rules
         private PlayerInterface $player,
         private array $desk,
         private ?LoggerInterface $logger
-    ) {}
+    ) {
+    }
 
     public function checkForMove(Move $move): bool
     {

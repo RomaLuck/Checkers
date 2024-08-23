@@ -13,7 +13,8 @@ final class GameStatusUpdatedEventListener
     public function __construct(
         private MercureService $mercureService,
         private HubInterface $hub
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: 'GameStatusUpdatedEvent')]
     public function onGameStatusUpdatedEvent($event): void

@@ -15,7 +15,8 @@ final class UserJoinedGameEventListener
         private LoggerInterface $logger,
         private MercureService $mercureService,
         private HubInterface $hub
-    ) {}
+    ) {
+    }
 
     #[AsEventListener(event: 'JoinedGameEvent')]
     public function onJoinedGameEvent($event): void

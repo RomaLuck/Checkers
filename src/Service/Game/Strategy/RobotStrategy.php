@@ -24,7 +24,8 @@ final class RobotStrategy implements StrategyInterface
         private EntityManagerInterface $entityManager,
         private UserCacheService $userCacheService,
         private MessageBusInterface $bus,
-    ) {}
+    ) {
+    }
 
     public function run(GameLaunch $gameLaunch, string $roomId, Request $request, LoggerInterface $logger): void
     {

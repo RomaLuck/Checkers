@@ -12,7 +12,8 @@ class UserCacheService
 {
     public function __construct(
         private CacheInterface $cache
-    ) {}
+    ) {
+    }
 
     public function getCachedWhiteTeamUser(GameLaunch $gameLaunch, string $roomId): array
     {

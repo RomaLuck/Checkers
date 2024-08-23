@@ -6,7 +6,9 @@ namespace App\Service\Game\Figure;
 
 final class FigureFactory
 {
-    public function __construct(private int $teamNumber) {}
+    public function __construct(private int $teamNumber)
+    {
+    }
 
     public function create(): FigureInterface
     {

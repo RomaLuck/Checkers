@@ -10,7 +10,9 @@ class Move
      * @param array<int> $from
      * @param array<int> $to
      */
-    public function __construct(private array $from, private array $to) {}
+    public function __construct(private array $from, private array $to)
+    {
+    }
 
     /**
      * @return array<int>

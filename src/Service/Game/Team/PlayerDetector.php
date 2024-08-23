@@ -9,7 +9,8 @@ final class PlayerDetector
     public function __construct(
         private PlayerInterface $white,
         private PlayerInterface $black
-    ) {}
+    ) {
+    }
 
     public function detect(int $teamNumber): ?PlayerInterface
     {
