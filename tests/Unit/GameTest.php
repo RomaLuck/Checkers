@@ -15,8 +15,11 @@ use PHPUnit\Framework\TestCase;
 class GameTest extends TestCase
 {
     private Game $game;
+
     private White $white;
+
     private Black $black;
+
     private MoveResult $startMoveResult;
 
     protected function setUp(): void

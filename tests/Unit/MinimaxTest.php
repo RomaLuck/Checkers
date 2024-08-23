@@ -16,6 +16,7 @@ class MinimaxTest extends TestCase
     private Game $game;
 
     private MoveResult $startCondition;
+
     private Robot $minimax;
 
     protected function setUp(): void

@@ -16,7 +16,9 @@ final class White implements PlayerInterface
     public const TRANSFORMATION_CELL_WHITE = 7;
 
     private string $name;
+
     private FigureInterface $figure;
+
     private int $id;
 
     public function __construct(int $id, string $name)

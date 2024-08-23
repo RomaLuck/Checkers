@@ -22,7 +22,9 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 final class AppOauthAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private ClientRegistry $clientRegistry;
+
     private EntityManagerInterface $entityManager;
+
     private RouterInterface $router;
 
     public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router)

@@ -17,7 +17,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class GameControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
+
     private ?ObjectManager $entityManager;
+
     private UserInterface $user;
 
     public function setUp(): void

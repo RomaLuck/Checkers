@@ -14,7 +14,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class GameServiceTest extends KernelTestCase
 {
     private ?EntityManager $entityManager;
+
     private GameService $gameService;
+
     private UserInterface $user;
 
     protected function setUp(): void

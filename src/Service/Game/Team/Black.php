@@ -16,7 +16,9 @@ final class Black implements PlayerInterface
     public const TRANSFORMATION_CELL_BLACK = 0;
 
     private string $name;
+
     private FigureInterface $figure;
+
     private int $id;
 
     public function __construct(int $id, string $name)

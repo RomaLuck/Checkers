@@ -13,6 +13,7 @@ class CheckerDeskServiceTest extends TestCase
      * @var array<array>
      */
     private array $desk;
+
     private CheckerDeskService $checkerDeskService;
 
     protected function setUp(): void

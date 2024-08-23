@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 final class Game
 {
     private InputTransformer $inputTransformer;
+
     private CheckerDeskService $checkerDeskService;
 
     public function __construct(

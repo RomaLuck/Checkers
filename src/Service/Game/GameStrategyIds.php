@@ -7,6 +7,7 @@ namespace App\Service\Game;
 final class GameStrategyIds
 {
     public const COMPUTER = 1;
+
     public const MULTIPLAYER = 2;
 
     public static function allStrategyIds(): array
