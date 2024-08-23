@@ -3,8 +3,6 @@
 * [General info](#general-info)
 * [Tools](#tools)
 * [Current features](#current-features)
-    - [Current works](#current-works)
-    - [ToDo](#todo)
 * [Setup](#setup)
 * [Test](#test)
 * [Screenshot](#screenshots)
@@ -12,8 +10,6 @@
 ## General info
 
 Game "Checkers"
-
-Currently, it is under development.
 
 ## Tools
 
@@ -36,14 +32,6 @@ Currently, it is under development.
 - Authorization through social networks
 - Server-Sent-Events
 - Async/Queued Messages
-
-## Current works
-
-- Statistics
-
-## ToDo
-
-- Tests
 
 ## Setup
 
