@@ -11,7 +11,8 @@ RUN set -ex \
     openssl \
     acl \
     wget \
-    supervisor
+    supervisor \
+    npm
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
@@ -31,6 +32,6 @@ RUN echo 'pm.max_children = 30' >> /usr/local/etc/php-fpm.d/zz-docker.conf
 RUN docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-install opcache
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/php/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
