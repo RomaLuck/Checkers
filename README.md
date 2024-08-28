@@ -13,7 +13,7 @@ Game "Checkers"
 
 ## Tools
 
-- Docker
+- Docker v27.1.2
 - Symfony v7.1.1
 - Twig v.3.10.3
 - PHP v8.2
