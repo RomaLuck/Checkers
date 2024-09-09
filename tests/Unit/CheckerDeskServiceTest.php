@@ -2,8 +2,8 @@
 
 namespace App\Tests\Unit;
 
-use App\Service\Game\CheckerDesk;
 use App\Service\Game\CheckerDeskService;
+use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Move;
 use PHPUnit\Framework\TestCase;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit;
 
-use App\Service\Game\CheckerDesk;
-use App\Service\Game\Figure\FigureInterface;
+use App\Service\Game\Checkers\CheckerDesk;
+use App\Service\Game\Checkers\Figure\FigureInterface;
 use App\Service\Game\Move;
 use App\Service\Game\Rules;
 use App\Service\Game\Team\PlayerInterface;

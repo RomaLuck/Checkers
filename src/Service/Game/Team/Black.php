@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Game\Team;
 
 use App\Entity\GameLaunch;
-use App\Service\Game\Figure\FigureInterface;
+use App\Service\Game\Checkers\Figure\FigureInterface;
 
 final class Black implements PlayerInterface
 {

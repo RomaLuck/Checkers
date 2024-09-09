@@ -4,7 +4,7 @@ namespace App\Tests\Feature;
 
 use App\Entity\GameLaunch;
 use App\Entity\User;
-use App\Service\Game\CheckerDesk;
+use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\GameService;
 use App\Service\Game\GameStrategyIds;
 use Doctrine\ORM\EntityManager;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Game;
 
 use App\Entity\GameLaunch;
+use App\Service\Game\Checkers\CheckerDesk;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 

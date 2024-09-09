@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game;
 
-use App\Service\Game\Figure\FigureFactory;
+use App\Service\Game\Checkers\Figure\FigureFactory;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\PlayerDetector;
 use App\Service\Game\Team\PlayerInterface;

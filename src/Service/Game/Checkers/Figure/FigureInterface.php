@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Figure;
+namespace App\Service\Game\Checkers\Figure;
 
 interface FigureInterface
 {

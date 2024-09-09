@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit;
 
-use App\Service\Game\CheckerDesk;
+use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Game;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;

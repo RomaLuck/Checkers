@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Rule;
+namespace App\Service\Game\Checkers\Rule;
 
 use App\Service\Game\CheckerDeskService;
 use App\Service\Game\Move;

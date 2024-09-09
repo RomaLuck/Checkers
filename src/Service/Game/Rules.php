@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service\Game;
 
-use App\Service\Game\Rule\IsAvailableCellRule;
-use App\Service\Game\Rule\IsCorrectStep;
-use App\Service\Game\Rule\IsOpportunityForBeatRule;
-use App\Service\Game\Rule\IsOpportunityForMoveRule;
-use App\Service\Game\Rule\IsTrueDirectionRule;
-use App\Service\Game\Rule\RuleInterface;
+use App\Service\Game\Checkers\Rule\IsAvailableCellRule;
+use App\Service\Game\Checkers\Rule\IsCorrectStep;
+use App\Service\Game\Checkers\Rule\IsOpportunityForBeatRule;
+use App\Service\Game\Checkers\Rule\IsOpportunityForMoveRule;
+use App\Service\Game\Checkers\Rule\IsTrueDirectionRule;
+use App\Service\Game\Checkers\Rule\RuleInterface;
 use App\Service\Game\Team\PlayerInterface;
 use Psr\Log\LoggerInterface;
 

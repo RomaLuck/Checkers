@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Game;
 
-use App\Service\Game\Figure\Checker;
-use App\Service\Game\Figure\King;
+use App\Service\Game\Checkers\Figure\Checker;
+use App\Service\Game\Checkers\Figure\King;
 use App\Service\Game\Team\Black;
 use App\Service\Game\Team\PlayerInterface;
 use App\Service\Game\Team\White;

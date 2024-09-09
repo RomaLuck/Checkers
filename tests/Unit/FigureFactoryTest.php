@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit;
 
-use App\Service\Game\Figure\Checker;
-use App\Service\Game\Figure\FigureFactory;
-use App\Service\Game\Figure\King;
+use App\Service\Game\Checkers\Figure\Checker;
+use App\Service\Game\Checkers\Figure\FigureFactory;
+use App\Service\Game\Checkers\Figure\King;
 use PHPUnit\Framework\TestCase;
 
 class FigureFactoryTest extends TestCase
