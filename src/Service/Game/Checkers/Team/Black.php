@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Team;
+namespace App\Service\Game\Checkers\Team;
 
 use App\Entity\GameLaunch;
 use App\Service\Game\Checkers\Figure\FigureInterface;
 
-final class White implements PlayerInterface
+final class Black implements PlayerInterface
 {
-    public const WHITE_NUMBERS = [1, 3];
+    public const BLACK_NUMBERS = [2, 4];
 
-    public const DIRECTION_WHITE = 1;
+    public const DIRECTION_BLACK = -1;
 
-    public const TRANSFORMATION_CELL_WHITE = 7;
+    public const TRANSFORMATION_CELL_BLACK = 0;
 
     private string $name;
 
@@ -37,12 +37,12 @@ final class White implements PlayerInterface
      */
     public function getTeamNumbers(): array
     {
-        return self::WHITE_NUMBERS;
+        return self::BLACK_NUMBERS;
     }
 
     public function getDirection(): int
     {
-        return self::DIRECTION_WHITE;
+        return self::DIRECTION_BLACK;
     }
 
     public function setFigure(FigureInterface $figure): void
@@ -60,13 +60,13 @@ final class White implements PlayerInterface
         return $this->id;
     }
 
-    public static function isWhiteNumber(int $number): bool
+    public static function isBlackNumber(int $number): bool
     {
-        return in_array($number, self::WHITE_NUMBERS);
+        return in_array($number, self::BLACK_NUMBERS);
     }
 
     public function isTurnForPlayer(bool $currentTurn): bool
     {
-        return $currentTurn === GameLaunch::WHITE_TURN;
+        return $currentTurn === GameLaunch::BLACK_TURN;
     }
 }

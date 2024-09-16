@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Robot;
+namespace App\Service\Game\Checkers\Robot;
 
-use App\Service\Game\Game;
+use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\Team\PlayerInterface;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
-use App\Service\Game\Team\PlayerInterface;
 use Psr\Log\LoggerInterface;
 
 final class Robot

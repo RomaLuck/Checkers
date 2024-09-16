@@ -2,8 +2,8 @@
 
 namespace App\Service\Game\Chess\Rule\PawnRules;
 
+use App\Service\Game\Checkers\Team\PlayerInterface;
 use App\Service\Game\Move;
-use App\Service\Game\Team\PlayerInterface;
 
 class IsTrueDirectionRule
 {

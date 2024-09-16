@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game;
+namespace App\Service\Game\Checkers;
 
 use App\Service\Game\Checkers\Rule\IsAvailableCellRule;
 use App\Service\Game\Checkers\Rule\IsCorrectStep;
@@ -10,7 +10,8 @@ use App\Service\Game\Checkers\Rule\IsOpportunityForBeatRule;
 use App\Service\Game\Checkers\Rule\IsOpportunityForMoveRule;
 use App\Service\Game\Checkers\Rule\IsTrueDirectionRule;
 use App\Service\Game\Checkers\Rule\RuleInterface;
-use App\Service\Game\Team\PlayerInterface;
+use App\Service\Game\Checkers\Team\PlayerInterface;
+use App\Service\Game\Move;
 use Psr\Log\LoggerInterface;
 
 final class Rules

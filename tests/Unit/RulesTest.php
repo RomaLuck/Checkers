@@ -6,9 +6,9 @@ namespace App\Tests\Unit;
 
 use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Checkers\Figure\FigureInterface;
+use App\Service\Game\Checkers\Rules;
+use App\Service\Game\Checkers\Team\PlayerInterface;
 use App\Service\Game\Move;
-use App\Service\Game\Rules;
-use App\Service\Game\Team\PlayerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 

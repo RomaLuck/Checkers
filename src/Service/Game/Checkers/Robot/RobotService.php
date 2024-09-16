@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Robot;
+namespace App\Service\Game\Checkers\Robot;
 
-use App\Service\Game\Game;
+use App\Service\Game\Checkers\Game;
 use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;

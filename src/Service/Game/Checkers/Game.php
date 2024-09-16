@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game;
+namespace App\Service\Game\Checkers;
 
 use App\Service\Game\Checkers\Figure\FigureFactory;
-use App\Service\Game\Team\Black;
-use App\Service\Game\Team\PlayerDetector;
-use App\Service\Game\Team\PlayerInterface;
-use App\Service\Game\Team\White;
+use App\Service\Game\Checkers\Team\Black;
+use App\Service\Game\Checkers\Team\PlayerDetector;
+use App\Service\Game\Checkers\Team\PlayerInterface;
+use App\Service\Game\Checkers\Team\White;
+use App\Service\Game\InputTransformer;
+use App\Service\Game\Move;
+use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
 
 final class Game

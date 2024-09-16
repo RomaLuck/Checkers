@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Checkers\Rule;
 
-use App\Service\Game\CheckerDeskService;
+use App\Service\Game\Checkers\CheckerDeskService;
+use App\Service\Game\Checkers\Team\PlayerInterface;
 use App\Service\Game\Move;
-use App\Service\Game\Team\PlayerInterface;
 
 final class IsOpportunityForBeatRule implements RuleInterface
 {

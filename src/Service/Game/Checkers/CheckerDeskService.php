@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game;
+namespace App\Service\Game\Checkers;
 
 use App\Service\Game\Checkers\Figure\Checker;
 use App\Service\Game\Checkers\Figure\King;
-use App\Service\Game\Team\Black;
-use App\Service\Game\Team\PlayerInterface;
-use App\Service\Game\Team\White;
+use App\Service\Game\Checkers\Team\Black;
+use App\Service\Game\Checkers\Team\PlayerInterface;
+use App\Service\Game\Checkers\Team\White;
+use App\Service\Game\Move;
 
 final class CheckerDeskService
 {

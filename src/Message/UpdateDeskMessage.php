@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Message;
 
-use App\Service\Game\Game;
+use App\Service\Game\Checkers\Game;
 use App\Service\Game\MoveResult;
 use Symfony\Component\Security\Core\User\UserInterface;
 

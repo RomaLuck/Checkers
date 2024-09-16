@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Team;
+namespace App\Service\Game\Checkers\Team;
 
 final class PlayerDetector
 {

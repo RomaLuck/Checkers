@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Game\Strategy;
+namespace App\Service\Game\Checkers\Strategy;
 
 use App\Entity\GameLaunch;
 use Psr\Log\LoggerInterface;

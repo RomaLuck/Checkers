@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Unit;
 
 use App\Service\Game\Checkers\CheckerDesk;
-use App\Service\Game\Game;
+use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\Team\Black;
+use App\Service\Game\Checkers\Team\White;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
-use App\Service\Game\Team\Black;
-use App\Service\Game\Team\White;
 use PHPUnit\Framework\TestCase;
 
 class GameTest extends TestCase

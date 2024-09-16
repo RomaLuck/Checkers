@@ -6,7 +6,7 @@ namespace App\MessageHandler;
 
 use App\Entity\GameLaunch;
 use App\Message\UpdateDeskMessage;
-use App\Service\Game\Robot\RobotService;
+use App\Service\Game\Checkers\Robot\RobotService;
 use App\Service\Mercure\MercureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
