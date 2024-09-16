@@ -8,7 +8,10 @@ use App\Service\Game\Chess\Rule\RuleInterface;
 
 interface FigureInterface
 {
-    public function getId(): int;
+    /**
+     * @return array<int>
+     */
+    public function getId(): array;
 
     /**
      * @return RuleInterface[]

@@ -5,7 +5,7 @@ namespace App\Service\Game\Chess\Figure;
 class Bishop implements FigureInterface
 {
 
-    public function getId(): int
+    public function getId(): array
     {
         return FigureIds::BISHOP;
     }

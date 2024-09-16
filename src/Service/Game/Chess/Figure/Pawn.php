@@ -9,7 +9,7 @@ class Pawn implements FigureInterface
 {
     public const STEP = 1;
 
-    public function getId(): int
+    public function getId(): array
     {
         return FigureIds::PAWN;
     }
