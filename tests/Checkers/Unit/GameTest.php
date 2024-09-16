@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit;
+namespace App\Tests\Checkers\Unit;
 
 use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Checkers\Game;

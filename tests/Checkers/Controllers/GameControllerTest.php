@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controllers;
+namespace App\Tests\Checkers\Controllers;
 
 use App\Entity\GameLaunch;
 use App\Entity\User;
