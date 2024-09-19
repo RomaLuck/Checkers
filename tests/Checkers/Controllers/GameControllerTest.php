@@ -89,7 +89,7 @@ class GameControllerTest extends WebTestCase
         ]);
 
         $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        self::assertResponseRedirects('/game/' . $roomId);
+        self::assertResponseRedirects('/checkers/room/' . $roomId);
     }
 
     public function testUpdate(): void
@@ -111,10 +111,10 @@ class GameControllerTest extends WebTestCase
         $this->entityManager->persist($game);
         $this->entityManager->flush();
 
-        $this->client->request('GET', '/game/' . $game->getRoomId());
+        $this->client->request('GET', '/checkers/room/' . $game->getRoomId());
         $this->client->getRequest()->getSession()->set('room', $game->getRoomId());
 
-        $this->client->xmlHttpRequest('POST', '/update', [
+        $this->client->xmlHttpRequest('POST', '/checkers/update', [
             'formData' => json_encode([
                 'form1' => 'a3',
                 'form2' => 'b4',
