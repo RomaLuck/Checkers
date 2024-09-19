@@ -18,7 +18,7 @@ function handleTableClick() {
                 form2: form2
             }));
 
-            fetch('/update', {
+            fetch('/checkers/update', {
                 method: 'POST',
                 body: formData
             })
@@ -40,7 +40,7 @@ function handleTableClick() {
 }
 
 function loadDefaultData() {
-    fetch('/update', {
+    fetch('/checkers/update', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
