@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Checkers\Robot;
 
-use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\CheckersGame;
 use App\Service\Game\Checkers\Team\PlayerInterface;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
@@ -15,7 +15,7 @@ final class Robot
     private int $maxDepth;
 
     public function __construct(
-        private Game $game,
+        private CheckersGame    $game,
         private PlayerInterface $computer,
         private PlayerInterface $opponent,
     ) {

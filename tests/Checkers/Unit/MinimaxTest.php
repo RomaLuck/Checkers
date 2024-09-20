@@ -3,7 +3,7 @@
 namespace App\Tests\Checkers\Unit;
 
 use App\Service\Game\Checkers\CheckerDesk;
-use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\CheckersGame;
 use App\Service\Game\Checkers\Robot\Robot;
 use App\Service\Game\Checkers\Team\Black;
 use App\Service\Game\Checkers\Team\White;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class MinimaxTest extends TestCase
 {
-    private Game $game;
+    private CheckersGame $game;
 
     private MoveResult $startCondition;
 
@@ -26,7 +26,7 @@ class MinimaxTest extends TestCase
 
         $this->startCondition = new MoveResult(CheckerDesk::START_DESK, true);
 
-        $this->game = new Game($robot, $player);
+        $this->game = new CheckersGame($robot, $player);
         $this->minimax = new Robot($this->game, $robot, $player);
     }
 

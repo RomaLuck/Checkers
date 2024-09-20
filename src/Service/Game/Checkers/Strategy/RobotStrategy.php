@@ -8,7 +8,7 @@ use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Message\UpdateDeskMessage;
 use App\Service\Cache\UserCacheService;
-use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\CheckersGame;
 use App\Service\Game\Checkers\Team\Black;
 use App\Service\Game\Checkers\Team\White;
 use App\Service\Game\Move;
@@ -54,7 +54,7 @@ final class RobotStrategy implements StrategyInterface
 
                 $this->bus->dispatch(new UpdateDeskMessage(
                     $computer,
-                    new Game($white, $black),
+                    new CheckersGame($white, $black),
                     $startCondition,
                     $roomId,
                     $gameLaunch->getComplexity()
@@ -67,7 +67,7 @@ final class RobotStrategy implements StrategyInterface
         $white = new White($whiteTeamUser['id'], $whiteTeamUser['username']);
         $black = new Black($blackTeamUser['id'], $blackTeamUser['username']);
 
-        $game = new Game($white, $black);
+        $game = new CheckersGame($white, $black);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
             $data = json_decode($request->request->get('formData'), true);

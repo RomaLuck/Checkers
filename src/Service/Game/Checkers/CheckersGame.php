@@ -14,7 +14,7 @@ use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
 
-final class Game
+final class CheckersGame
 {
     private InputTransformer $inputTransformer;
 

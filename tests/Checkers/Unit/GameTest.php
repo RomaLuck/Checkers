@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Checkers\Unit;
 
 use App\Service\Game\Checkers\CheckerDesk;
-use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\CheckersGame;
 use App\Service\Game\Checkers\Team\Black;
 use App\Service\Game\Checkers\Team\White;
 use App\Service\Game\Move;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class GameTest extends TestCase
 {
-    private Game $game;
+    private CheckersGame $game;
 
     private White $white;
 
@@ -27,7 +27,7 @@ class GameTest extends TestCase
         $this->white = new White(1, 'Roma');
         $this->black = new Black(2, 'Olena');
         $this->startMoveResult = new MoveResult(CheckerDesk::START_DESK, true);
-        $this->game = new Game($this->white, $this->black);
+        $this->game = new CheckersGame($this->white, $this->black);
     }
 
     public function testRun(): void

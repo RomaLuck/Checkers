@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Message;
 
-use App\Service\Game\Checkers\Game;
+use App\Service\Game\Checkers\CheckersGame;
 use App\Service\Game\MoveResult;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -12,10 +12,10 @@ class UpdateDeskMessage
 {
     public function __construct(
         private UserInterface $computer,
-        private Game $game,
-        private MoveResult $moveResult,
-        private string $roomId,
-        private ?int $complexity,
+        private CheckersGame  $game,
+        private MoveResult    $moveResult,
+        private string        $roomId,
+        private ?int          $complexity,
     ) {
     }
 
@@ -24,7 +24,7 @@ class UpdateDeskMessage
         return $this->computer;
     }
 
-    public function getGame(): Game
+    public function getGame(): CheckersGame
     {
         return $this->game;
     }
