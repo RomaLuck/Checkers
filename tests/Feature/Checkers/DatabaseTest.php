@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Checkers\Feature;
+namespace App\Tests\Feature\Checkers;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Checkers\Unit;
+namespace App\Tests\Unit\Checkers;
 
 use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Checkers\CheckersGame;

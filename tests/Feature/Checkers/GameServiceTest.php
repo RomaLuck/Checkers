@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Checkers\Feature;
+namespace App\Tests\Feature\Checkers;
 
 use App\Entity\GameLaunch;
 use App\Entity\User;

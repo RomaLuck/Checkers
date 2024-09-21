@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Checkers\Unit;
+namespace App\Tests\Unit\Checkers;
 
 use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Checkers\Figure\FigureInterface;

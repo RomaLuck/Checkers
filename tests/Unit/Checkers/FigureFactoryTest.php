@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Checkers\Unit;
+namespace App\Tests\Unit\Checkers;
 
 use App\Service\Game\Checkers\Figure\Checker;
 use App\Service\Game\Checkers\Figure\FigureFactory;
