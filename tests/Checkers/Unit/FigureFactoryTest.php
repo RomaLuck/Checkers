@@ -13,15 +13,13 @@ class FigureFactoryTest extends TestCase
 {
     public function testCreateFigure(): void
     {
-        $factory = new FigureFactory(1);
-        $this->assertInstanceOf(Checker::class, $factory->create());
-        $factory = new FigureFactory(4);
-        $this->assertInstanceOf(King::class, $factory->create());
+        $this->assertInstanceOf(Checker::class, FigureFactory::create(1));
+        $this->assertInstanceOf(King::class, FigureFactory::create(4));
     }
 
     public function createFalseFigure(): void
     {
         $this->expectException(\RuntimeException::class);
-        $figure = (new FigureFactory(5))->create();
+        $figure = FigureFactory::create(5);
     }
 }

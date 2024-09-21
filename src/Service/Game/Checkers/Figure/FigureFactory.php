@@ -6,16 +6,12 @@ namespace App\Service\Game\Checkers\Figure;
 
 final class FigureFactory
 {
-    public function __construct(private int $teamNumber)
+    public static function create(int $teamNumber): FigureInterface
     {
-    }
-
-    public function create(): FigureInterface
-    {
-        if (Checker::isChecker($this->teamNumber)) {
+        if (Checker::isChecker($teamNumber)) {
             return new Checker();
         }
-        if (King::isKing($this->teamNumber)) {
+        if (King::isKing($teamNumber)) {
             return new King();
         }
         throw new \RuntimeException('Figure is not selected');
