@@ -16,7 +16,7 @@ final class CheckerDeskService
     /**
      * @param array<int> $cellFrom
      */
-    public function getSelectedTeamNumber(array $deskData, array $cellFrom): int
+    public static function getSelectedTeamNumber(array $deskData, array $cellFrom): int
     {
         return $deskData[$cellFrom[0]][$cellFrom[1]];
     }
