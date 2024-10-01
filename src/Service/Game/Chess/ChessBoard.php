@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Chess;
 
-class ChessDesk
+use App\Service\Game\BoardAbstract;
+
+class ChessBoard extends BoardAbstract
 {
     public const START_DESK = [
         [4, 1, 0, 0, 0, 0, 7, 10],
