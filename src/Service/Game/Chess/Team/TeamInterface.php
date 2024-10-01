@@ -14,4 +14,6 @@ interface TeamInterface
     public function getFigure(): FigureInterface;
 
     public function setFigure(FigureInterface $figure);
+
+    public function isTurnForTeam(bool $turn): bool;
 }
