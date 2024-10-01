@@ -8,6 +8,26 @@ abstract class Team implements TeamInterface
 {
     private FigureInterface $figure;
 
+    private string $name;
+
+    private int $id;
+
+    public function __construct(int $id, string $name)
+    {
+        $this->id = $id;
+        $this->name = $name;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getFigure(): FigureInterface
     {
         return $this->figure;
