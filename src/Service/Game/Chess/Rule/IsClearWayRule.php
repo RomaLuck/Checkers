@@ -10,7 +10,7 @@ class IsClearWayRule implements RuleInterface
 {
     public function check(TeamInterface $team, Move $move, BoardAbstract $board): bool
     {
-        return count($this->getFiguresOnWay($move, $team, $board)) === 0;
+        return count($this->getFiguresOnWay($move, $board)) === 0;
     }
 
     public function getMessage(): string
@@ -18,19 +18,19 @@ class IsClearWayRule implements RuleInterface
         return 'Way is not clear';
     }
 
-    private function getFiguresOnWay(Move $move, TeamInterface $team, BoardAbstract $board): array
+    private function getFiguresOnWay(Move $move, BoardAbstract $board): array
     {
         $from = $move->getFrom();
         $to = $move->getTo();
         $board = $board->getBoardData();
 
         $figuresCells = [];
-        $directionX = $to[0] - $from[0] > 0 ? 1 : -1;
-        $directionY = $to[1] - $from[1] > 0 ? 1 : -1;
+        $directionX = $to[0] === $from[0] ? 0 : ($to[0] - $from[0] > 0 ? 1 : -1);
+        $directionY = $to[1] === $from[1] ? 0 : ($to[1] - $from[1] > 0 ? 1 : -1);
         $currentX = $from[0] + $directionX;
         $currentY = $from[1] + $directionY;
 
-        while ($currentX !== $to[0] && $currentY !== $to[1]) {
+        while ($currentX !== $to[0] || $currentY !== $to[1]) {
             if (isset($board[$currentX][$currentY])
                 && $board[$currentX][$currentY] > 0
             ) {

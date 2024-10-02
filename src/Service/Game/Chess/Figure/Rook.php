@@ -2,6 +2,9 @@
 
 namespace App\Service\Game\Chess\Figure;
 
+use App\Service\Game\Chess\MoveStrategy\RookMoveStrategy;
+use App\Service\Game\Chess\Rule\IsClearWayRule;
+
 class Rook implements FigureInterface
 {
 
@@ -12,6 +15,15 @@ class Rook implements FigureInterface
 
     public function getFigureRules(): array
     {
-        return [];
+        return [
+            new IsClearWayRule()
+        ];
+    }
+
+    public function getMoveStrategies(): array
+    {
+        return [
+            new RookMoveStrategy()
+        ];
     }
 }
