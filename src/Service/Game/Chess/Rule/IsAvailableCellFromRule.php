@@ -10,13 +10,9 @@ use App\Service\Game\Move;
 
 final class IsAvailableCellFromRule implements RuleInterface
 {
-    public function __construct(private BoardAbstract $board)
+    public function check(TeamInterface $team, Move $move, BoardAbstract $board): bool
     {
-    }
-
-    public function check(TeamInterface $team, Move $move): bool
-    {
-        $board = $this->board->getBoardData();
+        $board = $board->getBoardData();
         $from = $move->getFrom();
         $fromNumber = $board[$from[0]][$from[1]] ?? '';
 

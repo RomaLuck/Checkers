@@ -38,7 +38,7 @@ class MoveValidator
         $rules = array_merge($figureRules, $this->getGeneralRules());
 
         foreach ($rules as $rule) {
-            if (!$rule->check($team, $move)) {
+            if (!$rule->check($team, $move, $this->board)) {
                 $this->logger->warning($rule->getMessage());
 
                 return false;
@@ -54,8 +54,8 @@ class MoveValidator
     public function getGeneralRules(): array
     {
         return [
-            new IsAvailableCellFromRule($this->board),
-            new IsAvailableCellToRule($this->board)
+            new IsAvailableCellFromRule(),
+            new IsAvailableCellToRule(),
         ];
     }
 }
