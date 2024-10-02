@@ -2,8 +2,13 @@
 
 namespace App\Service\Game\Chess\Figure;
 
+use App\Service\Game\Chess\MoveStrategy\BishopMoveStrategy;
+use App\Service\Game\Chess\MoveStrategy\RookMoveStrategy;
+use App\Service\Game\Chess\Rule\IsOpportunityForMoveRule;
+
 class King implements FigureInterface
 {
+    public const STEP = 1;
 
     public function getId(): array
     {
@@ -12,6 +17,16 @@ class King implements FigureInterface
 
     public function getFigureRules(): array
     {
-        return [];
+        return [
+            new IsOpportunityForMoveRule(self::STEP)
+        ];
+    }
+
+    public function getMoveStrategies(): array
+    {
+        return [
+            new BishopMoveStrategy(),
+            new RookMoveStrategy()
+        ];
     }
 }

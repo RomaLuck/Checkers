@@ -19,6 +19,9 @@ class IsOpportunityForMoveRule implements RuleInterface
     public function check(TeamInterface $team, Move $move, BoardAbstract $board): bool
     {
         $step = abs($move->getTo()[1] - $move->getFrom()[1]);
+        if ($step === 0) {
+            $step = abs($move->getTo()[0] - $move->getFrom()[0]);
+        }
 
         return $step === $this->step;
     }
