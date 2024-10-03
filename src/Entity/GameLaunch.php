@@ -57,6 +57,9 @@ class GameLaunch
     #[Column(type: 'smallint', nullable: true)]
     private ?int $complexity = null;
 
+    #[ORM\Column]
+    private ?int $type_id = null;
+
     public function __construct()
     {
         $this->setRoomId();
@@ -178,5 +181,17 @@ class GameLaunch
     public function setComplexity(?int $complexity): void
     {
         $this->complexity = $complexity;
+    }
+
+    public function getTypeId(): ?int
+    {
+        return $this->type_id;
+    }
+
+    public function setTypeId(int $type_id): static
+    {
+        $this->type_id = $type_id;
+
+        return $this;
     }
 }
