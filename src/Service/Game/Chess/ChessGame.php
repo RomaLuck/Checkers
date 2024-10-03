@@ -25,7 +25,7 @@ class ChessGame
 
     public function run(MoveResult $currenCondition, Move $move): MoveResult
     {
-        $board = new ChessBoard($currenCondition->getCheckerDesk(), $this->logger);
+        $board = new ChessBoard($currenCondition->getCheckerDesk());
         $currentTurn = $currenCondition->getCurrentTurn();
 
         $teamNumber = $board->getFigureNumber($move->getFrom());
