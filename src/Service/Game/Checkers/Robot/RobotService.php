@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Checkers\Robot;
 
-use App\Service\Game\Checkers\CheckersGame;
+use App\Service\Game\GameTypeInterface;
 use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class RobotService
 {
     public function updateDesk(
-        CheckersGame    $game,
+        GameTypeInterface    $game,
         UserInterface   $computer,
         MoveResult      $moveResult,
         LoggerInterface $logger,

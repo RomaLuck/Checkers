@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\GameLaunch;
 use App\Event\GameStatusUpdatedEvent;
 use App\Service\Game\Checkers\GameService;
-use App\Service\Game\Checkers\Strategy\GameStrategyFactory;
+use App\Service\Game\GameStrategyFactory;
 use App\Service\Monolog\LoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -72,7 +72,8 @@ class ChessController extends AbstractController
         }
 
         $strategyId = $gameLaunch->getStrategyId();
-        $game = $gameStrategyFactory->create($strategyId);
+        $gameTypeId = $gameLaunch->getTypeId();
+        $game = $gameStrategyFactory->create($strategyId, $gameTypeId);
         $game->run($gameLaunch, $roomId, $request, $logger);
 
         $event = new GameStatusUpdatedEvent($gameLaunch);
