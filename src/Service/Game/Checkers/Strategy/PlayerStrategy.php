@@ -7,9 +7,9 @@ namespace App\Service\Game\Checkers\Strategy;
 use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Cache\UserCacheService;
-use App\Service\Game\Checkers\CheckersGame;
 use App\Service\Game\Checkers\Team\Black;
 use App\Service\Game\Checkers\Team\White;
+use App\Service\Game\Chess\GameTypeDetector;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,7 +40,8 @@ final class PlayerStrategy implements StrategyInterface
         $white = new White($whiteTeamUser['id'], $whiteTeamUser['username']);
         $black = new Black($blackTeamUser['id'], $blackTeamUser['username']);
 
-        $game = new CheckersGame($white, $black);
+        $gameTypeId = $gameLaunch->getTypeId();
+        $game = (new GameTypeDetector($white, $black))->detect($gameTypeId);
 
         if ($request->isMethod('POST') && $request->request->has('formData')) {
             $data = json_decode($request->request->get('formData'), true);

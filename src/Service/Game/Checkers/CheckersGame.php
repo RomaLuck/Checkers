@@ -9,12 +9,13 @@ use App\Service\Game\Checkers\Team\Black;
 use App\Service\Game\Checkers\Team\PlayerDetector;
 use App\Service\Game\Checkers\Team\PlayerInterface;
 use App\Service\Game\Checkers\Team\White;
+use App\Service\Game\GameTypeInterface;
 use App\Service\Game\InputTransformer;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
 
-final class CheckersGame
+final class CheckersGame implements GameTypeInterface
 {
     private InputTransformer $inputTransformer;
 
@@ -40,13 +41,13 @@ final class CheckersGame
     }
 
     public function run(
-        MoveResult       $currenCondition,
+        MoveResult       $currentCondition,
         Move             $move,
         ?LoggerInterface $logger = null
     ): MoveResult
     {
-        $desk = $currenCondition->getCheckerDesk();
-        $currentTurn = $currenCondition->getCurrentTurn();
+        $desk = $currentCondition->getCheckerDesk();
+        $currentTurn = $currentCondition->getCurrentTurn();
 
         $playerDetector = new PlayerDetector($this->white, $this->black);
         $selectedTeamNumber = CheckerDeskService::getSelectedTeamNumber($desk, $move->getFrom());
@@ -54,7 +55,7 @@ final class CheckersGame
         $player = $playerDetector->detect($selectedTeamNumber);
         if (!$player) {
             $logger?->warning('Can not find player on this cell');
-            return $currenCondition;
+            return $currentCondition;
         }
 
         $figure = FigureFactory::create($selectedTeamNumber);
@@ -62,11 +63,11 @@ final class CheckersGame
 
         if (!$player->isTurnForPlayer($currentTurn)) {
             $logger?->warning('Now it\'s the turn of another player');
-            return $currenCondition;
+            return $currentCondition;
         }
 
         if (!$this->isValidMove($player, $desk, $move, $logger)) {
-            return $currenCondition;
+            return $currentCondition;
         }
 
         $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $move);
@@ -92,13 +93,13 @@ final class CheckersGame
             $winner = $advantagePlayer->getName();
             $logger?->info("{$winner} won!");
 
-            $currenCondition->setWinnerId($advantagePlayer->getId());
+            $currentCondition->setWinnerId($advantagePlayer->getId());
         }
 
-        $currenCondition->setCheckerDesk($this->checkerDeskService->updateData($desk, $move));
-        $currenCondition->setCurrentTurn(!$currentTurn);
+        $currentCondition->setCheckerDesk($this->checkerDeskService->updateData($desk, $move));
+        $currentCondition->setCurrentTurn(!$currentTurn);
 
-        return $currenCondition;
+        return $currentCondition;
     }
 
     /**

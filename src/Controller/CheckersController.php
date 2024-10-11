@@ -26,7 +26,7 @@ class CheckersController extends AbstractController
     {
     }
 
-    #[Route('/room/{room}', name: 'app_game', methods: ['GET'])]
+    #[Route('/room/{room}', name: 'checkers_game', methods: ['GET'])]
     public function game(EntityManagerInterface $entityManager, Session $session, string $room): Response
     {
         $gameLaunch = $entityManager->getRepository(GameLaunch::class)->findOneBy(['room_id' => $room]);
@@ -45,13 +45,13 @@ class CheckersController extends AbstractController
 
         $session->set('room', $room);
 
-        return $this->render('game/game.html.twig', [
+        return $this->render('game/checkers.html.twig', [
             'color' => $userColor,
             'room' => $room,
         ]);
     }
 
-    #[Route('/update', name: 'app_game_update', methods: ['GET', 'POST'])]
+    #[Route('/update', name: 'checkers_game_update', methods: ['GET', 'POST'])]
     public function update(
         GameStrategyFactory      $gameStrategyFactory,
         Request                  $request,

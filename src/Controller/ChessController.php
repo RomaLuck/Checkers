@@ -45,7 +45,7 @@ class ChessController extends AbstractController
 
         $session->set('room', $room);
 
-        return $this->render('game/game.html.twig', [
+        return $this->render('game/chess.html.twig', [
             'color' => $userColor,
             'room' => $room,
         ]);

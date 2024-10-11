@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Game\Checkers;
 
 use App\Entity\GameLaunch;
+use App\Service\Game\Chess\ChessBoard;
+use App\Service\Game\GameTypeIds;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -12,15 +14,18 @@ final class GameService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-    ) {
+    )
+    {
     }
 
     public function createGameLaunch(
         UserInterface $user,
-        string $color,
-        int $strategyId = 2,
-        ?int $complexity = null
-    ): GameLaunch {
+        string        $color,
+        int           $typeId = 1,
+        int           $strategyId = 2,
+        ?int          $complexity = null
+    ): GameLaunch
+    {
         $game = new GameLaunch();
         if ($color === 'white') {
             $game->setWhiteTeamUser($user);
@@ -28,9 +33,14 @@ final class GameService
             $game->setBlackTeamUser($user);
         }
 
+        $game->setTypeId($typeId);
         $game->setStrategyId($strategyId);
         $game->setComplexity($complexity);
-        $game->setTableData(CheckerDesk::START_DESK);
+        if ($typeId === GameTypeIds::CHECKERS_TYPE) {
+            $game->setTableData(CheckerDesk::START_DESK);
+        } else {
+            $game->setTableData(ChessBoard::START_DESK);
+        }
         $game->setIsActive(true);
 
         $this->entityManager->persist($game);

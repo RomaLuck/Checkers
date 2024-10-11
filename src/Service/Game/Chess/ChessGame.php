@@ -8,12 +8,13 @@ use App\Service\Game\Chess\Team\Black;
 use App\Service\Game\Chess\Team\TeamDetector;
 use App\Service\Game\Chess\Team\TeamInterface;
 use App\Service\Game\Chess\Team\White;
+use App\Service\Game\GameTypeInterface;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class ChessGame
+class ChessGame implements GameTypeInterface
 {
     public function __construct(
         private White           $white,
@@ -23,22 +24,22 @@ class ChessGame
     {
     }
 
-    public function run(MoveResult $currenCondition, Move $move): MoveResult
+    public function run(MoveResult $currentCondition, Move $move): MoveResult
     {
-        $board = new ChessBoard($currenCondition->getCheckerDesk());
-        $currentTurn = $currenCondition->getCurrentTurn();
+        $board = new ChessBoard($currentCondition->getCheckerDesk());
+        $currentTurn = $currentCondition->getCurrentTurn();
 
         $teamNumber = $board->getFigureNumber($move->getFrom());
         if (!$teamNumber) {
             $this->logger->warning('Can not find this cell');
-            return $currenCondition;
+            return $currentCondition;
         }
 
         $teamDetector = new TeamDetector($this->white, $this->black);
         $team = $teamDetector->detect($teamNumber);
         if (!$team) {
             $this->logger->warning('Can not find player on this cell');
-            return $currenCondition;
+            return $currentCondition;
         }
 
         $figure = FigureFactory::create($teamNumber);
@@ -46,11 +47,11 @@ class ChessGame
 
         if (!$team->isTurnForTeam($currentTurn)) {
             $this->logger->warning('Now it\'s the turn of another player');
-            return $currenCondition;
+            return $currentCondition;
         }
 
         if (!$this->isValidMove($team, $board, $move)) {
-            return $currenCondition;
+            return $currentCondition;
         }
 
         if ($this->isGameOver($board)) {
@@ -59,15 +60,15 @@ class ChessGame
             $winner = $advantagePlayer->getName();
             $this->logger->info("{$winner} won!");
 
-            $currenCondition->setWinnerId($advantagePlayer->getId());
+            $currentCondition->setWinnerId($advantagePlayer->getId());
         }
 
         $board->update($move);
 
-        $currenCondition->setCheckerDesk($board->getBoardData());
-        $currenCondition->setCurrentTurn(!$currentTurn);
+        $currentCondition->setCheckerDesk($board->getBoardData());
+        $currentCondition->setCurrentTurn(!$currentTurn);
 
-        return $currenCondition;
+        return $currentCondition;
     }
 
     private function isValidMove(TeamInterface $team, BoardAbstract $board, Move $move): bool

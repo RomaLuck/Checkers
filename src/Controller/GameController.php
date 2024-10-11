@@ -8,6 +8,7 @@ use App\Entity\GameLaunch;
 use App\Event\JoinedGameEvent;
 use App\Service\Game\Checkers\GameService;
 use App\Service\Game\GameStrategyIds;
+use App\Service\Game\GameTypeIds;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,6 +69,8 @@ final class GameController extends AbstractController
             return $this->redirectToRoute('app_game_list');
         }
 
+        $gameTypeId = $request->request->getInt('type');
+
         $strategyId = $request->request->getInt('strategy');
         if (!in_array($strategyId, GameStrategyIds::allStrategyIds(), true)) {
             $this->addFlash('danger', 'Type of game is not set');
@@ -77,9 +80,11 @@ final class GameController extends AbstractController
 
         $complexity = $request->request->getInt('complexity');
 
-        $game = $this->gameService->createGameLaunch($user, $color, $strategyId, $complexity);
-
-        return $this->redirectToRoute('app_game', ['room' => $game->getRoomId()]);
+        $game = $this->gameService->createGameLaunch($user, $color, $gameTypeId, $strategyId, $complexity);
+        if ($gameTypeId === GameTypeIds::CHECKERS_TYPE) {
+            return $this->redirectToRoute('checkers_game', ['room' => $game->getRoomId()]);
+        }
+        return $this->redirectToRoute('chess_game', ['room' => $game->getRoomId()]);
     }
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
@@ -114,7 +119,11 @@ final class GameController extends AbstractController
         $event = new JoinedGameEvent($gameLaunch, $user->getUsername());
         $eventDispatcher->dispatch($event, 'JoinedGameEvent');
 
-        return $this->redirectToRoute('app_game', ['room' => $roomId]);
+        $gameTypeId = $gameLaunch->getTypeId();
+        if ($gameTypeId === GameTypeIds::CHECKERS_TYPE) {
+            return $this->redirectToRoute('checkers_game', ['room' => $roomId]);
+        }
+        return $this->redirectToRoute('chess_game', ['room' => $roomId]);
     }
 
 
