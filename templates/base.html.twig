@@ -18,8 +18,13 @@
         <li>
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-outline-success m-2" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">
-                Create game
+                    data-bs-target="#chessModal">
+                New chess
+            </button>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-success m-2" data-bs-toggle="modal"
+                    data-bs-target="#checkersModal">
+                New checkers
             </button>
         </li>
         <li class="nav-item">
@@ -32,7 +37,7 @@
 </ul>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="chessModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content p-2">
             <div class="modal-header">
@@ -41,16 +46,16 @@
             </div>
             <form method="post" action="/create">
                 <div class="m-2 d-block">
-                    <div id="strategy">
+                    <div id="chess-strategy">
                         <div class="form-check my-2">
-                            <input class="form-check-input" type="radio" name="strategy" id="computer-strategy"
+                            <input class="form-check-input" type="radio" name="strategy" id="chess-computer-strategy"
                                    value="1">
-                            <label class="form-check-label" for="computer-strategy">
+                            <label class="form-check-label" for="chess-computer-strategy">
                                 With computer
                             </label>
                         </div>
-                        <div class="d-flex d-none" id="complexity">
-                            <div>Complexity: </div>
+                        <div class="d-flex d-none" id="chess-complexity">
+                            <div>Complexity:</div>
                             <div class="form-check mx-2">
                                 <input class="form-check-input" type="radio" name="complexity" id="complexity1"
                                        value="3" checked>
@@ -82,7 +87,7 @@
                         </div>
                     </div>
                     <div class="d-flex m-2">
-                        <button type="button" class="btn btn-light shadow" id="whiteButton">
+                        <button type="button" class="btn btn-light shadow team-button">
                             <input class="form-check-input" type="radio" name="player" value="white" id="whiteRadio"
                                    hidden="hidden">
                             <img class="w-25" src="{{ asset('pictures/white.png') }}" alt="white">
@@ -90,7 +95,7 @@
 
                             </label>
                         </button>
-                        <button type="button" class="btn btn-light shadow" id="blackButton">
+                        <button type="button" class="btn btn-light shadow team-button">
                             <input class="form-check-input" type="radio" name="player" value="black" id="blackRadio"
                                    hidden="hidden">
                             <img class="w-25" src="{{ asset('pictures/black.png') }}" alt="black">
@@ -99,7 +104,85 @@
                             </label>
                         </button>
                     </div>
+                    <input type="hidden" name="type" value="2">
+                    <p class="text-danger small text-center mt-3" id="alerts"></p>
+                </div>
+                <div class="modal-footer row d-flex justify-content-center">
+                    <button type="submit" class="btn btn-danger" id="save">Create new game</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="checkersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content p-2">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Set the game</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="/create">
+                <div class="m-2 d-block">
+                    <div id="checkers-strategy">
+                        <div class="form-check my-2">
+                            <input class="form-check-input" type="radio" name="strategy" id="checkers-computer-strategy"
+                                   value="1">
+                            <label class="form-check-label" for="checkers-computer-strategy">
+                                With computer
+                            </label>
+                        </div>
+                        <div class="d-flex d-none" id="checkers-complexity">
+                            <div>Complexity:</div>
+                            <div class="form-check mx-2">
+                                <input class="form-check-input" type="radio" name="complexity" id="complexity1"
+                                       value="3" checked>
+                                <label class="form-check-label" for="complexity1">
+                                    low
+                                </label>
+                            </div>
+                            <div class="form-check mx-2">
+                                <input class="form-check-input" type="radio" name="complexity" id="complexity2"
+                                       value="6" checked>
+                                <label class="form-check-label" for="complexity2">
+                                    middle
+                                </label>
+                            </div>
+                            <div class="form-check mx-2">
+                                <input class="form-check-input" type="radio" name="complexity" id="complexity3"
+                                       value="9" checked>
+                                <label class="form-check-label" for="complexity3">
+                                    hard
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-check my-2">
+                            <input class="form-check-input" type="radio" name="strategy" id="multiplayer-strategy"
+                                   value="2" checked>
+                            <label class="form-check-label" for="multiplayer-strategy">
+                                With other player
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-flex m-2">
+                        <button type="button" class="btn btn-light shadow team-button">
+                            <input class="form-check-input" type="radio" name="player" value="white" id="whiteRadio"
+                                   hidden="hidden">
+                            <img class="w-25" src="{{ asset('pictures/white.png') }}" alt="white">
+                            <label class="form-check-label" for="whiteRadio">
+
+                            </label>
+                        </button>
+                        <button type="button" class="btn btn-light shadow team-button">
+                            <input class="form-check-input" type="radio" name="player" value="black" id="blackRadio"
+                                   hidden="hidden">
+                            <img class="w-25" src="{{ asset('pictures/black.png') }}" alt="black">
+                            <label class="form-check-label" for="blackRadio">
+
+                            </label>
+                        </button>
+                    </div>
+                    <input type="hidden" name="type" value="1">
                     <p class="text-danger small text-center mt-3" id="alerts"></p>
                 </div>
                 <div class="modal-footer row d-flex justify-content-center">

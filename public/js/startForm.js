@@ -42,30 +42,32 @@ function createJoinForms() {
 }
 
 function setupRadioButtons() {
-    let whiteRadio = document.getElementById('whiteRadio');
-    let blackRadio = document.getElementById('blackRadio');
-    let whiteButton = document.getElementById('whiteButton');
-    let blackButton = document.getElementById('blackButton');
-
-    whiteButton.addEventListener('click', function () {
-        whiteRadio.checked = true;
-        whiteButton.classList.add('selected');
-        blackButton.classList.remove('selected');
-    });
-
-    blackButton.addEventListener('click', function () {
-        blackRadio.checked = true;
-        blackButton.classList.add('selected');
-        whiteButton.classList.remove('selected');
-    });
+    let radioButtons = document.querySelectorAll('.team-button');
+    radioButtons.forEach((radioButton) => {
+        radioButton.addEventListener('click', function () {
+            let radioInput = radioButton.querySelector('input');
+            radioInput.checked = true;
+            radioButtons.forEach((button) => {
+                button.classList.remove('selected');
+            })
+            radioButton.classList.add('selected');
+        });
+    })
 }
 
 function complexity() {
-    let complexityBlock = document.getElementById('complexity');
-    let computerRadio = document.getElementById('computer-strategy');
+    let checkersComplexityBlock = document.getElementById('checkers-complexity');
+    let checkersComputerRadio = document.getElementById('checkers-computer-strategy');
 
-    computerRadio.addEventListener('click', function () {
-        complexityBlock.classList.remove('d-none');
+    checkersComputerRadio.addEventListener('click', function () {
+        checkersComplexityBlock.classList.remove('d-none');
+    })
+
+    let chessComplexityBlock = document.getElementById('chess-complexity');
+    let chessComputerRadio = document.getElementById('chess-computer-strategy');
+
+    chessComputerRadio.addEventListener('click', function () {
+        chessComplexityBlock.classList.remove('d-none');
     })
 }
 
