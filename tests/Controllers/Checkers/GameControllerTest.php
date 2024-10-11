@@ -8,6 +8,7 @@ use App\Entity\GameLaunch;
 use App\Entity\User;
 use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\GameStrategyIds;
+use App\Service\Game\GameTypeIds;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -53,6 +54,7 @@ class GameControllerTest extends WebTestCase
 
         $game = new GameLaunch();
         $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
+        $game->setTypeId(GameTypeIds::CHECKERS_TYPE);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
 
@@ -74,6 +76,7 @@ class GameControllerTest extends WebTestCase
     {
         $game = new GameLaunch();
         $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
+        $game->setTypeId(GameTypeIds::CHECKERS_TYPE);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
         $game->setWhiteTeamUser($this->user);
@@ -103,6 +106,7 @@ class GameControllerTest extends WebTestCase
 
         $game = new GameLaunch();
         $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
+        $game->setTypeId(GameTypeIds::CHECKERS_TYPE);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
         $game->setWhiteTeamUser($this->user);

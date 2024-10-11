@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Service\Game\Checkers\CheckerDesk;
 use App\Service\Game\Checkers\GameService;
 use App\Service\Game\GameStrategyIds;
+use App\Service\Game\GameTypeIds;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,6 +58,7 @@ class GameServiceTest extends KernelTestCase
     {
         $game = new GameLaunch();
         $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
+        $game->setTypeId(GameTypeIds::CHECKERS_TYPE);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setIsActive(true);
 
@@ -75,6 +77,7 @@ class GameServiceTest extends KernelTestCase
     {
         $game = new GameLaunch();
         $game->setStrategyId(GameStrategyIds::MULTIPLAYER);
+        $game->setTypeId(GameTypeIds::CHECKERS_TYPE);
         $game->setTableData(CheckerDesk::START_DESK);
         $game->setWhiteTeamUser($this->user);
         $game->setIsActive(true);
