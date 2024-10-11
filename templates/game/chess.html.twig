@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Game{% endblock %}
+
+{% block body %}
+
+    <div class="container p-5 border shadow">
+        <div class="row">
+            {# read and display all flash messages #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}  alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <div class="col-12 col-xl-8 d-flex flex-column">
+                <div class="d-flex justify-content-center">
+                    <div class="table-responsive text-center" id="table-responsive">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-4 d-flex flex-column">
+                <div class="flex-grow-1">
+
+                </div>
+                <div class="flex-grow-1 border shadow d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-center p-3">
+                        <ul class="list-unstyled" id="game-log"></ul>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+
+                </div>
+
+            </div>
+        </div>
+        <a href="/end" class="btn btn-danger float-end my-2">Finish game</a>
+    </div>
+    <div id="color" hidden="hidden">{{ color }}</div>
+    <div id="room-id" hidden="hidden">{{ room }}</div>
+    <script src="{{ asset('js/chess.js') }}"></script>
+{% endblock %}

@@ -68,7 +68,13 @@
                         {% if(game.isActive()) %}
                             <tr class="game-list">
                                 <td><a class="btn btn-outline-primary" id="link-to-game"
-                                       href="{{ path('app_game',{room:game.getRoomId()}) }}">Link</a>
+                                       href="
+                                        {% if(game.typeId == 1) %}
+                                        {{ path('checkers_game',{room:game.getRoomId()}) }}
+                                        {% else %}
+                                        {{ path('chess_game',{room:game.getRoomId()}) }}
+                                        {% endif %}
+                                        ">Link</a>
                                 </td>
                                 <td class="username text-break" room="{{ game.getRoomId() }}"
                                     id="white">{{ game.getWhiteTeamUser()?game.getWhiteTeamUser().getUsername():'' }}
