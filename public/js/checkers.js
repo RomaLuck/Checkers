@@ -10,7 +10,7 @@ function handleTableClick() {
             form1 = event.target.parentNode.id;
             event.target.parentNode.style.backgroundColor = 'red';
         } else if (event.target.parentNode.id !== form1 && form2 === '') {
-            form2 = event.target.id;
+            form2 = event.target.parentNode.id;
 
             const formData = new FormData();
             formData.append('formData', JSON.stringify({
@@ -123,18 +123,23 @@ function createBoard(deskData) {
         tableHTML += `<th>${letters[i]}</th>`;
         for (let j = 0; j < deskData[i].length; j++) {
             let pieceClass = '';
+            if (j % 2 === 0 && i % 2 !== 0 || j % 2 !== 0 && i % 2 === 0) {
+                pieceClass = 'white-cell';
+            } else {
+                pieceClass = 'black-cell';
+            }
             switch (deskData[i][j]) {
                 case 1:
-                    pieceClass = 'white-checker';
+                    pieceClass += ' white-checker';
                     break;
                 case 2:
-                    pieceClass = 'black-checker';
+                    pieceClass += ' black-checker';
                     break;
                 case 3:
-                    pieceClass = 'white-king';
+                    pieceClass += ' white-checker-king';
                     break;
                 case 4:
-                    pieceClass = 'black-king';
+                    pieceClass += ' black-checker-king';
                     break;
                 case -1:
                     pieceClass = 'clean-cell';

@@ -14,6 +14,15 @@
     border: 2px solid black;
     width: 4em;
     height: 4em;
+    box-sizing: border-box;
+}
+
+.table-responsive td > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .white-cell {
@@ -148,4 +157,48 @@
 .white-pawn::before {
     content: "\2659";
     font-size: 3em;
+}
+
+.black-checker::before {
+    content: "";
+    display: block;
+    width: 3em;
+    height: 3em;
+    background-color: black;
+    border: 2px solid white;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.white-checker::before {
+    content: "";
+    display: block;
+    width: 3em;
+    height: 3em;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.black-checker-king::before {
+    content: "";
+    display: block;
+    width: 3em;
+    height: 3em;
+    background-color: black;
+    border: 5px solid #f30606;
+    border-radius: 50px;
+    margin: auto;
+}
+
+.white-checker-king::before {
+    content: "";
+    display: block;
+    width: 3em;
+    height: 3em;
+    background-color: white;
+    border: 5px solid #f30505;
+    border-radius: 50px;
+    margin: auto;
 }
