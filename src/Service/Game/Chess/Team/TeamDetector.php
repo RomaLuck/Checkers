@@ -8,16 +8,17 @@ class TeamDetector
     public function __construct(
         private TeamInterface $white,
         private TeamInterface $black
-    ) {
+    )
+    {
     }
 
     public function detect(int $teamNumber): ?TeamInterface
     {
         if ($teamNumber > 0) {
-            if ($this->white->getTeamNumbers()) {
+            if (in_array($teamNumber, $this->white->getTeamNumbers())) {
                 return $this->white;
             }
-            if ($this->black->getTeamNumbers()) {
+            if (in_array($teamNumber, $this->black->getTeamNumbers())) {
                 return $this->black;
             }
         }
