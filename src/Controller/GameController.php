@@ -24,8 +24,7 @@ final class GameController extends AbstractController
 {
     public function __construct(
         private readonly GameService $gameService,
-    )
-    {
+    ) {
     }
 
     #[Route('/', name: 'app_game_list', methods: ['GET'])]
@@ -84,16 +83,16 @@ final class GameController extends AbstractController
         if ($gameTypeId === GameTypeIds::CHECKERS_TYPE) {
             return $this->redirectToRoute('checkers_game', ['room' => $game->getRoomId()]);
         }
+
         return $this->redirectToRoute('chess_game', ['room' => $game->getRoomId()]);
     }
 
     #[Route('/join', name: 'app_game_join', methods: ['POST'])]
     public function join(
-        Request                  $request,
-        EntityManagerInterface   $entityManager,
+        Request $request,
+        EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
@@ -123,9 +122,9 @@ final class GameController extends AbstractController
         if ($gameTypeId === GameTypeIds::CHECKERS_TYPE) {
             return $this->redirectToRoute('checkers_game', ['room' => $roomId]);
         }
+
         return $this->redirectToRoute('chess_game', ['room' => $roomId]);
     }
-
 
     #[Route('/end', name: 'app_game_end', methods: ['GET'])]
     public function end(Session $session, EntityManagerInterface $entityManager): Response

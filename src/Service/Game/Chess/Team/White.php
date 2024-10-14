@@ -4,9 +4,9 @@ namespace App\Service\Game\Chess\Team;
 
 class White extends Team
 {
-    const DIRECTION_WHITE = 1;
+    public const DIRECTION_WHITE = 1;
 
-    const WHITE_NUMBERS = [1, 2, 3, 4, 5, 6];
+    public const WHITE_NUMBERS = [1, 2, 3, 4, 5, 6];
 
     public function getTeamNumbers(): array
     {

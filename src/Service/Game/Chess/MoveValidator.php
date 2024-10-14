@@ -14,11 +14,10 @@ use Psr\Log\NullLogger;
 class MoveValidator
 {
     public function __construct(
-        private TeamInterface   $team,
-        private BoardAbstract   $board,
+        private TeamInterface $team,
+        private BoardAbstract $board,
         private LoggerInterface $logger = new NullLogger()
-    )
-    {
+    ) {
     }
 
     public function isValid(Move $move): bool
@@ -31,6 +30,7 @@ class MoveValidator
 
         if (!in_array($move->getTo(), $possibleMoves)) {
             $this->logger->warning('Figure has another move strategy');
+
             return false;
         }
 

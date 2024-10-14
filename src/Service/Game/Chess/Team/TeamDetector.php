@@ -4,12 +4,10 @@ namespace App\Service\Game\Chess\Team;
 
 class TeamDetector
 {
-
     public function __construct(
         private TeamInterface $white,
         private TeamInterface $black
-    )
-    {
+    ) {
     }
 
     public function detect(int $teamNumber): ?TeamInterface
@@ -25,5 +23,4 @@ class TeamDetector
 
         return null;
     }
-
 }

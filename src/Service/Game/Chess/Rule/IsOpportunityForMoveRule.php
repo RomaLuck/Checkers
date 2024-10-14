@@ -8,7 +8,6 @@ use App\Service\Game\Move;
 
 class IsOpportunityForMoveRule implements RuleInterface
 {
-
     private int $step;
 
     public function __construct(int $step)

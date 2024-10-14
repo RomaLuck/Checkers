@@ -14,18 +14,16 @@ final class GameService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
     }
 
     public function createGameLaunch(
         UserInterface $user,
-        string        $color,
-        int           $typeId = 1,
-        int           $strategyId = 2,
-        ?int          $complexity = null
-    ): GameLaunch
-    {
+        string $color,
+        int $typeId = 1,
+        int $strategyId = 2,
+        ?int $complexity = null
+    ): GameLaunch {
         $game = new GameLaunch();
         if ($color === 'white') {
             $game->setWhiteTeamUser($user);

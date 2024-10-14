@@ -24,8 +24,7 @@ final class CheckersGame implements GameTypeInterface
     public function __construct(
         private White $white,
         private Black $black,
-    )
-    {
+    ) {
         $this->inputTransformer = new InputTransformer();
         $this->checkerDeskService = new CheckerDeskService();
     }
@@ -41,11 +40,10 @@ final class CheckersGame implements GameTypeInterface
     }
 
     public function run(
-        MoveResult       $currentCondition,
-        Move             $move,
+        MoveResult $currentCondition,
+        Move $move,
         ?LoggerInterface $logger = null
-    ): MoveResult
-    {
+    ): MoveResult {
         $desk = $currentCondition->getCheckerDesk();
         $currentTurn = $currentCondition->getCurrentTurn();
 
@@ -55,6 +53,7 @@ final class CheckersGame implements GameTypeInterface
         $player = $playerDetector->detect($selectedTeamNumber);
         if (!$player) {
             $logger?->warning('Can not find player on this cell');
+
             return $currentCondition;
         }
 
@@ -63,6 +62,7 @@ final class CheckersGame implements GameTypeInterface
 
         if (!$player->isTurnForPlayer($currentTurn)) {
             $logger?->warning('Now it\'s the turn of another player');
+
             return $currentCondition;
         }
 
@@ -75,7 +75,7 @@ final class CheckersGame implements GameTypeInterface
             $desk = $this->checkerDeskService->clearCells($desk, $figuresForBeat);
 
             $transFormedFiguresForBeat = array_map(
-                fn($figure) => $this->inputTransformer->transformCellToString($figure),
+                fn ($figure) => $this->inputTransformer->transformCellToString($figure),
                 $figuresForBeat
             );
             $logger?->warning('--removed: ['
@@ -157,12 +157,11 @@ final class CheckersGame implements GameTypeInterface
     }
 
     public function isValidMove(
-        PlayerInterface  $player,
-        array            $desk,
-        Move             $move,
+        PlayerInterface $player,
+        array $desk,
+        Move $move,
         ?LoggerInterface $logger = null
-    ): bool
-    {
+    ): bool {
         $rules = new Rules($player, $desk, $logger);
 
         $figuresForBeat = $this->checkerDeskService->findFiguresForBeat($player, $desk, $move);
@@ -181,7 +180,6 @@ final class CheckersGame implements GameTypeInterface
         return false;
     }
 
-
     private function getEmptyCells(array $board): array
     {
         $emptyCells = [];
@@ -198,7 +196,7 @@ final class CheckersGame implements GameTypeInterface
 
     /**
      * @param array<array<int>> $desk
-     * @param array<int> $figureNumbers
+     * @param array<int>        $figureNumbers
      */
     private function countFigures(array $desk, array $figureNumbers): int
     {

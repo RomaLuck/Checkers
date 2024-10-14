@@ -8,7 +8,6 @@ use App\Service\Game\Chess\Rule\IsClearWayRule;
 
 class Queen implements FigureInterface
 {
-
     public function getId(): array
     {
         return FigureIds::QUEEN;
@@ -17,7 +16,7 @@ class Queen implements FigureInterface
     public function getFigureRules(): array
     {
         return [
-            new IsClearWayRule()
+            new IsClearWayRule(),
         ];
     }
 
@@ -25,7 +24,7 @@ class Queen implements FigureInterface
     {
         return [
             new BishopMoveStrategy(),
-            new RookMoveStrategy()
+            new RookMoveStrategy(),
         ];
     }
 }

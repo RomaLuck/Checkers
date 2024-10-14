@@ -17,11 +17,10 @@ use Psr\Log\NullLogger;
 class ChessGame implements GameTypeInterface
 {
     public function __construct(
-        private White           $white,
-        private Black           $black,
+        private White $white,
+        private Black $black,
         private LoggerInterface $logger = new NullLogger()
-    )
-    {
+    ) {
     }
 
     public function run(MoveResult $currentCondition, Move $move): MoveResult
@@ -32,6 +31,7 @@ class ChessGame implements GameTypeInterface
         $teamNumber = $board->getFigureNumber($move->getFrom());
         if (!$teamNumber) {
             $this->logger->warning('Can not find this cell');
+
             return $currentCondition;
         }
 
@@ -39,6 +39,7 @@ class ChessGame implements GameTypeInterface
         $team = $teamDetector->detect($teamNumber);
         if (!$team) {
             $this->logger->warning('Can not find player on this cell');
+
             return $currentCondition;
         }
 
@@ -47,6 +48,7 @@ class ChessGame implements GameTypeInterface
 
         if (!$team->isTurnForTeam($currentTurn)) {
             $this->logger->warning('Now it\'s the turn of another player');
+
             return $currentCondition;
         }
 

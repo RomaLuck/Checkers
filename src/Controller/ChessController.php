@@ -20,10 +20,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ChessController extends AbstractController
 {
     public function __construct(
-        private readonly GameService   $gameService,
+        private readonly GameService $gameService,
         private readonly LoggerService $loggerService,
-    )
-    {
+    ) {
     }
 
     #[Route('/room/{room}', name: 'chess_game', methods: ['GET'])]
@@ -53,14 +52,13 @@ class ChessController extends AbstractController
 
     #[Route('/update', name: 'chess_game_update', methods: ['GET', 'POST'])]
     public function update(
-        GameStrategyFactory      $gameStrategyFactory,
-        Request                  $request,
-        Session                  $session,
-        EntityManagerInterface   $entityManager,
-        LoggerInterface          $logger,
+        GameStrategyFactory $gameStrategyFactory,
+        Request $request,
+        Session $session,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger,
         EventDispatcherInterface $eventDispatcher,
-    ): Response
-    {
+    ): Response {
         $roomId = $session->get('room');
 
         /** @var LoggerInterface $logger */

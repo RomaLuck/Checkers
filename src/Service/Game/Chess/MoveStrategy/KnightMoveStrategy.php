@@ -4,7 +4,6 @@ namespace App\Service\Game\Chess\MoveStrategy;
 
 class KnightMoveStrategy extends MoveStrategyAbstract
 {
-
     /**
      * @return int[][]
      */

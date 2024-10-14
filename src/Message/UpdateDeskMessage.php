@@ -12,10 +12,10 @@ class UpdateDeskMessage
 {
     public function __construct(
         private UserInterface $computer,
-        private GameTypeInterface  $game,
-        private MoveResult    $moveResult,
-        private string        $roomId,
-        private ?int          $complexity,
+        private GameTypeInterface $game,
+        private MoveResult $moveResult,
+        private string $roomId,
+        private ?int $complexity,
     ) {
     }
 

@@ -4,11 +4,11 @@ namespace App\Service\Game\Chess\MoveStrategy;
 
 abstract class MoveStrategyAbstract implements MoveStrategyInterface
 {
-
-    protected abstract function getPossibleDirections();
+    abstract protected function getPossibleDirections();
 
     /**
      * @param int[] $from
+     *
      * @return int[][]
      */
     public function getPossibleMoves(array $from): array

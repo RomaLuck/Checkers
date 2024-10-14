@@ -7,7 +7,6 @@ use App\Service\Game\Chess\Rule\IsClearWayRule;
 
 class Rook implements FigureInterface
 {
-
     public function getId(): array
     {
         return FigureIds::ROOK;
@@ -16,14 +15,14 @@ class Rook implements FigureInterface
     public function getFigureRules(): array
     {
         return [
-            new IsClearWayRule()
+            new IsClearWayRule(),
         ];
     }
 
     public function getMoveStrategies(): array
     {
         return [
-            new RookMoveStrategy()
+            new RookMoveStrategy(),
         ];
     }
 }

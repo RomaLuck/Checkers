@@ -6,7 +6,6 @@ use App\Service\Game\Chess\MoveStrategy\KnightMoveStrategy;
 
 class Knight implements FigureInterface
 {
-
     public function getId(): array
     {
         return FigureIds::KNIGHT;
@@ -20,7 +19,7 @@ class Knight implements FigureInterface
     public function getMoveStrategies(): array
     {
         return [
-            new KnightMoveStrategy()
+            new KnightMoveStrategy(),
         ];
     }
 }

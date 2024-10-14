@@ -15,7 +15,7 @@ final class Robot
     private int $maxDepth;
 
     public function __construct(
-        private GameTypeInterface    $game,
+        private GameTypeInterface $game,
         private PlayerInterface $computer,
         private PlayerInterface $opponent,
     ) {

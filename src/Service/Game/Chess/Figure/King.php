@@ -18,7 +18,7 @@ class King implements FigureInterface
     public function getFigureRules(): array
     {
         return [
-            new IsOpportunityForMoveRule(self::STEP)
+            new IsOpportunityForMoveRule(self::STEP),
         ];
     }
 
@@ -26,7 +26,7 @@ class King implements FigureInterface
     {
         return [
             new BishopMoveStrategy(),
-            new RookMoveStrategy()
+            new RookMoveStrategy(),
         ];
     }
 }

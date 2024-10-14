@@ -34,7 +34,7 @@ class Pawn implements FigureInterface
     public function getMoveStrategies(): array
     {
         return [
-            new PawnMoveStrategy()
+            new PawnMoveStrategy(),
         ];
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Game\Chess\Strategy;
 
-use App\Entity\User;
 use App\Entity\GameLaunch;
+use App\Entity\User;
 use App\Service\Cache\UserCacheService;
 use App\Service\Game\Chess\ChessGame;
 use App\Service\Game\Chess\Team\Black;
@@ -21,9 +21,8 @@ final class ChessPlayerStrategy implements StrategyInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserCacheService       $userCacheService,
-    )
-    {
+        private UserCacheService $userCacheService,
+    ) {
     }
 
     public function run(GameLaunch $gameLaunch, string $roomId, Request $request, LoggerInterface $logger): void

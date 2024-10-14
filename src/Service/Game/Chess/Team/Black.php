@@ -4,9 +4,9 @@ namespace App\Service\Game\Chess\Team;
 
 class Black extends Team
 {
-    const DIRECTION_BLACK = -1;
+    public const DIRECTION_BLACK = -1;
 
-    const BLACK_NUMBERS = [7, 8, 9, 10, 11, 12];
+    public const BLACK_NUMBERS = [7, 8, 9, 10, 11, 12];
 
     public function getTeamNumbers(): array
     {

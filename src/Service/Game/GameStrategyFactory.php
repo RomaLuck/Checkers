@@ -16,10 +16,9 @@ final class GameStrategyFactory
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserCacheService       $userCacheService,
-        private MessageBusInterface    $bus,
-    )
-    {
+        private UserCacheService $userCacheService,
+        private MessageBusInterface $bus,
+    ) {
     }
 
     public function create(int $strategyId, int $gameTypeId): StrategyInterface

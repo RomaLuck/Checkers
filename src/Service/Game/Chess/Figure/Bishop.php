@@ -7,7 +7,6 @@ use App\Service\Game\Chess\Rule\IsClearWayRule;
 
 class Bishop implements FigureInterface
 {
-
     public function getId(): array
     {
         return FigureIds::BISHOP;
@@ -16,14 +15,14 @@ class Bishop implements FigureInterface
     public function getFigureRules(): array
     {
         return [
-            new IsClearWayRule()
+            new IsClearWayRule(),
         ];
     }
 
     public function getMoveStrategies(): array
     {
         return [
-          new BishopMoveStrategy()
+            new BishopMoveStrategy(),
         ];
     }
 }

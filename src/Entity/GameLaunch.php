@@ -57,7 +57,7 @@ class GameLaunch
     #[Column(type: 'smallint', nullable: true)]
     private ?int $complexity = null;
 
-    #[ORM\Column]
+    #[Column]
     private ?int $type_id = null;
 
     public function __construct()
