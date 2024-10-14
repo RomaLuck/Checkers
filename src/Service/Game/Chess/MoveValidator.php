@@ -9,13 +9,14 @@ use App\Service\Game\Chess\Rule\RuleInterface;
 use App\Service\Game\Chess\Team\TeamInterface;
 use App\Service\Game\Move;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class MoveValidator
 {
     public function __construct(
         private TeamInterface   $team,
         private BoardAbstract   $board,
-        private LoggerInterface $logger
+        private LoggerInterface $logger = new NullLogger()
     )
     {
     }

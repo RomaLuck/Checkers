@@ -50,7 +50,7 @@ class ChessGame implements GameTypeInterface
             return $currentCondition;
         }
 
-        if (!$this->isValidMove($team, $board, $move)) {
+        if (!(new MoveValidator($team, $board, $this->logger))->isValid($move)) {
             return $currentCondition;
         }
 
@@ -69,13 +69,6 @@ class ChessGame implements GameTypeInterface
         $currentCondition->setCurrentTurn(!$currentTurn);
 
         return $currentCondition;
-    }
-
-    private function isValidMove(TeamInterface $team, BoardAbstract $board, Move $move): bool
-    {
-        $moveValidator = new MoveValidator($team, $board, $this->logger);
-
-        return $moveValidator->isValid($move);
     }
 
     public function isGameOver(BoardAbstract $board): bool
@@ -97,14 +90,14 @@ class ChessGame implements GameTypeInterface
     /**
      * @return array<Move>
      */
-    public function getPossibleMoves(BoardAbstract $board, TeamInterface $player): array
+    public function getPossibleMoves(BoardAbstract $board, TeamInterface $team): array
     {
         $possibleMoves = [];
 
         foreach ($board->getBoardData() as $rowKey => $row) {
             foreach ($row as $key => $cell) {
                 $from = [$rowKey, $key];
-                if (!in_array($cell, $player->getTeamNumbers())) {
+                if (!in_array($cell, $team->getTeamNumbers())) {
                     continue;
                 }
 
@@ -112,10 +105,10 @@ class ChessGame implements GameTypeInterface
                 foreach ($possibleDestinations as $destination) {
                     $figureNumber = $board->getFigureNumber($from);
                     $figure = FigureFactory::create($figureNumber);
-                    $player->setFigure($figure);
+                    $team->setFigure($figure);
 
                     $move = new Move($from, $destination);
-                    if ($this->isValidMove($player, $board, $move)) {
+                    if ((new MoveValidator($team, $board))->isValid($move)) {
                         $possibleMoves[] = $move;
                     }
                 }
