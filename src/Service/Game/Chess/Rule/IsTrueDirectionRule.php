@@ -10,7 +10,8 @@ class IsTrueDirectionRule implements RuleInterface
 {
     public function check(TeamInterface $team, Move $move, BoardAbstract $board): bool
     {
-        $direction = $move->getTo()[1] - $move->getFrom()[1];
+        $step = abs($move->getTo()[1] - $move->getFrom()[1]);
+        $direction = ($move->getTo()[1] - $move->getFrom()[1]) / $step;
 
         return $direction === $team->getDirection();
     }

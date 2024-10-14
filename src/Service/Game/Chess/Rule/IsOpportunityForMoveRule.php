@@ -22,7 +22,7 @@ class IsOpportunityForMoveRule implements RuleInterface
             $step = abs($move->getTo()[0] - $move->getFrom()[0]);
         }
 
-        return $step === $this->step;
+        return $step <= $this->step;
     }
 
     public function getMessage(): string

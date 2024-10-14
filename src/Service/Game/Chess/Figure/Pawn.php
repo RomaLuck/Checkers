@@ -10,7 +10,17 @@ use App\Service\Game\Chess\Rule\RuleInterface;
 
 class Pawn implements FigureInterface
 {
-    public const STEP = 1;
+    private int $step = 1;
+
+    public function getStep(): int
+    {
+        return $this->step;
+    }
+
+    public function setStep(int $step): void
+    {
+        $this->step = $step;
+    }
 
     public function getId(): array
     {
@@ -23,7 +33,7 @@ class Pawn implements FigureInterface
     public function getFigureRules(): array
     {
         return [
-            new IsOpportunityForMoveRule(self::STEP),
+            new IsOpportunityForMoveRule($this->getStep()),
             new IsTrueDirectionRule(),
         ];
     }
