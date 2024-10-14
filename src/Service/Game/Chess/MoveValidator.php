@@ -3,8 +3,11 @@
 namespace App\Service\Game\Chess;
 
 use App\Service\Game\BoardAbstract;
+use App\Service\Game\Chess\Figure\FigureIds;
+use App\Service\Game\Chess\MoveStrategy\BishopMoveStrategy;
 use App\Service\Game\Chess\Rule\IsAvailableCellFromRule;
 use App\Service\Game\Chess\Rule\IsAvailableCellToRule;
+use App\Service\Game\Chess\Rule\IsForBeatCellToRule;
 use App\Service\Game\Chess\Rule\RuleInterface;
 use App\Service\Game\Chess\Team\TeamInterface;
 use App\Service\Game\Move;
@@ -14,10 +17,11 @@ use Psr\Log\NullLogger;
 class MoveValidator
 {
     public function __construct(
-        private TeamInterface $team,
-        private BoardAbstract $board,
+        private TeamInterface   $team,
+        private BoardAbstract   $board,
         private LoggerInterface $logger = new NullLogger()
-    ) {
+    )
+    {
     }
 
     public function isValid(Move $move): bool
@@ -26,6 +30,12 @@ class MoveValidator
         $possibleMoves = [];
         foreach ($team->getFigure()->getMoveStrategies() as $moveStrategy) {
             $possibleMoves = array_merge($possibleMoves, $moveStrategy->getPossibleMoves($move->getFrom()));
+        }
+
+        if ($team->getFigure()->getId() === FigureIds::PAWN) {
+            if ((new IsForBeatCellToRule())->check($team, $move, $this->board)) {
+                $possibleMoves = array_merge($possibleMoves, (new BishopMoveStrategy())->getPossibleMoves($move->getFrom()));
+            }
         }
 
         if (!in_array($move->getTo(), $possibleMoves)) {
