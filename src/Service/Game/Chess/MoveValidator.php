@@ -20,10 +20,11 @@ use Psr\Log\NullLogger;
 class MoveValidator
 {
     public function __construct(
-        private TeamInterface $team,
-        private BoardAbstract $board,
+        private TeamInterface   $team,
+        private BoardAbstract   $board,
         private LoggerInterface $logger = new NullLogger()
-    ) {
+    )
+    {
     }
 
     public function isValid(Move $move): bool
@@ -41,7 +42,7 @@ class MoveValidator
 
         if ($figure->getId() === FigureIds::PAWN) {
             if ((new IsForBeatCellToRule())->check($team, $move, $board)) {
-                $possibleMoves = array_merge($possibleMoves, (new BishopMoveStrategy())->getPossibleMoves($from));
+                $possibleMoves = (new BishopMoveStrategy())->getPossibleMoves($from);
             }
             if ((new IsFirstStepForPawnMoveRule())->check($team, $move, $board)) {
                 $figure->setStep(2);
