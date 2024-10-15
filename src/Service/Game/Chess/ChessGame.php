@@ -9,6 +9,7 @@ use App\Service\Game\Chess\Team\TeamDetector;
 use App\Service\Game\Chess\Team\TeamInterface;
 use App\Service\Game\Chess\Team\White;
 use App\Service\Game\GameTypeInterface;
+use App\Service\Game\InputTransformer;
 use App\Service\Game\Move;
 use App\Service\Game\MoveResult;
 use Psr\Log\LoggerInterface;
@@ -16,11 +17,14 @@ use Psr\Log\NullLogger;
 
 class ChessGame implements GameTypeInterface
 {
+    private InputTransformer $inputTransformer;
+
     public function __construct(
         private White $white,
         private Black $black,
         private LoggerInterface $logger = new NullLogger()
     ) {
+        $this->inputTransformer = new InputTransformer();
     }
 
     public function run(MoveResult $currentCondition, Move $move): MoveResult
@@ -55,6 +59,10 @@ class ChessGame implements GameTypeInterface
         if (!(new MoveValidator($team, $board, $this->logger))->isValid($move)) {
             return $currentCondition;
         }
+
+        $from = $this->inputTransformer->transformCellToString($move->getFrom());
+        $to = $this->inputTransformer->transformCellToString($move->getTo());
+        $this->logger->info("{$team->getName()} : [$from] => [$to]");
 
         if ($this->isGameOver($board)) {
             $this->logger->info('Game over');
