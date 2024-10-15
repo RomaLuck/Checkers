@@ -203,6 +203,7 @@ function showLog(logs) {
 
 function rotateTable(table) {
     let letters = document.querySelectorAll("table th");
+    let tds = document.querySelectorAll("table td");
     let color = document.getElementById('color');
 
     if (color.innerText.trim() === 'white') {
@@ -215,6 +216,9 @@ function rotateTable(table) {
         table.style.transform = 'rotate(90deg)';
         letters.forEach((letter) => {
             letter.style.transform = 'rotate(-90deg)';
+        });
+        tds.forEach((td) => {
+            td.style.transform = 'rotate(180deg)';
         });
     }
 }
