@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Game\Chess\Team;
 
 use App\Service\Game\Chess\Figure\FigureInterface;
