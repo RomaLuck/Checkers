@@ -1,6 +1,7 @@
 ## Table of contents
 
 * [General info](#general-info)
+* [Current works](#current-works)
 * [Tools](#tools)
 * [Current features](#current-features)
 * [Setup](#setup)
@@ -9,7 +10,10 @@
 
 ## General info
 
-Game "Checkers"
+Games "Checkers" and "Chess"
+
+## Current works
+- Chess
 
 ## Tools
 
@@ -84,3 +88,4 @@ docker exec php bin/phpunit
 ![Login](public/pictures/login.png)
 ![Game_list](public/pictures/game-list.png)
 ![Game](public/pictures/game.png)
+![Chess](public/pictures/chess.png)
