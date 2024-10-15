@@ -7,6 +7,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
+        'declare_strict_types' => true,
         'concat_space' => ['spacing' => 'one'],
         'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
         'increment_style' => ['style' => 'post'],
