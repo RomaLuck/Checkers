@@ -49,4 +49,9 @@ class Pawn implements FigureInterface
             new PawnMoveStrategy(),
         ];
     }
+
+    public function getName(): string
+    {
+        return FigureNames::PAWN;
+    }
 }

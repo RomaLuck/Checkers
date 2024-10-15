@@ -9,6 +9,8 @@ use App\Service\Game\Chess\Rule\RuleInterface;
 
 interface FigureInterface
 {
+    public function getName(): string;
+
     /**
      * @return int[]
      */

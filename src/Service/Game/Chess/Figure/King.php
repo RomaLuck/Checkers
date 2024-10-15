@@ -31,4 +31,9 @@ class King implements FigureInterface
             new RookMoveStrategy(),
         ];
     }
+
+    public function getName(): string
+    {
+        return FigureNames::KING;
+    }
 }

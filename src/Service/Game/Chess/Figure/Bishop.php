@@ -27,4 +27,9 @@ class Bishop implements FigureInterface
             new BishopMoveStrategy(),
         ];
     }
+
+    public function getName(): string
+    {
+        return FigureNames::BISHOP;
+    }
 }

@@ -24,4 +24,9 @@ class Knight implements FigureInterface
             new KnightMoveStrategy(),
         ];
     }
+
+    public function getName(): string
+    {
+        return FigureNames::KNIGHT;
+    }
 }

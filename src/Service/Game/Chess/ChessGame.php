@@ -75,6 +75,11 @@ class ChessGame implements GameTypeInterface
             $currentCondition->setWinnerId($advantagePlayer->getId());
         }
 
+        $targetCellNum = $board->getFigureNumber($move->getTo());
+        if (is_int($targetCellNum) && $targetCellNum !== 0) {
+            $beatenFigure = FigureFactory::create($targetCellNum);
+            $this->logger->info("--removed {$beatenFigure->getName()} [$to]");
+        }
         $board->update($move);
 
         $currentCondition->setCheckerDesk($board->getBoardData());

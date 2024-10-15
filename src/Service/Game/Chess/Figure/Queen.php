@@ -29,4 +29,9 @@ class Queen implements FigureInterface
             new RookMoveStrategy(),
         ];
     }
+
+    public function getName(): string
+    {
+        return FigureNames::QUEEN;
+    }
 }
