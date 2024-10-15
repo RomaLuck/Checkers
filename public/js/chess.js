@@ -202,23 +202,19 @@ function showLog(logs) {
 }
 
 function rotateTable(table) {
-    let letters = document.querySelectorAll("table th");
-    let tds = document.querySelectorAll("table td");
+    let cells = document.querySelectorAll("table th,table td");
     let color = document.getElementById('color');
 
     if (color.innerText.trim() === 'white') {
         table.style.transform = 'rotate(-90deg)';
-        letters.forEach((letter) => {
-            letter.style.transform = 'rotate(90deg)';
+        cells.forEach((cell) => {
+            cell.style.transform = 'rotate(90deg)';
         });
     }
     if (color.innerText.trim() === 'black') {
         table.style.transform = 'rotate(90deg)';
-        letters.forEach((letter) => {
-            letter.style.transform = 'rotate(-90deg)';
-        });
-        tds.forEach((td) => {
-            td.style.transform = 'rotate(180deg)';
+        cells.forEach((cell) => {
+            cell.style.transform = 'rotate(-90deg)';
         });
     }
 }

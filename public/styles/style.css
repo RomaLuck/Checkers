@@ -47,116 +47,104 @@
 
 /*king*/
 .black-king {
-    transform: rotate(90deg);
-}
-
-.black-king::before {
-    content: "\265A";
-    font-size: 3em;
+    background-image: url('../pictures/figures/bK.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .white-king {
-    transform: rotate(90deg);
-}
-
-.white-king::before {
-    content: "\2654";
-    font-size: 3em;
+    background-image: url('../pictures/figures/wK.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 /*queen*/
 .black-queen {
-    transform: rotate(90deg);
-}
-
-.black-queen::before {
-    content: "\265B";
-    font-size: 3em;
+    background-image: url('../pictures/figures/bQ.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .white-queen {
-    transform: rotate(90deg);
-}
-
-.white-queen::before {
-    content: "\2655";
-    font-size: 3em;
+    background-image: url('../pictures/figures/wQ.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 /*bishop*/
 .black-bishop {
-    transform: rotate(90deg);
-}
-
-.black-bishop::before {
-    content: "\265D";
-    font-size: 3em;
+    background-image: url('../pictures/figures/bB.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .white-bishop {
-    transform: rotate(90deg);
-}
-
-.white-bishop::before {
-    content: "\2657";
-    font-size: 3em;
+    background-image: url('../pictures/figures/wB.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 /*rook*/
 .black-rook {
-    transform: rotate(90deg);
-}
-
-.black-rook::before {
-    content: "\265C";
-    font-size: 3em;
+    background-image: url('../pictures/figures/bR.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .white-rook {
-    transform: rotate(90deg);
-}
-
-.white-rook::before {
-    content: "\2656";
-    font-size: 3em;
+    background-image: url('../pictures/figures/wR.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 /*knight*/
 .black-knight {
-    transform: rotate(90deg);
-}
-
-.black-knight::before {
-    content: "\265E";
-    font-size: 3em;
+    background-image: url('../pictures/figures/bN.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .white-knight {
-    transform: rotate(90deg);
-}
-
-.white-knight::before {
-    content: "\2658";
-    font-size: 3em;
+    background-image: url('../pictures/figures/wN.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 /*pawn*/
 .black-pawn {
-    transform: rotate(90deg);
-}
-
-.black-pawn::before {
-    content: "\265F";
-    font-size: 3em;
+    background-image: url('../pictures/figures/bP.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .white-pawn {
-    transform: rotate(90deg);
-}
-
-.white-pawn::before {
-    content: "\2659";
-    font-size: 3em;
+    background-image: url('../pictures/figures/wP.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
 }
 
 .black-checker::before {
